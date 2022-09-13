@@ -1,3 +1,4 @@
 .idea/
 __pycache__/
 venv/
+src/resources/ui/test.ui

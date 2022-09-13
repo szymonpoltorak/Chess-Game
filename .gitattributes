@@ -4,6 +4,7 @@
 *.html  text diff=html
 *.tld   text
 *.xml   text
+*.scss text diff=scss
 
 *.jpg binary
 *.jpeg binary
