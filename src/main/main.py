@@ -9,7 +9,6 @@ if __name__ == '__main__':
     canvas = pygame.Surface((640, 560))
 
     app = QApplication(sys.argv)
-
     window = GameWindow(canvas)
     window.show()
 

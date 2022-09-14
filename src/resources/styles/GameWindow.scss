@@ -5,10 +5,16 @@ $font-color: #d4d7dc;
 $utility-color: #4f545c;
 $menu-icon-hover-color: rgb(22 163 74);
 
+/* sidebar styling */
+
 @mixin menu-icon-theme{
   padding: $menu-padding;
   background-color: $utility-color;
   border-radius: 25%;
+}
+
+#__side_bar{
+  background-color: $side-bar-color;
 }
 
 #__play_menu{
@@ -40,6 +46,10 @@ $menu-icon-hover-color: rgb(22 163 74);
   @include menu-icon-hover;
 }
 
+#__play_menu:hover{
+  @include menu-icon-hover;
+}
+
 #__analysis_menu:hover{
   @include menu-icon-hover;
 }
@@ -55,6 +65,8 @@ $menu-icon-hover-color: rgb(22 163 74);
 #__settings_menu:hover{
   @include menu-icon-hover;
 }
+
+/* player labels styling */
 
 @mixin player-frame-theme{
   background-color: $utility-color;
@@ -81,6 +93,8 @@ $menu-icon-hover-color: rgb(22 163 74);
 #__engine_name{
   @include name-labels;
 }
+
+/* buttons styling */
 
 @mixin button-theme{
   border-radius: 20%;
@@ -126,12 +140,10 @@ $menu-icon-hover-color: rgb(22 163 74);
   @include button-hover-theme;
 }
 
+/* windows styling */
+
 #game_window{
   background-color: $game-window-color;
-}
-
-#__side_bar{
-  background-color: $side-bar-color;
 }
 
 #__pgn_table{

@@ -1,3 +1,8 @@
+/* sidebar styling */
+#__side_bar {
+  background-color: #202225;
+}
+
 #__play_menu {
   padding: 8%;
   background-color: #4f545c;
@@ -33,6 +38,11 @@
   background-color: rgb(22, 163, 74);
 }
 
+#__play_menu:hover {
+  border-radius: 10%;
+  background-color: rgb(22, 163, 74);
+}
+
 #__analysis_menu:hover {
   border-radius: 10%;
   background-color: rgb(22, 163, 74);
@@ -53,6 +63,7 @@
   background-color: rgb(22, 163, 74);
 }
 
+/* player labels styling */
 #__user_frame {
   background-color: #4f545c;
   border-radius: 20%;
@@ -73,6 +84,7 @@
   font-weight: bold;
 }
 
+/* buttons styling */
 #__new_game_button {
   border-radius: 20%;
   background-color: #4f545c;
@@ -121,12 +133,9 @@
   background-color: rgb(22, 163, 74);
 }
 
+/* windows styling */
 #game_window {
   background-color: #2f3136;
-}
-
-#__side_bar {
-  background-color: #202225;
 }
 
 #__pgn_table {
