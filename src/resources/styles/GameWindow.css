@@ -1,3 +1,136 @@
+#__play_menu {
+  padding: 8%;
+  background-color: #4f545c;
+  border-radius: 25%;
+}
 
+#__analysis_menu {
+  padding: 8%;
+  background-color: #4f545c;
+  border-radius: 25%;
+}
+
+#__players_menu {
+  padding: 8%;
+  background-color: #4f545c;
+  border-radius: 25%;
+}
+
+#__profile_menu {
+  padding: 8%;
+  background-color: #4f545c;
+  border-radius: 25%;
+}
+
+#__settings_menu {
+  padding: 8%;
+  background-color: #4f545c;
+  border-radius: 25%;
+}
+
+#__play_menu:hover {
+  border-radius: 10%;
+  background-color: rgb(22, 163, 74);
+}
+
+#__analysis_menu:hover {
+  border-radius: 10%;
+  background-color: rgb(22, 163, 74);
+}
+
+#__players_menu:hover {
+  border-radius: 10%;
+  background-color: rgb(22, 163, 74);
+}
+
+#__profile_menu:hover {
+  border-radius: 10%;
+  background-color: rgb(22, 163, 74);
+}
+
+#__settings_menu:hover {
+  border-radius: 10%;
+  background-color: rgb(22, 163, 74);
+}
+
+#__user_frame {
+  background-color: #4f545c;
+  border-radius: 20%;
+}
+
+#__engine_frame {
+  background-color: #4f545c;
+  border-radius: 20%;
+}
+
+#__user_name {
+  color: #d4d7dc;
+  font-weight: bold;
+}
+
+#__engine_name {
+  color: #d4d7dc;
+  font-weight: bold;
+}
+
+#__new_game_button {
+  border-radius: 20%;
+  background-color: #4f545c;
+  color: #d4d7dc;
+  font-weight: bold;
+}
+
+#__prev_move_button {
+  border-radius: 20%;
+  background-color: #4f545c;
+  color: #d4d7dc;
+  font-weight: bold;
+}
+
+#__next_move_button {
+  border-radius: 20%;
+  background-color: #4f545c;
+  color: #d4d7dc;
+  font-weight: bold;
+}
+
+#__analyze_button {
+  border-radius: 20%;
+  background-color: #4f545c;
+  color: #d4d7dc;
+  font-weight: bold;
+}
+
+#__new_game_button:hover {
+  border-radius: 10%;
+  background-color: rgb(22, 163, 74);
+}
+
+#__prev_move_button:hover {
+  border-radius: 10%;
+  background-color: rgb(22, 163, 74);
+}
+
+#__next_move_button:hover {
+  border-radius: 10%;
+  background-color: rgb(22, 163, 74);
+}
+
+#__analyze_button:hover {
+  border-radius: 10%;
+  background-color: rgb(22, 163, 74);
+}
+
+#game_window {
+  background-color: #2f3136;
+}
+
+#__side_bar {
+  background-color: #202225;
+}
+
+#__pgn_table {
+  background-color: #4f545c;
+}
 
 /*# sourceMappingURL=GameWindow.css.map */
