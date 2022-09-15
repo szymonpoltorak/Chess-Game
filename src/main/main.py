@@ -2,8 +2,8 @@ import sys
 import pygame
 from PyQt5.QtWidgets import QApplication
 
-from PyGameEnum import PyGameEnum
-from src.main.GameWindow import GameWindow
+from game_window.PyGameEnum import PyGameEnum
+from game_window.GameWindow import GameWindow
 
 
 def run_chess_game():

@@ -4,8 +4,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QWidget
 
-from src.main.GameWindowEnum import GameWindowEnum
-from src.main.Sidebar import Sidebar
+from game_window.GameWindowEnum import GameWindowEnum
+from game_window.Sidebar import Sidebar
 
 
 class GameWindowUi:
@@ -24,7 +24,8 @@ class GameWindowUi:
         game_window.resize(GameWindowEnum.WINDOW_WIDTH.value, GameWindowEnum.WINDOW_HEIGHT.value)
 
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("src/resources/images/chess_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap("src/resources/images/ui_icons/chess_icon.png"), QtGui.QIcon.Normal,
+                       QtGui.QIcon.Off)
         game_window.setWindowIcon(icon)
         game_window.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         game_window.setMinimumSize(QtCore.QSize(GameWindowEnum.WINDOW_WIDTH.value, GameWindowEnum.WINDOW_HEIGHT.value))
@@ -72,7 +73,7 @@ class GameWindowUi:
                                                   GameWindowEnum.USER_ICON_Y.value,
                                                   GameWindowEnum.USER_ICON_WIDTH.value,
                                                   GameWindowEnum.USER_ICON_HEIGHT.value))
-        self.__user_icon.setPixmap(QtGui.QPixmap("src/resources/images/user.png"))
+        self.__user_icon.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/user.png"))
         self.__user_icon.setScaledContents(True)
         self.__user_icon.setObjectName("__user_icon")
 
@@ -97,7 +98,7 @@ class GameWindowUi:
                                                     GameWindowEnum.ENGINE_ICON_Y.value,
                                                     GameWindowEnum.ENGINE_ICON_WIDTH.value,
                                                     GameWindowEnum.ENGINE_ICON_HEIGHT.value))
-        self.__engine_icon.setPixmap(QtGui.QPixmap("src/resources/images/engine.svg"))
+        self.__engine_icon.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/engine.svg"))
         self.__engine_icon.setScaledContents(True)
         self.__engine_icon.setObjectName("__engine_icon")
 
@@ -128,6 +129,7 @@ class GameWindowUi:
         self.__new_game_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__new_game_button.setMinimumSize(QtCore.QSize(GameWindowEnum.BUTTON_WIDTH.value,
                                                            GameWindowEnum.BUTTON_HEIGHT.value))
+        self.__new_game_button.setToolTip("New Game")
         self.__new_game_button.setObjectName("__new_game_button")
         self.__button_horizontal_layout.addWidget(self.__new_game_button)
 
@@ -135,6 +137,7 @@ class GameWindowUi:
         self.__prev_move_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__prev_move_button.setMinimumSize(QtCore.QSize(GameWindowEnum.BUTTON_WIDTH.value,
                                                             GameWindowEnum.BUTTON_HEIGHT.value))
+        self.__prev_move_button.setToolTip("Previous move")
         self.__prev_move_button.setObjectName("__prev_move_button")
         self.__button_horizontal_layout.addWidget(self.__prev_move_button)
 
@@ -142,6 +145,7 @@ class GameWindowUi:
         self.__next_move_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__next_move_button.setMinimumSize(QtCore.QSize(GameWindowEnum.BUTTON_WIDTH.value,
                                                             GameWindowEnum.BUTTON_HEIGHT.value))
+        self.__next_move_button.setToolTip("Next Move")
         self.__next_move_button.setObjectName("__next_move_button")
         self.__button_horizontal_layout.addWidget(self.__next_move_button)
 
@@ -149,6 +153,7 @@ class GameWindowUi:
         self.__analyze_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__analyze_button.setMinimumSize(QtCore.QSize(GameWindowEnum.BUTTON_WIDTH.value,
                                                           GameWindowEnum.BUTTON_HEIGHT.value))
+        self.__analyze_button.setToolTip("Analyze Party")
         self.__analyze_button.setObjectName("__analyze_button")
         self.__button_horizontal_layout.addWidget(self.__analyze_button)
 

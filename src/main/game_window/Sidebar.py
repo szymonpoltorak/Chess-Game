@@ -1,8 +1,8 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QFrame
 
-from src.main.SidebarEnum import SidebarEnum
+from game_window.SidebarEnum import SidebarEnum
 
 
 class Sidebar:
@@ -42,12 +42,8 @@ class Sidebar:
         :return: void
         """
         self.__settings_frame = QtWidgets.QFrame(self.__side_bar)
-        self.__settings_frame.setMinimumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
-                                                          SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
-        self.__settings_frame.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
-                                                          SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
-        self.__settings_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.__settings_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.__frame_menu_first_setup(self.__settings_frame)
+
         self.__settings_frame.setObjectName("__settings_frame")
         self.__settings_horizontal_layout = QtWidgets.QHBoxLayout(self.__settings_frame)
         self.__settings_horizontal_layout.setObjectName("settings_horizontal_layout")
@@ -56,10 +52,11 @@ class Sidebar:
         self.__settings_menu.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__settings_menu.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_WIDTH.value,
                                                          SidebarEnum.SIDEBAR_ICON_HEIGHT.value))
-        self.__settings_menu.setPixmap(QtGui.QPixmap("src/resources/images/settings.svg"))
+        self.__settings_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/settings.svg"))
         self.__settings_menu.setScaledContents(True)
         self.__settings_menu.setObjectName("__settings_menu")
         self.__settings_horizontal_layout.addWidget(self.__settings_menu)
+        self.__settings_menu.setToolTip("Settings")
         self.__side_bar_vertical_layout.addWidget(self.__settings_frame)
 
     def __init_play(self):
@@ -74,12 +71,8 @@ class Sidebar:
         size_policy.setHeightForWidth(self.__play_frame.sizePolicy().hasHeightForWidth())
 
         self.__play_frame.setSizePolicy(size_policy)
-        self.__play_frame.setMinimumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
-                                                      SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
-        self.__play_frame.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
-                                                      SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
-        self.__play_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.__play_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.__frame_menu_first_setup(self.__play_frame)
+
         self.__play_frame.setObjectName("__play_frame")
         self.__play_horizontal_layout = QtWidgets.QHBoxLayout(self.__play_frame)
         self.__play_horizontal_layout.setObjectName("play_horizontal_layout")
@@ -88,9 +81,10 @@ class Sidebar:
         self.__play_menu.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__play_menu.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_WIDTH.value,
                                                      SidebarEnum.SIDEBAR_ICON_HEIGHT.value))
-        self.__play_menu.setPixmap(QtGui.QPixmap("src/resources/images/play.svg"))
+        self.__play_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/play.svg"))
         self.__play_menu.setScaledContents(True)
         self.__play_menu.setObjectName("__play_menu")
+        self.__play_menu.setToolTip("Play a game")
         self.__play_horizontal_layout.addWidget(self.__play_menu)
         self.__side_bar_vertical_layout.addWidget(self.__play_frame)
 
@@ -100,12 +94,8 @@ class Sidebar:
         :return: void
         """
         self.__analysis_frame = QtWidgets.QFrame(self.__side_bar)
-        self.__analysis_frame.setMinimumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
-                                                          SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
-        self.__analysis_frame.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
-                                                          SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
-        self.__analysis_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.__analysis_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.__frame_menu_first_setup(self.__analysis_frame)
+
         self.__analysis_frame.setObjectName("__analysis_frame")
         self.__analyze_horizontal_layout = QtWidgets.QHBoxLayout(self.__analysis_frame)
         self.__analyze_horizontal_layout.setObjectName("analyze_horizontal_layout")
@@ -114,9 +104,10 @@ class Sidebar:
         self.__analysis_menu.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__analysis_menu.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_WIDTH.value,
                                                          SidebarEnum.SIDEBAR_ICON_HEIGHT.value))
-        self.__analysis_menu.setPixmap(QtGui.QPixmap("src/resources/images/analysis.svg"))
+        self.__analysis_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/analysis.svg"))
         self.__analysis_menu.setScaledContents(True)
         self.__analysis_menu.setObjectName("__analysis_menu")
+        self.__analysis_menu.setToolTip("Analyze Parties")
         self.__analyze_horizontal_layout.addWidget(self.__analysis_menu)
         self.__side_bar_vertical_layout.addWidget(self.__analysis_frame)
 
@@ -126,12 +117,8 @@ class Sidebar:
         :return: void
         """
         self.__profile_frame = QtWidgets.QFrame(self.__side_bar)
-        self.__profile_frame.setMinimumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
-                                                         SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
-        self.__profile_frame.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
-                                                         SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
-        self.__profile_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.__profile_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.__frame_menu_first_setup(self.__profile_frame)
+
         self.__profile_frame.setObjectName("__profile_frame")
         self.__profile_horizontal_layout = QtWidgets.QHBoxLayout(self.__profile_frame)
         self.__profile_horizontal_layout.setObjectName("profile_horizontal_layout")
@@ -140,9 +127,10 @@ class Sidebar:
         self.__profile_menu.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__profile_menu.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_WIDTH.value,
                                                         SidebarEnum.SIDEBAR_ICON_HEIGHT.value))
-        self.__profile_menu.setPixmap(QtGui.QPixmap("src/resources/images/profile.svg"))
+        self.__profile_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/profile.svg"))
         self.__profile_menu.setScaledContents(True)
         self.__profile_menu.setObjectName("__profile_menu")
+        self.__profile_menu.setToolTip("Your Profile")
         self.__profile_horizontal_layout.addWidget(self.__profile_menu)
         self.__side_bar_vertical_layout.addWidget(self.__profile_frame)
 
@@ -152,12 +140,8 @@ class Sidebar:
         :return: void
         """
         self.__players_frame = QtWidgets.QFrame(self.__side_bar)
-        self.__players_frame.setMinimumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
-                                                         SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
-        self.__players_frame.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
-                                                         SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
-        self.__players_frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.__players_frame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.__frame_menu_first_setup(self.__players_frame)
+
         self.__players_frame.setObjectName("__players_frame")
         self.__players_horizontal_layout = QtWidgets.QHBoxLayout(self.__players_frame)
         self.__players_horizontal_layout.setObjectName("players_horizontal_layout")
@@ -166,8 +150,17 @@ class Sidebar:
         self.__players_menu.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__players_menu.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_WIDTH.value,
                                                         SidebarEnum.SIDEBAR_ICON_HEIGHT.value))
-        self.__players_menu.setPixmap(QtGui.QPixmap("src/resources/images/players.svg"))
+        self.__players_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/players.svg"))
         self.__players_menu.setScaledContents(True)
         self.__players_menu.setObjectName("__players_menu")
+        self.__players_menu.setToolTip("Player List")
         self.__players_horizontal_layout.addWidget(self.__players_menu)
         self.__side_bar_vertical_layout.addWidget(self.__players_frame)
+
+    def __frame_menu_first_setup(self, frame: QFrame):
+        frame.setMinimumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
+                                          SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
+        frame.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
+                                          SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
+        frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        frame.setFrameShadow(QtWidgets.QFrame.Raised)

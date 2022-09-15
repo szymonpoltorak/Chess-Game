@@ -1,8 +1,8 @@
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QWidget
 
-from PyGameEnum import PyGameEnum
-from src.main.GameWindowUi import GameWindowUi
+from game_window.PyGameEnum import PyGameEnum
+from game_window.GameWindowUi import GameWindowUi
 
 
 class GameWindow(QWidget):
