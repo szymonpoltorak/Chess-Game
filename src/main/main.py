@@ -2,14 +2,24 @@ import sys
 import pygame
 from PyQt5.QtWidgets import QApplication
 
+from PyGameEnum import PyGameEnum
 from src.main.GameWindow import GameWindow
 
-if __name__ == '__main__':
+
+def run_chess_game():
+    """
+    Initializes chess game.
+    :return: void
+    """
     pygame.init()
-    canvas = pygame.Surface((640, 560))
+    canvas = pygame.Surface((PyGameEnum.SURFACE_WIDTH.value, PyGameEnum.SURFACE_HEIGHT.value))
 
     app = QApplication(sys.argv)
     window = GameWindow(canvas)
     window.show()
 
     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    run_chess_game()

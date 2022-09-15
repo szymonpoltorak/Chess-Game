@@ -1,6 +1,7 @@
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QWidget
 
+from PyGameEnum import PyGameEnum
 from src.main.GameWindowUi import GameWindowUi
 
 
@@ -29,7 +30,7 @@ class GameWindow(QWidget):
         """
         canvas_painter = QtGui.QPainter()
         canvas_painter.begin(self)
-        canvas_painter.drawImage(150, 80, self.__image)
+        canvas_painter.drawImage(PyGameEnum.CANVAS_X.value, PyGameEnum.CANVAS_Y.value, self.__image)
         canvas_painter.end()
 
     def get_ui(self):
