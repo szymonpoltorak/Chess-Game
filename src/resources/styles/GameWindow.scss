@@ -1,0 +1,151 @@
+$menu-padding: 8%;
+$side-bar-color: #202225;
+$game-window-color: #2f3136;
+$font-color: #d4d7dc;
+$utility-color: #4f545c;
+$menu-icon-hover-color: rgb(22 163 74);
+
+/* sidebar styling */
+
+@mixin menu-icon-theme{
+  padding: $menu-padding;
+  background-color: $utility-color;
+  border-radius: 25%;
+}
+
+#__side_bar{
+  background-color: $side-bar-color;
+}
+
+#__play_menu{
+  @include menu-icon-theme;
+}
+
+#__analysis_menu{
+  @include menu-icon-theme;
+}
+
+#__players_menu{
+  @include menu-icon-theme;
+}
+
+#__profile_menu{
+  @include menu-icon-theme;
+}
+
+#__settings_menu{
+  @include menu-icon-theme;
+}
+
+@mixin menu-icon-hover{
+  border-radius: 10%;
+  background-color: $menu-icon-hover-color;
+}
+
+#__play_menu:hover{
+  @include menu-icon-hover;
+}
+
+#__play_menu:hover{
+  @include menu-icon-hover;
+}
+
+#__analysis_menu:hover{
+  @include menu-icon-hover;
+}
+
+#__players_menu:hover{
+  @include menu-icon-hover;
+}
+
+#__profile_menu:hover{
+  @include menu-icon-hover;
+}
+
+#__settings_menu:hover{
+  @include menu-icon-hover;
+}
+
+/* player labels styling */
+
+@mixin player-frame-theme{
+  background-color: $utility-color;
+  border-radius: 20%;
+}
+
+#__user_frame{
+  @include player-frame-theme;
+}
+
+#__engine_frame{
+  @include player-frame-theme;
+}
+
+@mixin name-labels{
+  color: $font-color;
+  font-weight: bold;
+}
+
+#__user_name{
+  @include name-labels;
+}
+
+#__engine_name{
+  @include name-labels;
+}
+
+/* buttons styling */
+
+@mixin button-theme{
+  border-radius: 20%;
+  background-color: $utility-color;
+  color: $font-color;
+  font-weight: bold;
+}
+
+#__new_game_button {
+  @include button-theme;
+}
+
+#__prev_move_button {
+  @include button-theme;
+}
+
+#__next_move_button{
+  @include button-theme;
+}
+
+#__analyze_button {
+  @include button-theme;
+}
+
+@mixin button-hover-theme{
+  border-radius: 10%;
+  background-color: $menu-icon-hover-color;
+}
+
+#__new_game_button:hover {
+  @include button-hover-theme;
+}
+
+#__prev_move_button:hover {
+  @include button-hover-theme;
+}
+
+#__next_move_button:hover{
+  @include button-hover-theme;
+}
+
+#__analyze_button:hover {
+  @include button-hover-theme;
+}
+
+/* windows styling */
+
+#game_window{
+  background-color: $game-window-color;
+}
+
+#__pgn_table{
+  background-color: $utility-color;
+}
