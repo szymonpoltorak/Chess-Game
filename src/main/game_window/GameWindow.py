@@ -1,6 +1,7 @@
 from PyQt5 import QtGui
 from PyQt5.QtWidgets import QWidget
 
+from game_window.GameBoard import GameBoard
 from game_window.PyGameEnum import PyGameEnum
 from game_window.GameWindowUi import GameWindowUi
 
@@ -9,18 +10,20 @@ class GameWindow(QWidget):
     """
     Integrates PyQt5 Gui with PyGame Chess Board in one window and manages it.
     """
-    __slots__ = ("__ui", "__data", "__image")
+    __slots__ = ("__ui", "__data", "__image", "__game_board")
 
-    def __init__(self, canvas):
+    def __init__(self, surface):
         super(GameWindow, self).__init__()
-        width = canvas.get_width()
-        height = canvas.get_height()
+
+        self.__data = None
+        self.__image = None
+        self.__game_board = GameBoard(surface)
 
         with open("src/resources/styles/GameWindow.min.css", "r", encoding="utf-8") as style:
             self.__ui = GameWindowUi(self)
-            self.__data = canvas.get_buffer().raw
-            self.__image = QtGui.QImage(self.__data, width, height, QtGui.QImage.Format_RGB32)
             self.setStyleSheet(style.read())
+
+        self.paint()
 
     def paintEvent(self, event):
         """
@@ -39,3 +42,14 @@ class GameWindow(QWidget):
         :return: GameWindowUi instance
         """
         return self.__ui
+
+    def paint(self):
+        self.__game_board.draw_chess_board()
+
+        surface = self.__game_board.get_surface()
+        width = surface.get_width()
+        height = surface.get_height()
+
+        self.__data = surface.get_buffer().raw
+        self.__image = QtGui.QImage(self.__data, width, height, QtGui.QImage.Format_RGB32)
+        self.update()
