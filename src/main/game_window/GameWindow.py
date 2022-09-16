@@ -47,7 +47,7 @@ class GameWindow(QWidget):
     def update_board_display(self):
         self.__board_painter.draw_chess_board()
 
-        canvas = self.__board_painter.get_surface()
+        canvas = self.__board_painter.get_canvas()
         width = canvas.get_width()
         height = canvas.get_height()
 

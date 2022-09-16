@@ -2,6 +2,9 @@ from enum import Enum
 
 
 class PiecesEnum(Enum):
+    """
+    Enum consists of values important for pieces on chess board.
+    """
     NONE: int = 0
     KING: int = 1
     PAWN: int = 2

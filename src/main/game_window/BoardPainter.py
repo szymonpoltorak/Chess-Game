@@ -9,13 +9,17 @@ from game_window.enums.PiecesEnum import PiecesEnum
 class BoardPainter:
     __slots__ = ("__canvas", "__rect_width", "__rect_height", "__board")
 
-    def __init__(self, canvas):
+    def __init__(self, canvas: Surface):
         self.__canvas: Surface = canvas
         self.__rect_width: int = int(canvas.get_width() / 8)
         self.__rect_height: int = int(canvas.get_height() / 8)
         self.__board: Board = Board()
 
     def draw_chess_board(self):
+        """
+        Method draws a whole chess board on canvas.
+        :return: void
+        """
         current_x = 0
         current_y = 0
         index_x = 0
@@ -33,14 +37,14 @@ class BoardPainter:
                 current_x += self.__rect_width
 
                 if col == 0:
-                    self.draw_character_on_board(current_number, index_x + BoardEnum.NUMBER_SCALE_X.value,
-                                                 index_y + BoardEnum.NUMBER_SCALE_Y.value,
-                                                 self.get_opposite_color(color))
+                    self._draw_character_on_board(current_number, index_x + BoardEnum.NUMBER_SCALE_X.value,
+                                                  index_y + BoardEnum.NUMBER_SCALE_Y.value,
+                                                  self.get_opposite_color(color))
                     current_number -= 1
                 if row == 7:
-                    self.draw_character_on_board(letters[col], index_x + BoardEnum.LETTER_SCALE_X.value,
-                                                 index_y + BoardEnum.LETTER_SCALE_Y.value,
-                                                 self.get_opposite_color(color))
+                    self._draw_character_on_board(letters[col], index_x + BoardEnum.LETTER_SCALE_X.value,
+                                                  index_y + BoardEnum.LETTER_SCALE_Y.value,
+                                                  self.get_opposite_color(color))
                     index_x = current_x
 
             current_y += self.__rect_height
@@ -49,6 +53,10 @@ class BoardPainter:
         self.__draw_position_from_fen()
 
     def __draw_position_from_fen(self):
+        """
+        Method draws pieces on chess board from fen string representation.
+        :return: void
+        """
         fen = self.__board.get_fen_string().replace('/', ' ').split()
         current_x = 0
         current_y = 0
@@ -63,11 +71,17 @@ class BoardPainter:
             current_y += self.__rect_height
 
     def load_proper_image(self, current_x: int, current_y: int, piece_letter: str):
+        """
+        Loads image from resources based on current letter loaded from fen string.
+        :param current_x: current x coordinate from which we start drawing.
+        :param current_y: current y coordinate from which we start drawing.
+        :param piece_letter: letter representing piece on chess board, got from fen string.
+        :return: void
+        """
         try:
             int(piece_letter)
             return
         except ValueError:
-            color = None
             piece = piece_letter.upper()
             image_path = "src/resources/images/pieces/"
             extension = ".png"
@@ -82,6 +96,12 @@ class BoardPainter:
             self.__canvas.blit(image, (PiecesEnum.SCALE_X.value + current_x, PiecesEnum.SCALE_Y.value + current_y))
 
     def pick_proper_color(self, row: int, col: int):
+        """
+        Method chooses proper color for square on a chess board based on row and col index.
+        :param row: current row on chess board
+        :param col: current column on chess board
+        :return: string value of a color
+        """
         is_light_color = (row + col) % 2 == 0
 
         if is_light_color:
@@ -90,18 +110,39 @@ class BoardPainter:
             return BoardEnum.SECONDARY_BOARD_COLOR.value
 
     def get_opposite_color(self, color: str):
+        """
+        Returns opposite color of given one.
+        :param color: given color string of which we want to have opposite one
+        :return: opposite color string
+        """
         if color == BoardEnum.PRIMARY_BOARD_COLOR.value:
             return BoardEnum.SECONDARY_BOARD_COLOR.value
         else:
             return BoardEnum.PRIMARY_BOARD_COLOR.value
 
-    def draw_character_on_board(self, character, position_x: int, position_y: int, color: str):
+    def _draw_character_on_board(self, character, position_x: int, position_y: int, color: str):
+        """
+        Draw characters : number and letters on board edges.
+        :param character: characters string which we want to paint on canvas
+        :param position_x: x coordinate where we want to start drawing character
+        :param position_y: y coordinate where we want to start drawing character
+        :param color: color string which we want a character to have
+        :return: void
+        """
         font = pygame.font.SysFont("Monospace Bold", BoardEnum.CHARACTER_SIZE.value)
         text = font.render(str(character), True, color)
         self.__canvas.blit(text, (position_x, position_y))
 
-    def get_surface(self):
+    def get_canvas(self):
+        """
+        Gives access to pygame canvas
+        :return: canvas instance
+        """
         return self.__canvas
 
     def get_board(self):
+        """
+        Gives access to Board object instance.
+        :return: board instance
+        """
         return self.__board

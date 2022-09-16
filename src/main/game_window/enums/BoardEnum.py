@@ -2,6 +2,9 @@ from enum import Enum
 
 
 class BoardEnum(Enum):
+    """
+     Enum which covers important static values for board.
+    """
     PRIMARY_BOARD_COLOR: str = "#F1D9C0"
     SECONDARY_BOARD_COLOR: str = "#A97A65"
 
