@@ -36,3 +36,6 @@ scene for party analysis, user profile, login screen, players list, settings and
 
 **Settings Icon**
 * [Source](https://www.svgrepo.com/svg/13646/settings),
+
+**Chess Pieces**
+* [Source](https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces),

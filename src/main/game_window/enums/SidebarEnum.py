@@ -7,10 +7,10 @@ class SidebarEnum(Enum):
     """
     SIDEBAR_X: int = 0
     SIDEBAR_Y: int = 0
-    SIDEBAR_WIDTH: int = 91
-    SIDEBAR_HEIGHT: int = 720
+    SIDEBAR_WIDTH: int = 80
+    SIDEBAR_HEIGHT: int = 800
 
-    SIDEBAR_MARGIN_LEFT: int = 9
+    SIDEBAR_MARGIN_LEFT: int = 3
     SIDEBAR_MARGIN_TOP: int = 0
     SIDEBAR_MARGIN_RIGHT: int = 0
     SIDEBAR_MARGIN_BOTTOM: int = 0

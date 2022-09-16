@@ -4,7 +4,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QWidget
 
-from game_window.GameWindowEnum import GameWindowEnum
+from game_window.enums.GameWindowEnum import GameWindowEnum
 from game_window.Sidebar import Sidebar
 
 
