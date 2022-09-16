@@ -2,7 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QWidget, QFrame
 
-from game_window.SidebarEnum import SidebarEnum
+from game_window.enums.SidebarEnum import SidebarEnum
 
 
 class Sidebar:
