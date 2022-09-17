@@ -1,3 +1,5 @@
+from numpy import zeros, ndarray, array
+
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 
@@ -6,55 +8,52 @@ class Board:
     __slots__ = ("__board_array", "__current_fen")
 
     def __init__(self):
-        self.__board_array: list = self.__init_starting_board()
+        self.__board_array: ndarray[int] = self.__init_starting_board()
         self.__current_fen: str = BoardEnum.STARTING_POSITION.value
-        print(str(self.__board_array))
 
-    def get_board_array(self):
+    def get_board_array(self) -> ndarray[int]:
         """
-        Gives access to board int list.
-        :return: board int list
+        Gives access to board int array.
+        :return: board int array
         """
         return self.__board_array
 
-    def get_fen_string(self):
+    def get_fen_string(self) -> str:
         """
         Gives access to the fen string.
         :return: fen string
         """
         return self.__current_fen
 
-    def __init_starting_board(self):
+    def __init_starting_board(self) -> ndarray[int]:
         """
         Method initializes starting board.
-        :return: board int list
+        :return: board int array
         """
-        board = []
-        white_pieces = self.__init_pieces_lists(PiecesEnum.WHITE.value)
+        board = zeros(BoardEnum.BOARD_LENGTH.value ** 2)
+        white_pieces = self.__init_pieces_arrays(PiecesEnum.WHITE.value)
 
-        black_pieces = self.__init_pieces_lists(PiecesEnum.BLACK.value)
+        black_pieces = self.__init_pieces_arrays(PiecesEnum.BLACK.value)
 
-        for index in range(BoardEnum.BOARD_SIZE.value):
-            board.append(white_pieces[index])
+        for index in range(BoardEnum.BOARD_LENGTH.value):
+            board[index] = white_pieces[index]
 
-        for index in range(4 * BoardEnum.BOARD_SIZE.value):
-            board.append(PiecesEnum.NONE.value)
-
-        for index in range(BoardEnum.BOARD_SIZE.value):
-            board.append(black_pieces[index])
+        for index in range(BoardEnum.BOARD_LENGTH.value):
+            board[index] = black_pieces[index]
         return board
 
-    def __init_pieces_lists(self, color_value: int):
+    def __init_pieces_arrays(self, color_value: int) -> ndarray[int]:
         """
-        Initializes list of pieces on starting position depending on given color calue.
+        Initializes array of pieces on starting position depending on given color value.
         :param color_value: white or black int value
-        :return: list of starting pieces of given color
+        :return: array of starting pieces of given color
         """
-        return [color_value | PiecesEnum.ROOK.value,
-                color_value | PiecesEnum.KNIGHT.value,
-                color_value | PiecesEnum.BISHOP.value,
-                color_value | PiecesEnum.QUEEN.value,
-                color_value | PiecesEnum.KING.value,
-                color_value | PiecesEnum.BISHOP.value,
-                color_value | PiecesEnum.KNIGHT.value,
-                color_value | PiecesEnum.ROOK.value]
+        piece_array = array([color_value | PiecesEnum.ROOK.value,
+                             color_value | PiecesEnum.KNIGHT.value,
+                             color_value | PiecesEnum.BISHOP.value,
+                             color_value | PiecesEnum.QUEEN.value,
+                             color_value | PiecesEnum.KING.value,
+                             color_value | PiecesEnum.BISHOP.value,
+                             color_value | PiecesEnum.KNIGHT.value,
+                             color_value | PiecesEnum.ROOK.value])
+        return piece_array

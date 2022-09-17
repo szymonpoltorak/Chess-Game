@@ -26,25 +26,25 @@ class GameWindow(QWidget):
 
         self.update_board_display()
 
-    def paintEvent(self, event):
+    def paintEvent(self, event) -> None:
         """
         Override paintEvent method to paint on pygame canvas.
         :param event:
-        :return: void
+        :return: None
         """
         canvas_painter = QtGui.QPainter()
         canvas_painter.begin(self)
         canvas_painter.drawImage(PyGameEnum.CANVAS_X.value, PyGameEnum.CANVAS_Y.value, self.__image)
         canvas_painter.end()
 
-    def get_ui(self):
+    def get_ui(self) -> GameWindowUi:
         """
         Gives access to PyQt5 Ui.
         :return: GameWindowUi instance
         """
         return self.__ui
 
-    def update_board_display(self):
+    def update_board_display(self) -> None:
         self.__board_painter.draw_chess_board()
 
         canvas = self.__board_painter.get_canvas()

@@ -39,7 +39,7 @@ class Sidebar:
     def __init_settings(self):
         """
         Initializes settings menu option and its icon.
-        :return: void
+        :return: None
         """
         self.__settings_frame = QtWidgets.QFrame(self.__side_bar)
         self.__frame_menu_first_setup(self.__settings_frame)
@@ -62,7 +62,7 @@ class Sidebar:
     def __init_play(self):
         """
         Initializes play menu option and its icon.
-        :return: void
+        :return: None
         """
         self.__play_frame = QtWidgets.QFrame(self.__side_bar)
         size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
@@ -91,7 +91,7 @@ class Sidebar:
     def __init_analysis(self):
         """
         Initializes analysis menu option and its icon.
-        :return: void
+        :return: None
         """
         self.__analysis_frame = QtWidgets.QFrame(self.__side_bar)
         self.__frame_menu_first_setup(self.__analysis_frame)
@@ -114,7 +114,7 @@ class Sidebar:
     def __init_profile(self):
         """
         Initializes profile menu option and its icon.
-        :return: void
+        :return: None
         """
         self.__profile_frame = QtWidgets.QFrame(self.__side_bar)
         self.__frame_menu_first_setup(self.__profile_frame)
@@ -137,7 +137,7 @@ class Sidebar:
     def __init_players(self):
         """
         Initializes players menu option and its icon.
-        :return: void
+        :return: None
         """
         self.__players_frame = QtWidgets.QFrame(self.__side_bar)
         self.__frame_menu_first_setup(self.__players_frame)
@@ -153,7 +153,7 @@ class Sidebar:
         self.__players_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/players.svg"))
         self.__players_menu.setScaledContents(True)
         self.__players_menu.setObjectName("__players_menu")
-        self.__players_menu.setToolTip("Player List")
+        self.__players_menu.setToolTip("Player array")
         self.__players_horizontal_layout.addWidget(self.__players_menu)
         self.__side_bar_vertical_layout.addWidget(self.__players_frame)
 
