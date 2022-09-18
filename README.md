@@ -8,7 +8,6 @@ scene for party analysis, user profile, login screen, players list, settings and
 * Python 3.10,
 * Sass,
 * Css,
-* PyGame,
 * NumPy.
 
 ## Credits to Authors

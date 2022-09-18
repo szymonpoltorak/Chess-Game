@@ -18,5 +18,5 @@ class PiecesEnum(Enum):
 
     SCALE_WIDTH: int = 75
     SCALE_HEIGHT: int = 75
-    SCALE_X: int = 4
-    SCALE_Y: int = 4
+    SCALE_X: int = 5
+    SCALE_Y: int = 5

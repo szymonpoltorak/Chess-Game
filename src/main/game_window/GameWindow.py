@@ -1,41 +1,34 @@
-from PyQt5 import QtGui
 from PyQt5.QtWidgets import QWidget
-from pygame.surface import Surface
+from numpy import array
 
-from game_window.BoardPainter import BoardPainter
-from game_window.enums.PyGameEnum import PyGameEnum
+from game_window.Canvas import Canvas
 from game_window.GameWindowUi import GameWindowUi
 
 
 class GameWindow(QWidget):
     """
-    Integrates PyQt5 Gui with PyGame Chess Board in one window and manages it.
+    Covers play game window.
     """
-    __slots__ = ("__ui", "__data", "__image", "__board_painter")
+    __slots__ = array(["__ui", "__canvas", "__canvas_monitor"])
 
-    def __init__(self, canvas: Surface):
+    def __init__(self):
         super(GameWindow, self).__init__()
 
-        self.__data = None
-        self.__image = None
-        self.__board_painter = BoardPainter(canvas)
+        self.__canvas = Canvas()
 
         with open("src/resources/styles/GameWindow.min.css", "r", encoding="utf-8") as style:
             self.__ui = GameWindowUi(self)
             self.setStyleSheet(style.read())
 
-        self.update_board_display()
-
     def paintEvent(self, event) -> None:
         """
-        Override paintEvent method to paint on pygame canvas.
+        Override paintEvent method to paint on canvas.
         :param event:
         :return: None
         """
-        canvas_painter = QtGui.QPainter()
-        canvas_painter.begin(self)
-        canvas_painter.drawImage(PyGameEnum.CANVAS_X.value, PyGameEnum.CANVAS_Y.value, self.__image)
-        canvas_painter.end()
+        self.__canvas.begin(self)
+        self.__canvas.draw_chess_board()
+        self.__canvas.end()
 
     def get_ui(self) -> GameWindowUi:
         """
@@ -45,12 +38,5 @@ class GameWindow(QWidget):
         return self.__ui
 
     def update_board_display(self) -> None:
-        self.__board_painter.draw_chess_board()
-
-        canvas = self.__board_painter.get_canvas()
-        width = canvas.get_width()
-        height = canvas.get_height()
-
-        self.__data = canvas.get_buffer().raw
-        self.__image = QtGui.QImage(self.__data, width, height, QtGui.QImage.Format_RGB32)
+        self.__canvas.draw_chess_board()
         self.update()

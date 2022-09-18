@@ -5,11 +5,11 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class Board:
-    __slots__ = ("__board_array", "__current_fen")
+    __slots__ = array(["__board_array", "__fen_string"])
 
     def __init__(self):
         self.__board_array: ndarray[int] = self.__init_starting_board()
-        self.__current_fen: str = BoardEnum.STARTING_POSITION.value
+        self.__fen_string: str = BoardEnum.STARTING_POSITION.value
 
     def get_board_array(self) -> ndarray[int]:
         """
@@ -23,7 +23,7 @@ class Board:
         Gives access to the fen string.
         :return: fen string
         """
-        return self.__current_fen
+        return self.__fen_string
 
     def __init_starting_board(self) -> ndarray[int]:
         """

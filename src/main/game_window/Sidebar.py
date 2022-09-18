@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QWidget, QFrame
+from numpy import array
 
 from game_window.enums.SidebarEnum import SidebarEnum
 
@@ -10,10 +11,11 @@ class Sidebar:
     Class containing whole sidebar and their icons.
     """
 
-    __slots__ = ("__side_bar", "__side_bar_vertical_layout", "__settings_frame", "__settings_horizontal_layout",
-                 "__settings_menu", "__play_frame", "__play_horizontal_layout", "__play_menu", "__analysis_frame",
-                 "__analyze_horizontal_layout", "__analysis_menu", "__profile_frame", "__profile_horizontal_layout",
-                 "__profile_menu", "__players_frame", "__players_horizontal_layout", "__players_menu")
+    __slots__ = array(["__side_bar", "__side_bar_vertical_layout", "__settings_frame", "__settings_horizontal_layout",
+                       "__settings_menu", "__play_frame", "__play_horizontal_layout", "__play_menu", "__analysis_frame",
+                       "__analyze_horizontal_layout", "__analysis_menu", "__profile_frame",
+                       "__profile_horizontal_layout", "__profile_menu", "__players_frame",
+                       "__players_horizontal_layout", "__players_menu"])
 
     def __init__(self, game_window: QWidget):
         self.__side_bar = QtWidgets.QFrame(game_window)

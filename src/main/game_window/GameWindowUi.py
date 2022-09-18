@@ -3,18 +3,19 @@ import ctypes
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QWidget
+from numpy import array
 
-from game_window.enums.GameWindowEnum import GameWindowEnum
 from game_window.Sidebar import Sidebar
+from game_window.enums.GameWindowEnum import GameWindowEnum
 
 
 class GameWindowUi:
     """
-    Class covers whole PyQt5 Ui except PyGame chess board.
+    Class covers whole PyQt5 Ui except chess board.
     """
-    __slots__ = ("__side_bar", "__right_container", "__pgn_table", "__button_frame", "__button_horizontal_layout",
-                 "__user_frame", "__user_icon", "__user_name", "__engine_frame", "__engine_icon", "__engine_name",
-                 "__new_game_button", "__prev_move_button", "__next_move_button", "__analyze_button")
+    __slots__ = array(["__side_bar", "__right_container", "__pgn_table", "__button_frame", "__button_horizontal_layout",
+                       "__user_frame", "__user_icon", "__user_name", "__engine_frame", "__engine_icon", "__engine_name",
+                       "__new_game_button", "__prev_move_button", "__next_move_button", "__analyze_button"])
 
     def __init__(self, game_window: QWidget):
         appid = "mycompany.myproduct.subproduct.version"
