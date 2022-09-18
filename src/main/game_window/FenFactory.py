@@ -20,7 +20,7 @@ class FenFactory:
                 if board[index] == PiecesEnum.NONE.value:
                     none_counter += 1
                     continue
-                else:
+                if none_counter > 0:
                     fen += str(none_counter)
                     none_counter = 0
                 fen += FenFactory.add_proper_piece_to_fen(board, index, color_value)
