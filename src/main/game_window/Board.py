@@ -1,5 +1,7 @@
 from numpy import zeros, ndarray, array
 
+from game_window.BoardInitializer import BoardInitializer
+from game_window.FenFactory import FenFactory
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 
@@ -10,6 +12,10 @@ class Board:
     def __init__(self):
         self.__board_array: ndarray[int] = self.__init_starting_board()
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
+        print(str(self.__board_array))
+        print(self.__fen_string == FenFactory.convert_board_array_to_fen(self.__board_array))
+        print(self.__fen_string)
+        print(FenFactory.convert_board_array_to_fen(self.__board_array))
 
     def get_board_array(self) -> ndarray[int]:
         """
@@ -31,29 +37,20 @@ class Board:
         :return: board int array
         """
         board = zeros(BoardEnum.BOARD_LENGTH.value ** 2)
-        white_pieces = self.__init_pieces_arrays(PiecesEnum.WHITE.value)
+        index = 0
+        white_pieces = BoardInitializer.init_white_pieces_array()
 
-        black_pieces = self.__init_pieces_arrays(PiecesEnum.BLACK.value)
+        black_pieces = BoardInitializer.init_black_pieces_array()
 
-        for index in range(BoardEnum.BOARD_LENGTH.value):
-            board[index] = white_pieces[index]
-
-        for index in range(BoardEnum.BOARD_LENGTH.value):
+        for _ in range(2 * BoardEnum.BOARD_LENGTH.value):
             board[index] = black_pieces[index]
-        return board
+            index += 1
 
-    def __init_pieces_arrays(self, color_value: int) -> ndarray[int]:
-        """
-        Initializes array of pieces on starting position depending on given color value.
-        :param color_value: white or black int value
-        :return: array of starting pieces of given color
-        """
-        piece_array = array([color_value | PiecesEnum.ROOK.value,
-                             color_value | PiecesEnum.KNIGHT.value,
-                             color_value | PiecesEnum.BISHOP.value,
-                             color_value | PiecesEnum.QUEEN.value,
-                             color_value | PiecesEnum.KING.value,
-                             color_value | PiecesEnum.BISHOP.value,
-                             color_value | PiecesEnum.KNIGHT.value,
-                             color_value | PiecesEnum.ROOK.value])
-        return piece_array
+        index += 32
+        j = 15
+
+        for _ in range(2 * BoardEnum.BOARD_LENGTH.value):
+            board[index] = white_pieces[j]
+            j -= 1
+            index += 1
+        return board

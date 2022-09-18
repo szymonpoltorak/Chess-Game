@@ -39,12 +39,12 @@ class Canvas(QPainter):
 
                 current_x += self.__rect_width
 
-                if col == 0:
+                if col == CanvasEnum.FIRST_COLUMN.value:
                     self._draw_character_on_board(current_number, index_x + BoardEnum.NUMBER_SCALE_X.value,
                                                   index_y + BoardEnum.NUMBER_SCALE_Y.value,
                                                   self.get_opposite_color(color))
                     current_number -= 1
-                if row == 7:
+                if row == CanvasEnum.LAST_ROW.value:
                     self._draw_character_on_board(letters[col], index_x + BoardEnum.LETTER_SCALE_X.value,
                                                   index_y + BoardEnum.LETTER_SCALE_Y.value,
                                                   self.get_opposite_color(color))
@@ -152,3 +152,9 @@ class Canvas(QPainter):
         :return: board instance
         """
         return self.__board
+
+    def get_rect_width(self) -> int:
+        return self.__rect_width
+
+    def get_rect_height(self) -> int:
+        return self.__rect_height
