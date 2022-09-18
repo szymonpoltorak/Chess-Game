@@ -1,4 +1,5 @@
-from numpy import ndarray, array
+from numpy import array
+from numpy import ndarray
 
 from game_window.enums.PiecesEnum import PiecesEnum
 

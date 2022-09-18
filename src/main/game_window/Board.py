@@ -1,7 +1,10 @@
-from numpy import zeros, ndarray, array
+from numpy import array
+from numpy import ndarray
+from numpy import zeros
 
 from game_window.BoardInitializer import BoardInitializer
 from game_window.enums.BoardEnum import BoardEnum
+from game_window.FenFactory import FenFactory
 
 
 class Board:
@@ -10,6 +13,7 @@ class Board:
     def __init__(self):
         self.__board_array: ndarray[int] = self.__init_starting_board()
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
+        print(self.__board_array)
 
     def get_board_array(self) -> ndarray[int]:
         """
@@ -48,3 +52,18 @@ class Board:
             j -= 1
             index += 1
         return board
+
+    def delete_piece_from_board(self, row: int, col: int) -> int:
+        board_index = 8 * row + col
+
+        piece = self.__board_array[board_index]
+        self.__board_array[board_index] = 0
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)
+
+        return piece
+
+    def add_piece_to_the_board(self, piece: int, row: int, col: int) -> None:
+        board_index = 8 * row + col
+
+        self.__board_array[board_index] = piece
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)

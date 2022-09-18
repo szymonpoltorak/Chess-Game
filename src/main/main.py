@@ -1,4 +1,5 @@
 import sys
+
 from PyQt5.QtWidgets import QApplication
 
 from game_window.GameWindow import GameWindow

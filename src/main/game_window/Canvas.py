@@ -1,11 +1,17 @@
-from PyQt5.QtCore import QRect, Qt
-from PyQt5.QtGui import QPainter, QColor, QStaticText, QFont, QPixmap
 from numpy import array
+from PyQt5.QtCore import QRect
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QPainter
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QStaticText
 
 from game_window.Board import Board
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.FenFactory import FenFactory
 
 
 class Canvas(QPainter):
@@ -40,14 +46,14 @@ class Canvas(QPainter):
                 current_x += self.__rect_width
 
                 if col == CanvasEnum.FIRST_COLUMN.value:
-                    self._draw_character_on_board(current_number, index_x + BoardEnum.NUMBER_SCALE_X.value,
-                                                  index_y + BoardEnum.NUMBER_SCALE_Y.value,
-                                                  self.get_opposite_color(color))
+                    self.draw_character_on_board(current_number, index_x + BoardEnum.NUMBER_SCALE_X.value,
+                                                 index_y + BoardEnum.NUMBER_SCALE_Y.value,
+                                                 self.get_opposite_color(color))
                     current_number -= 1
                 if row == CanvasEnum.LAST_ROW.value:
-                    self._draw_character_on_board(letters[col], index_x + BoardEnum.LETTER_SCALE_X.value,
-                                                  index_y + BoardEnum.LETTER_SCALE_Y.value,
-                                                  self.get_opposite_color(color))
+                    self.draw_character_on_board(letters[col], index_x + BoardEnum.LETTER_SCALE_X.value,
+                                                 index_y + BoardEnum.LETTER_SCALE_Y.value,
+                                                 self.get_opposite_color(color))
                     index_x = current_x
 
             current_y += self.__rect_height
@@ -55,7 +61,7 @@ class Canvas(QPainter):
             index_y = current_y
         self.__draw_position_from_fen()
 
-    def _draw_character_on_board(self, character, position_x: int, position_y: int, color: str) -> None:
+    def draw_character_on_board(self, character, position_x: int, position_y: int, color: str) -> None:
         """
         Draw characters : number and letters on board edges.
         :param character: characters string which we want to paint on canvas
@@ -145,6 +151,41 @@ class Canvas(QPainter):
             return BoardEnum.SECONDARY_BOARD_COLOR.value
         else:
             return BoardEnum.PRIMARY_BOARD_COLOR.value
+
+    def draw_moving_piece(self, piece: int, mouse_x: int, mouse_y: int):
+        if piece == PiecesEnum.NONE.value:
+            return
+
+        color_value = FenFactory.get_proper_color_value(piece)
+        piece_letter = self.get_piece_letter(piece, color_value)
+        pieces_path = "src/resources/images/pieces/"
+        extension = ".png"
+
+        if color_value == PiecesEnum.WHITE.value:
+            color_letter = "w"
+        else:
+            color_letter = "b"
+
+        print(f"X: {mouse_x} Y: {mouse_y}")
+
+        pixmap = QPixmap(f"{pieces_path}{color_letter}{piece_letter}{extension}")
+        return pixmap
+
+    def get_piece_letter(self, piece: int, piece_color: int):
+        piece_value = piece - piece_color
+
+        if piece_value == PiecesEnum.PAWN.value:
+            return "P"
+        elif piece_value == PiecesEnum.KING.value:
+            return "K"
+        elif piece_value == PiecesEnum.KNIGHT.value:
+            return "N"
+        elif piece_value == PiecesEnum.QUEEN.value:
+            return "Q"
+        elif piece_value == PiecesEnum.BISHOP.value:
+            return "B"
+        elif piece_value == PiecesEnum.ROOK.value:
+            return "R"
 
     def get_board(self) -> Board:
         """

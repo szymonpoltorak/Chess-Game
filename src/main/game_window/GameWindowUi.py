@@ -1,12 +1,14 @@
 import ctypes
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from numpy import array
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QWidget
-from numpy import array
 
-from game_window.Sidebar import Sidebar
 from game_window.enums.GameWindowEnum import GameWindowEnum
+from game_window.Sidebar import Sidebar
 
 
 class GameWindowUi:
