@@ -10,7 +10,9 @@ from PyQt5.QtGui import QStaticText
 from game_window.Board import Board
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.CanvasEnum import CanvasEnum
+from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.Move import Move
 
 
 class Canvas(QPainter):
@@ -25,7 +27,7 @@ class Canvas(QPainter):
         self.__rect_width = int(CanvasEnum.CANVAS_WIDTH.value / 8)
         self.__rect_height = int(CanvasEnum.CANVAS_HEIGHT.value / 8)
 
-    def draw_chess_board(self) -> None:
+    def draw_chess_board(self, move: Move) -> None:
         """
         Method draws a whole chess board on canvas.
         :return: None
@@ -43,8 +45,14 @@ class Canvas(QPainter):
                 color = self.pick_proper_color(row, col)
                 rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
 
-                self.fillRect(rectangle, QColor(color))
-
+                if move.get_start_square() == move.get_end_square():
+                    self.fillRect(rectangle, QColor(color))
+                elif move.get_start_square() == (row, col):
+                    self.fillRect(rectangle, QColor(MoveEnum.START_SQUARE_COLOR.value))
+                elif move.get_end_square() == (row, col):
+                    self.fillRect(rectangle, QColor(MoveEnum.END_SQUARE_COLOR.value))
+                else:
+                    self.fillRect(rectangle, QColor(color))
                 current_x += self.__rect_width
 
                 if col == CanvasEnum.FIRST_COLUMN.value:

@@ -6,19 +6,21 @@ from PyQt5.QtWidgets import QWidget
 from game_window.Canvas import Canvas
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.GameWindowUi import GameWindowUi
+from game_window.Move import Move
 
 
 class GameWindow(QWidget):
     """
     Covers play game window.
     """
-    __slots__ = array(["__ui", "__canvas", "__moving_piece"])
+    __slots__ = array(["__ui", "__canvas", "__moving_piece", "__move_controller"])
 
     def __init__(self):
         super(GameWindow, self).__init__()
 
         self.__canvas = Canvas()
         self.__moving_piece = None
+        self.__move_controller = Move()
 
         with open("src/resources/styles/GameWindow.min.css", "r", encoding="utf-8") as style:
             self.__ui = GameWindowUi(self)
@@ -31,7 +33,7 @@ class GameWindow(QWidget):
         :return: None
         """
         self.__canvas.begin(self)
-        self.__canvas.draw_chess_board()
+        self.__canvas.draw_chess_board(self.__move_controller)
         self.__canvas.end()
 
     def get_ui(self) -> GameWindowUi:
@@ -47,7 +49,6 @@ class GameWindow(QWidget):
         :param mouse_press_event: event of mouse pressed on QWidget
         :return: 
         """
-
         if mouse_press_event.button() != Qt.LeftButton:
             return
 
@@ -63,6 +64,7 @@ class GameWindow(QWidget):
         row = (current_position_y / self.__canvas.get_rect_height()).__floor__()
 
         self.__moving_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
+        self.__move_controller.set_start_square(row, col)
         self.update()
 
     def mouseReleaseEvent(self, mouse_release_event) -> None:
@@ -71,7 +73,6 @@ class GameWindow(QWidget):
         :param mouse_release_event: event of mouse released on QWidget
         :return: None
         """
-
         if mouse_release_event.button() != Qt.LeftButton:
             return
 
@@ -93,6 +94,7 @@ class GameWindow(QWidget):
             playsound("src/resources/sounds/Move.mp3")
         else:
             playsound("src/resources/sounds/Capture.mp3")
+        self.__move_controller.set_end_square(row, col)
         self.update()
 
     def update_board_display(self) -> None:
@@ -100,5 +102,5 @@ class GameWindow(QWidget):
         Method used to update the chess board canvas.
         :return: None
         """
-        self.__canvas.draw_chess_board()
+        self.__canvas.draw_chess_board(self.__move_controller)
         self.update()
