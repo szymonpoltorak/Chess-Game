@@ -1,6 +1,10 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
+from numpy import array
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QWidget, QFrame
+from PyQt5.QtWidgets import QFrame
+from PyQt5.QtWidgets import QWidget
 
 from game_window.enums.SidebarEnum import SidebarEnum
 
@@ -10,10 +14,11 @@ class Sidebar:
     Class containing whole sidebar and their icons.
     """
 
-    __slots__ = ("__side_bar", "__side_bar_vertical_layout", "__settings_frame", "__settings_horizontal_layout",
-                 "__settings_menu", "__play_frame", "__play_horizontal_layout", "__play_menu", "__analysis_frame",
-                 "__analyze_horizontal_layout", "__analysis_menu", "__profile_frame", "__profile_horizontal_layout",
-                 "__profile_menu", "__players_frame", "__players_horizontal_layout", "__players_menu")
+    __slots__ = array(["__side_bar", "__side_bar_vertical_layout", "__settings_frame", "__settings_horizontal_layout",
+                       "__settings_menu", "__play_frame", "__play_horizontal_layout", "__play_menu", "__analysis_frame",
+                       "__analyze_horizontal_layout", "__analysis_menu", "__profile_frame",
+                       "__profile_horizontal_layout", "__profile_menu", "__players_frame",
+                       "__players_horizontal_layout", "__players_menu"])
 
     def __init__(self, game_window: QWidget):
         self.__side_bar = QtWidgets.QFrame(game_window)
@@ -39,7 +44,7 @@ class Sidebar:
     def __init_settings(self):
         """
         Initializes settings menu option and its icon.
-        :return: void
+        :return: None
         """
         self.__settings_frame = QtWidgets.QFrame(self.__side_bar)
         self.__frame_menu_first_setup(self.__settings_frame)
@@ -62,7 +67,7 @@ class Sidebar:
     def __init_play(self):
         """
         Initializes play menu option and its icon.
-        :return: void
+        :return: None
         """
         self.__play_frame = QtWidgets.QFrame(self.__side_bar)
         size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
@@ -91,7 +96,7 @@ class Sidebar:
     def __init_analysis(self):
         """
         Initializes analysis menu option and its icon.
-        :return: void
+        :return: None
         """
         self.__analysis_frame = QtWidgets.QFrame(self.__side_bar)
         self.__frame_menu_first_setup(self.__analysis_frame)
@@ -114,7 +119,7 @@ class Sidebar:
     def __init_profile(self):
         """
         Initializes profile menu option and its icon.
-        :return: void
+        :return: None
         """
         self.__profile_frame = QtWidgets.QFrame(self.__side_bar)
         self.__frame_menu_first_setup(self.__profile_frame)
@@ -137,7 +142,7 @@ class Sidebar:
     def __init_players(self):
         """
         Initializes players menu option and its icon.
-        :return: void
+        :return: None
         """
         self.__players_frame = QtWidgets.QFrame(self.__side_bar)
         self.__frame_menu_first_setup(self.__players_frame)
@@ -153,7 +158,7 @@ class Sidebar:
         self.__players_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/players.svg"))
         self.__players_menu.setScaledContents(True)
         self.__players_menu.setObjectName("__players_menu")
-        self.__players_menu.setToolTip("Player List")
+        self.__players_menu.setToolTip("Player array")
         self.__players_horizontal_layout.addWidget(self.__players_menu)
         self.__side_bar_vertical_layout.addWidget(self.__players_frame)
 

@@ -1,17 +1,17 @@
 import sys
-import pygame
+
 from PyQt5.QtWidgets import QApplication
 
-from game_window.enums.PyGameEnum import PyGameEnum
 from game_window.GameWindow import GameWindow
 
 
-if __name__ == '__main__':
-    pygame.init()
-    canvas = pygame.Surface((PyGameEnum.SURFACE_WIDTH.value, PyGameEnum.SURFACE_HEIGHT.value))
-
+def main():
     app = QApplication(sys.argv)
-    window = GameWindow(canvas)
+    window = GameWindow()
     window.show()
 
     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()

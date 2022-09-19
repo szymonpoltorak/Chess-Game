@@ -1,6 +1,9 @@
 import ctypes
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from numpy import array
+from PyQt5 import QtCore
+from PyQt5 import QtGui
+from PyQt5 import QtWidgets
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QWidget
 
@@ -10,11 +13,11 @@ from game_window.Sidebar import Sidebar
 
 class GameWindowUi:
     """
-    Class covers whole PyQt5 Ui except PyGame chess board.
+    Class covers whole PyQt5 Ui except chess board.
     """
-    __slots__ = ("__side_bar", "__right_container", "__pgn_table", "__button_frame", "__button_horizontal_layout",
-                 "__user_frame", "__user_icon", "__user_name", "__engine_frame", "__engine_icon", "__engine_name",
-                 "__new_game_button", "__prev_move_button", "__next_move_button", "__analyze_button")
+    __slots__ = array(["__side_bar", "__right_container", "__pgn_table", "__button_frame", "__button_horizontal_layout",
+                       "__user_frame", "__user_icon", "__user_name", "__engine_frame", "__engine_icon", "__engine_name",
+                       "__new_game_button", "__prev_move_button", "__next_move_button", "__analyze_button"])
 
     def __init__(self, game_window: QWidget):
         appid = "mycompany.myproduct.subproduct.version"
@@ -53,11 +56,11 @@ class GameWindowUi:
         self.__retranslate_ui(game_window)
         QtCore.QMetaObject.connectSlotsByName(game_window)
 
-    def __init_players_profile(self, game_window: QWidget):
+    def __init_players_profile(self, game_window: QWidget) -> None:
         """
         Initializes user and engine labels with their names and their icons.
         :param game_window:
-        :return: void
+        :return: None
         """
         self.__user_frame = QtWidgets.QFrame(game_window)
         self.__user_frame.setGeometry(QtCore.QRect(GameWindowEnum.USER_FRAME_X.value,
@@ -109,10 +112,10 @@ class GameWindowUi:
                                                     GameWindowEnum.ENGINE_NAME_HEIGHT.value))
         self.__engine_name.setObjectName("__engine_name")
 
-    def __init_buttons(self):
+    def __init_buttons(self) -> None:
         """
         Initializes buttons on the right frame of window.
-        :return: void
+        :return: None
         """
         self.__button_frame = QtWidgets.QFrame(self.__right_container)
         self.__button_frame.setGeometry(QtCore.QRect(GameWindowEnum.BUTTON_FRAME_A_LEFT.value,
@@ -157,11 +160,11 @@ class GameWindowUi:
         self.__analyze_button.setObjectName("__analyze_button")
         self.__button_horizontal_layout.addWidget(self.__analyze_button)
 
-    def __retranslate_ui(self, game_window: QWidget):
+    def __retranslate_ui(self, game_window: QWidget) -> None:
         """
-        Void method to retranslate ui elements.
+        None method to retranslate ui elements.
         :param game_window: QtWidget instance
-        :return: void
+        :return: None
         """
         _translate = QtCore.QCoreApplication.translate
         game_window.setWindowTitle(_translate("game_window", "Chess Engine"))
@@ -172,7 +175,7 @@ class GameWindowUi:
         self.__user_name.setText(_translate("game_window", "User"))
         self.__engine_name.setText(_translate("game_window", "Engine"))
 
-    def get_sidebar(self):
+    def get_sidebar(self) -> Sidebar:
         """
         Method returns private SideBar instance.
         :return: SideBar field
