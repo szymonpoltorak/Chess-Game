@@ -14,6 +14,9 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class Canvas(QPainter):
+    """
+    Class which manages painting board and pieces.
+    """
     __slots__ = array(["__board", "__rect_width", "__rect_height"])
 
     def __init__(self):
@@ -159,7 +162,15 @@ class Canvas(QPainter):
         return self.__board
 
     def get_rect_width(self) -> int:
+        """
+        Gives access to single board rectangle width
+        :return: int value of rectangle width
+        """
         return self.__rect_width
 
     def get_rect_height(self) -> int:
+        """
+        Gives access to single board rectangle height
+        :return: int value of rectangle height
+        """
         return self.__rect_height

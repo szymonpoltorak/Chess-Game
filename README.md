@@ -8,9 +8,13 @@ scene for party analysis, user profile, login screen, players list, settings and
 * Python 3.10,
 * Sass,
 * Css,
+* playsound 1.2.2,
 * NumPy.
 
 ## Credits to Authors
+I am not the author of those graphics and sounds and I do not claim the right of ownership over them. I use them just in
+educational purposes.
+
 **Chess Icon**
 * [Source](https://www.flaticon.com/free-icon/horse_3637390?term=chess&page=1&position=35&page=1&position=35&related_id=3637390&origin=tag),
 * [Author](https://www.flaticon.com/authors/freepik),
@@ -39,3 +43,6 @@ scene for party analysis, user profile, login screen, players list, settings and
 
 **Chess Pieces**
 * [Source](https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces),
+
+**Chess Sound**
+* [Source](https://github.com/lichess-org/lila/tree/38bfadac3e319516341771086e8edc594d4d4b07).

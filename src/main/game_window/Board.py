@@ -8,6 +8,9 @@ from game_window.FenFactory import FenFactory
 
 
 class Board:
+    """
+    Class to hold and manage board representation.
+    """
     __slots__ = array(["__board_array", "__fen_string"])
 
     def __init__(self):
@@ -54,7 +57,13 @@ class Board:
         return board
 
     def delete_piece_from_board(self, row: int, col: int) -> int:
-        board_index = 8 * row + col
+        """
+        Deletes piece from board and updates fen string.
+        :param row: row int index
+        :param col: col int index
+        :return: deleted piece value
+        """
+        board_index = BoardEnum.BOARD_LENGTH.value * row + col
 
         piece = self.__board_array[board_index]
         self.__board_array[board_index] = 0
@@ -63,7 +72,14 @@ class Board:
         return piece
 
     def add_piece_to_the_board(self, piece: int, row: int, col: int) -> None:
-        board_index = 8 * row + col
+        """
+        Adds piece to board array and updates fen string.
+        :param piece: int value of piece
+        :param row: int row index
+        :param col: int col index
+        :return: None
+        """
+        board_index = BoardEnum.BOARD_LENGTH.value * row + col
 
         self.__board_array[board_index] = piece
         self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)

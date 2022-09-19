@@ -5,8 +5,16 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class FenFactory:
+    """
+    Class containing methods to manage fen creation.
+    """
     @staticmethod
     def convert_board_array_to_fen(board: ndarray[int]) -> str:
+        """
+        Method converts int array into fen string
+        :param board: board int array
+        :return: fen string
+        """
         fen = ""
         current_element = 0
 
@@ -23,7 +31,7 @@ class FenFactory:
                 if none_counter > 0:
                     fen += str(none_counter)
                     none_counter = 0
-                fen += FenFactory.add_proper_piece_to_fen(board, index, color_value)
+                fen += FenFactory.get_proper_piece_for_fen(board, index, color_value)
             if none_counter > 0:
                 fen += str(none_counter)
             if row != 7:
@@ -35,6 +43,11 @@ class FenFactory:
 
     @staticmethod
     def get_proper_color_value(piece_value: int) -> int:
+        """
+        Gives proper color value based on piece value.
+        :param piece_value: int piece value
+        :return: piece color value
+        """
         white = PiecesEnum.WHITE.value
         black = PiecesEnum.BLACK.value
 
@@ -44,12 +57,25 @@ class FenFactory:
 
     @staticmethod
     def get_proper_fen_character(color_value: int, letter: str):
+        """
+        Returns proper fen characters based on color value.
+        :param color_value: int value of piece color
+        :param letter: str representation of piece
+        :return: proper fen str letter
+        """
         if color_value == PiecesEnum.WHITE.value:
             return letter.upper()
         return letter
 
     @staticmethod
-    def add_proper_piece_to_fen(board: ndarray[int], index: int, color_value: int) -> str:
+    def get_proper_piece_for_fen(board: ndarray[int], index: int, color_value: int) -> str:
+        """
+        Gets proper fen letter for board int array.
+        :param board: int array of board
+        :param index: index of current position in board
+        :param color_value: int value of color
+        :return: proper str letter
+        """
         if board[index] == color_value | PiecesEnum.PAWN.value:
             return FenFactory.get_proper_fen_character(color_value, "p")
         elif board[index] == color_value | PiecesEnum.KING.value:
