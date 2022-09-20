@@ -58,12 +58,12 @@ class Canvas(QPainter):
                 if col == CanvasEnum.FIRST_COLUMN.value:
                     self.draw_character_on_board(current_number, index_x + BoardEnum.NUMBER_SCALE_X.value,
                                                  index_y + BoardEnum.NUMBER_SCALE_Y.value,
-                                                 self.get_opposite_color(color))
+                                                 self.get_opposite_square_color(color))
                     current_number -= 1
                 if row == CanvasEnum.LAST_ROW.value:
                     self.draw_character_on_board(letters[col], index_x + BoardEnum.LETTER_SCALE_X.value,
                                                  index_y + BoardEnum.LETTER_SCALE_Y.value,
-                                                 self.get_opposite_color(color))
+                                                 self.get_opposite_square_color(color))
                     index_x = current_x
 
             current_y += self.__rect_height
@@ -151,7 +151,7 @@ class Canvas(QPainter):
         else:
             return BoardEnum.SECONDARY_BOARD_COLOR.value
 
-    def get_opposite_color(self, color: str) -> str:
+    def get_opposite_square_color(self, color: str) -> str:
         """
         Returns opposite color of given one.
         :param color: given color string of which we want to have opposite one
