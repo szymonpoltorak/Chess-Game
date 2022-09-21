@@ -9,6 +9,8 @@ class BoardEnum(Enum):
     SECONDARY_BOARD_COLOR: str = "#A97A65"
 
     BOARD_LENGTH: int = 8
+    BOARD_SIZE: int = 64
+    NUMBER_OF_DIRECTIONS: int = 8
     CHARACTER_SIZE: int = 22
 
     NUMBER_SCALE_X: int = 8
