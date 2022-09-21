@@ -72,7 +72,7 @@ class GameWindow(QWidget):
         """
         row, col = self.__start_mouse_events(mouse_press_event)
 
-        if not self.__canvas.get_board().should_this_piece_move(row, col) or row is None or col is None:
+        if row is None or col is None or not self.__canvas.get_board().should_this_piece_move(row, col):
             self.__current_move.set_start_square(None, None)
             return
 
