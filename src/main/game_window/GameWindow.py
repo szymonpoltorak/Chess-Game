@@ -6,9 +6,11 @@ from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import QWidget
 
 from game_window.Canvas import Canvas
+from game_window.ColorManager import ColorManager
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
+from game_window.MoveValidator import MoveValidator
 
 
 class GameWindow(QWidget):
@@ -45,32 +47,37 @@ class GameWindow(QWidget):
         """
         return self.__ui
 
+    def __start_mouse_events(self, mouse_event):
+        if mouse_event.button() != Qt.LeftButton:
+            return None, None
+
+        canvas_width = CanvasEnum.CANVAS_WIDTH.value
+        canvas_height = CanvasEnum.CANVAS_HEIGHT.value
+        current_position_x = mouse_event.x() - CanvasEnum.CANVAS_X.value
+        current_position_y = mouse_event.y() - CanvasEnum.CANVAS_Y.value
+
+        if current_position_x < 0 or current_position_x > canvas_width or current_position_y < 0 or current_position_y > canvas_height:
+            return None, None
+
+        col = (current_position_x / self.__canvas.get_rect_width()).__floor__()
+        row = (current_position_y / self.__canvas.get_rect_height()).__floor__()
+
+        return row, col
+
     def mousePressEvent(self, mouse_press_event: QMouseEvent) -> None:
         """
         Override method which is used while user pressed mouse on QWidget.
         :param mouse_press_event: event of mouse pressed on QWidget
         :return: 
         """
-        if mouse_press_event.button() != Qt.LeftButton:
-            return
+        row, col = self.__start_mouse_events(mouse_press_event)
 
-        canvas_width = CanvasEnum.CANVAS_WIDTH.value
-        canvas_height = CanvasEnum.CANVAS_HEIGHT.value
-        current_position_x = mouse_press_event.x() - CanvasEnum.CANVAS_X.value
-        current_position_y = mouse_press_event.y() - CanvasEnum.CANVAS_Y.value
-
-        if current_position_x < 0 or current_position_x > canvas_width or current_position_y < 0 or current_position_y > canvas_height:
-            return
-
-        col = (current_position_x / self.__canvas.get_rect_width()).__floor__()
-        row = (current_position_y / self.__canvas.get_rect_height()).__floor__()
-
-        if not self.__canvas.get_board().should_this_piece_move(row, col):
+        if not self.__canvas.get_board().should_this_piece_move(row, col) or row is None or col is None:
             self.__current_move.set_start_square(None, None)
             return
 
         self.__moving_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
-        piece_value = self.__moving_piece - self.__canvas.get_board().get_piece_color(self.__moving_piece)
+        piece_value = self.__moving_piece - ColorManager.get_piece_color(self.__moving_piece)
 
         self.__current_move.set_start_square(row, col)
         self.__current_move.set_moving_piece(piece_value)
@@ -84,34 +91,16 @@ class GameWindow(QWidget):
         :param mouse_release_event: event of mouse released on QWidget
         :return: None
         """
-        if mouse_release_event.button() != Qt.LeftButton:
+
+        row, col = self.__start_mouse_events(mouse_release_event)
+
+        if self.__current_move.get_start_square() is None or row is None or col is None:
+            self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
             return
 
-        canvas_width = CanvasEnum.CANVAS_WIDTH.value
-        canvas_height = CanvasEnum.CANVAS_HEIGHT.value
-        current_position_x = mouse_release_event.x() - CanvasEnum.CANVAS_X.value
-        current_position_y = mouse_release_event.y() - CanvasEnum.CANVAS_Y.value
-
-        if current_position_x < 0 or current_position_x > canvas_width or current_position_y < 0 or current_position_y > canvas_height:
-            return
-
-        col = (current_position_x / self.__canvas.get_rect_width()).__floor__()
-        row = (current_position_y / self.__canvas.get_rect_height()).__floor__()
         self.__current_move.set_end_square(row, col)
 
-        if self.__current_move.get_start_square() is None:
-            self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
-            return
-
-        if not self.__canvas.get_board().is_it_legal_move(self.__current_move):
-            self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, self.__current_move.get_start_square())
-            self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
-            self.__current_move.set_start_square(None, None)
-            self.__current_move.set_end_square(None, None)
-            self.update()
-            return
-
-        if self.__current_move.get_start_square() == self.__current_move.get_end_square():
+        if not self.__canvas.get_board().is_it_legal_move(self.__current_move) or self.__current_move.get_start_square() == self.__current_move.get_end_square():
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, self.__current_move.get_start_square())
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
             self.__current_move.set_start_square(None, None)
@@ -130,8 +119,8 @@ class GameWindow(QWidget):
 
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__canvas.get_board().set_opposite_move_color()
-        list_move = self.__canvas.get_board().generate_legal_moves(self.__canvas.get_board().get_opposite_piece_color(
-                                                       self.__canvas.get_board().get_piece_color(self.__moving_piece)))
+        list_move = MoveValidator.generate_legal_moves(ColorManager.get_opposite_piece_color(
+                                        ColorManager.get_piece_color(self.__moving_piece)), self.__canvas.get_board())
         self.__canvas.get_board().set_legal_moves(list_move)
         self.update()
 

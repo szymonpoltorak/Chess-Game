@@ -8,6 +8,7 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QStaticText
 
 from game_window.Board import Board
+from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
@@ -42,7 +43,7 @@ class Canvas(QPainter):
 
         for row in range(BoardEnum.BOARD_LENGTH.value):
             for col in range(BoardEnum.BOARD_LENGTH.value):
-                color = self.pick_proper_color(row, col)
+                color = ColorManager.pick_proper_color(row, col)
                 rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
                 current_square = BoardEnum.BOARD_LENGTH.value * row + col
 
@@ -59,12 +60,12 @@ class Canvas(QPainter):
                 if col == CanvasEnum.FIRST_COLUMN.value:
                     self.draw_character_on_board(current_number, index_x + BoardEnum.NUMBER_SCALE_X.value,
                                                  index_y + BoardEnum.NUMBER_SCALE_Y.value,
-                                                 self.get_opposite_square_color(color))
+                                                 ColorManager.get_opposite_square_color(color))
                     current_number -= 1
                 if row == CanvasEnum.LAST_ROW.value:
                     self.draw_character_on_board(letters[col], index_x + BoardEnum.LETTER_SCALE_X.value,
                                                  index_y + BoardEnum.LETTER_SCALE_Y.value,
-                                                 self.get_opposite_square_color(color))
+                                                 ColorManager.get_opposite_square_color(color))
                     index_x = current_x
 
             current_y += self.__rect_height
@@ -137,31 +138,6 @@ class Canvas(QPainter):
             current_x += self.__rect_width
 
             return current_x
-
-    def pick_proper_color(self, row: int, col: int) -> str:
-        """
-        Method chooses proper color for square on a chess board based on row and col index.
-        :param row: current row on chess board
-        :param col: current column on chess board
-        :return: string value of a color
-        """
-        is_light_color = (row + col) % 2 == 0
-
-        if is_light_color:
-            return BoardEnum.PRIMARY_BOARD_COLOR.value
-        else:
-            return BoardEnum.SECONDARY_BOARD_COLOR.value
-
-    def get_opposite_square_color(self, color: str) -> str:
-        """
-        Returns opposite color of given one.
-        :param color: given color string of which we want to have opposite one
-        :return: opposite color string
-        """
-        if color == BoardEnum.PRIMARY_BOARD_COLOR.value:
-            return BoardEnum.SECONDARY_BOARD_COLOR.value
-        else:
-            return BoardEnum.PRIMARY_BOARD_COLOR.value
 
     def get_board(self) -> Board:
         """
