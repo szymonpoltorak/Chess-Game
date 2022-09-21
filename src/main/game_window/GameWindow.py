@@ -47,7 +47,12 @@ class GameWindow(QWidget):
         """
         return self.__ui
 
-    def __start_mouse_events(self, mouse_event):
+    def __start_mouse_events(self, mouse_event: QMouseEvent):
+        """
+        Prepares row and col indexes for mouse press and release events
+        :param mouse_event: QMouseEvent
+        :return: row and col indexes if everything is good or None, None
+        """
         if mouse_event.button() != Qt.LeftButton:
             return None, None
 
@@ -91,7 +96,6 @@ class GameWindow(QWidget):
         :param mouse_release_event: event of mouse released on QWidget
         :return: None
         """
-
         row, col = self.__start_mouse_events(mouse_release_event)
 
         if self.__current_move.get_start_square() is None or row is None or col is None:

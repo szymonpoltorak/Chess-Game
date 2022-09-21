@@ -52,9 +52,18 @@ class Move:
         return self.__end_square
 
     def get_moving_piece(self) -> int:
+        """
+        Gives access to moving piece value
+        :return: int piece value
+        """
         return self.__piece
 
     def set_moving_piece(self, piece: int) -> None:
+        """
+        Method used to set moving piece.
+        :param piece: int value of moving piece
+        :return: None
+        """
         self.__piece = piece
 
     def __eq__(self, other):

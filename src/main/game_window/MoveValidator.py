@@ -12,6 +12,10 @@ from game_window.Move import Move
 class MoveValidator:
     @staticmethod
     def calculate_distance_to_borders() -> ndarray[int]:
+        """
+        Calculates array of distances of each square in every direction to board borders.
+        :return: ndarray of distances
+        """
         distances = zeros((BoardEnum.BOARD_SIZE.value, BoardEnum.BOARD_LENGTH.value), dtype=int32)
 
         for row in range(BoardEnum.BOARD_LENGTH.value):
@@ -40,6 +44,12 @@ class MoveValidator:
 
     @staticmethod
     def generate_legal_moves(color_to_move: int, board) -> list[Move]:
+        """
+        Static method used  to generate legal moves for pieces of given color
+        :param color_to_move: int value of color to be moved
+        :param board: Board instance == representation of board
+        :return: list of all legal moves
+        """
         moves = []
 
         for square in range(BoardEnum.BOARD_SIZE.value):
@@ -55,10 +65,24 @@ class MoveValidator:
 
     @staticmethod
     def is_sliding_piece(piece: int) -> bool:
+        """
+        Static method used to check if piece is a sliding piece.
+        :param piece: int value of piece
+        :return: bool value of if piece is sliding piece or not
+        """
         return piece in (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value, PiecesEnum.ROOK.value)
 
     @staticmethod
     def generate_sliding_piece_move(piece: int, start_square: int, moves: list[Move], color: int, board) -> list[Move]:
+        """
+        Static method used to generate moves for sliding pieces
+        :param piece: int value of piece
+        :param start_square: int index of current square
+        :param moves: list of moves
+        :param color: int value of color
+        :param board: Board instance
+        :return: list of moves for sliding pieces
+        """
         for direction in range(MoveEnum.SLIDING_DIRECTIONS.value):
             for direction_step in range(board.get_distances()[start_square][direction]):
                 if not MoveValidator.should_this_move_be_calculated(piece, MoveEnum.DIRECTIONS.value[direction]):
@@ -76,6 +100,12 @@ class MoveValidator:
 
     @staticmethod
     def should_this_move_be_calculated(piece: int, direction: int) -> bool:
+        """
+        Static method used to check if this move should be calculated
+        :param piece: int value of piece
+        :param direction: int value of direction
+        :return: bool value of if move should be calculated or not
+        """
         diagonal_pieces = (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value)
         diagonal_directions = (MoveEnum.TOP_LEFT.value, MoveEnum.TOP_RIGHT.value, MoveEnum.BOTTOM_LEFT.value,
                                MoveEnum.BOTTOM_RIGHT.value)

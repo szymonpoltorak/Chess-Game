@@ -5,6 +5,11 @@ from game_window.enums.PiecesEnum import PiecesEnum
 class ColorManager:
     @staticmethod
     def get_piece_color(piece: int) -> int:
+        """
+        Static method used to calculate the current piece color
+        :param piece: int value of piece with color
+        :return: int value of color
+        """
         if piece == PiecesEnum.NONE.value:
             return PiecesEnum.NONE.value
         elif piece - PiecesEnum.BLACK.value < 0:
@@ -13,6 +18,11 @@ class ColorManager:
 
     @staticmethod
     def get_opposite_piece_color(color: int) -> int:
+        """
+        Static method used to get opposite color value of given
+        :param color: int value of color
+        :return: int value of opposite color
+        """
         if color == PiecesEnum.BLACK.value:
             return PiecesEnum.WHITE.value
         return PiecesEnum.BLACK.value
@@ -20,7 +30,7 @@ class ColorManager:
     @staticmethod
     def pick_proper_color(row: int, col: int) -> str:
         """
-        Method chooses proper color for square on a chess board based on row and col index.
+        Static method chooses proper color for square on a chess board based on row and col index.
         :param row: current row on chess board
         :param col: current column on chess board
         :return: string value of a color
