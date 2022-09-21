@@ -16,7 +16,11 @@ class Move:
         :param col: int col index of square
         :return: None
         """
-        self.__start_square = (row, col)
+        if row is None or col is None:
+            self.__start_square = None
+            return
+        start_square = 8 * row + col
+        self.__start_square = start_square
 
     def set_end_square(self, row: int or None, col: int or None) -> None:
         """
@@ -25,19 +29,23 @@ class Move:
         :param col: int col index of square
         :return: None
         """
-        self.__end_square = (row, col)
+        if row is None or col is None:
+            self.__end_square = None
+            return
+        end_square = 8 * row + col
+        self.__end_square = end_square
 
-    def get_start_square(self) -> tuple[int, int]:
+    def get_start_square(self) -> int:
         """
         Gives access to tuple with start move square coordinates
-        :return: tuple with (row, col) indexes
+        :return: int start index of piece on board
         """
         return self.__start_square
 
-    def get_end_square(self) -> tuple[int, int]:
+    def get_end_square(self) -> int:
         """
         Gives access to tuple with end move square coordinates
-        :return: tuple with (row, col) indexes
+        :return: int end index of piece on board
         """
         return self.__end_square
 

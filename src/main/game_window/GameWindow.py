@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import QWidget
 
 from game_window.Canvas import Canvas
 from game_window.enums.CanvasEnum import CanvasEnum
+from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
 
@@ -64,15 +65,18 @@ class GameWindow(QWidget):
 
         col = (current_position_x / self.__canvas.get_rect_width()).__floor__()
         row = (current_position_y / self.__canvas.get_rect_height()).__floor__()
+        #print(self.__canvas.get_board().get_color_to_move())
 
         if not self.__canvas.get_board().should_this_piece_move(row, col):
             self.__current_move.set_start_square(None, None)
+            print("I AM HERE!")
             return
 
         self.__moving_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
+        piece_value = self.__moving_piece - self.__canvas.get_board().get_piece_color(self.__moving_piece)
 
         self.__current_move.set_start_square(row, col)
-        self.__current_move.set_moving_piece(self.__moving_piece)
+        self.__current_move.set_moving_piece(piece_value)
 
         self.setCursor(QCursor(Qt.PointingHandCursor))
         self.update()
@@ -98,19 +102,25 @@ class GameWindow(QWidget):
         row = (current_position_y / self.__canvas.get_rect_height()).__floor__()
         self.__current_move.set_end_square(row, col)
 
-        if self.__current_move.get_start_square() == self.__current_move.get_end_square():
-            x, y = self.__current_move.get_start_square()
-            self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, x, y)
+        if self.__current_move.get_start_square() is None:
+            self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
+            return
+
+        if not self.__canvas.get_board().is_it_legal_move(self.__current_move) and self.__canvas.get_board().get_piece_color(self.__moving_piece) == PiecesEnum.WHITE.value:
+            self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, self.__current_move.get_start_square())
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
             self.update()
             return
 
-        if self.__current_move.get_start_square() == (None, None):
+        if self.__current_move.get_start_square() == self.__current_move.get_end_square():
+            self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, self.__current_move.get_start_square())
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
+            self.update()
             return
 
         deleted_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
-        self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, row, col)
+        final_piece_index = 8 * row + col
+        self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)
 
         if deleted_piece == 0:
             playsound("src/resources/sounds/Move.mp3")

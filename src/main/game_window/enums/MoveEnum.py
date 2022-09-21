@@ -19,4 +19,4 @@ class MoveEnum(Enum):
     ROOK_END_INDEX: int = 4
     PIECE_END_INDEX: int = 8
 
-    DIRECTIONS: tuple[int] = (BOTTOM, TOP, LEFT, RIGHT, BOTTOM_LEFT, TOP_LEFT, BOTTOM_RIGHT, TOP_RIGHT)
+    DIRECTIONS: tuple[int] = (-9, -8, -7, -1, 1, 7, 8, 9)

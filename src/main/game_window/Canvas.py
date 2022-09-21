@@ -44,12 +44,13 @@ class Canvas(QPainter):
             for col in range(BoardEnum.BOARD_LENGTH.value):
                 color = self.pick_proper_color(row, col)
                 rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
+                current_square = 8 * row + col
 
                 if move.get_start_square() == move.get_end_square():
                     self.fillRect(rectangle, QColor(color))
-                elif move.get_start_square() == (row, col):
+                elif move.get_start_square() == current_square:
                     self.fillRect(rectangle, QColor(MoveEnum.START_SQUARE_COLOR.value))
-                elif move.get_end_square() == (row, col):
+                elif move.get_end_square() == current_square:
                     self.fillRect(rectangle, QColor(MoveEnum.END_SQUARE_COLOR.value))
                 else:
                     self.fillRect(rectangle, QColor(color))

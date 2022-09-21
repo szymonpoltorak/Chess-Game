@@ -18,6 +18,4 @@ class BoardEnum(Enum):
     LETTER_SCALE_X: int = 70
     LETTER_SCALE_Y: int = 70
 
-    TWO_DIMENSION: int = 2
-
     STARTING_POSITION: str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
