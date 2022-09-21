@@ -15,14 +15,14 @@ class Board:
     """
     Class to hold and manage board representation.
     """
-    __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__valid_moves", "__distances_to_borders"])
+    __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders"])
 
     def __init__(self):
         self.__board_array: ndarray[int] = self.__init_starting_board()
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__color_to_move: int = PiecesEnum.WHITE.value
         self.__distances_to_borders: ndarray[int] = self.calculate_distance_to_borders()
-        self.__valid_moves: list[Move] = self.generate_legal_moves(PiecesEnum.WHITE.value)
+        self.__legal_moves: list[Move] = self.generate_legal_moves(PiecesEnum.WHITE.value)
 
     def generate_legal_moves(self, color_to_move: int) -> list[Move]:
         moves = []
@@ -42,8 +42,8 @@ class Board:
     def is_sliding_piece(self, piece: int) -> bool:
         return piece in (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value, PiecesEnum.ROOK.value)
 
-    def generate_sliding_piece_move(self, piece: int, start_square: int, moves: list[Move], color: int):
-        for direction in range(8):
+    def generate_sliding_piece_move(self, piece: int, start_square: int, moves: list[Move], color: int) -> list[Move]:
+        for direction in range(MoveEnum.SLIDING_DIRECTIONS.value):
             for direction_step in range(self.__distances_to_borders[start_square][direction]):
                 if not self.should_this_move_be_calculated(piece, MoveEnum.DIRECTIONS.value[direction]):
                     continue
@@ -69,6 +69,9 @@ class Board:
         if piece in diagonal_pieces and direction in diagonal_directions:
             return True
         return piece in line_pieces and direction in line_directions
+
+    def set_legal_moves(self, legal_moves: list[Move]) -> None:
+        self.__legal_moves = legal_moves
 
     def calculate_distance_to_borders(self) -> ndarray[int]:
         distances = zeros((BoardEnum.BOARD_SIZE.value, BoardEnum.BOARD_LENGTH.value), dtype=int32)
@@ -97,8 +100,8 @@ class Board:
                 ]
         return distances
 
-    def get_legal_moves(self):
-        return self.__valid_moves
+    def get_legal_moves(self) -> list[Move]:
+        return self.__legal_moves
 
     def get_board_array(self) -> ndarray[int]:
         """
@@ -114,7 +117,7 @@ class Board:
         """
         return self.__fen_string
 
-    def get_color_to_move(self):
+    def get_color_to_move(self) -> int:
         return self.__color_to_move
 
     def __init_starting_board(self) -> ndarray[int]:
@@ -189,7 +192,7 @@ class Board:
             return PiecesEnum.WHITE.value
         return PiecesEnum.BLACK.value
 
-    def is_it_legal_move(self, move: Move):
+    def is_it_legal_move(self, move: Move) -> bool:
         if move.get_moving_piece() in (PiecesEnum.BISHOP.value, PiecesEnum.ROOK.value, PiecesEnum.QUEEN.value):
-            return move in self.__valid_moves
+            return move in self.__legal_moves
         return True

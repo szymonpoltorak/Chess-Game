@@ -7,7 +7,6 @@ from PyQt5.QtWidgets import QWidget
 
 from game_window.Canvas import Canvas
 from game_window.enums.CanvasEnum import CanvasEnum
-from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
 
@@ -65,11 +64,9 @@ class GameWindow(QWidget):
 
         col = (current_position_x / self.__canvas.get_rect_width()).__floor__()
         row = (current_position_y / self.__canvas.get_rect_height()).__floor__()
-        #print(self.__canvas.get_board().get_color_to_move())
 
         if not self.__canvas.get_board().should_this_piece_move(row, col):
             self.__current_move.set_start_square(None, None)
-            print("I AM HERE!")
             return
 
         self.__moving_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
@@ -106,15 +103,19 @@ class GameWindow(QWidget):
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
             return
 
-        if not self.__canvas.get_board().is_it_legal_move(self.__current_move) and self.__canvas.get_board().get_piece_color(self.__moving_piece) == PiecesEnum.WHITE.value:
+        if not self.__canvas.get_board().is_it_legal_move(self.__current_move):
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, self.__current_move.get_start_square())
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
+            self.__current_move.set_start_square(None, None)
+            self.__current_move.set_end_square(None, None)
             self.update()
             return
 
         if self.__current_move.get_start_square() == self.__current_move.get_end_square():
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, self.__current_move.get_start_square())
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
+            self.__current_move.set_start_square(None, None)
+            self.__current_move.set_end_square(None, None)
             self.update()
             return
 
@@ -129,6 +130,9 @@ class GameWindow(QWidget):
 
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__canvas.get_board().set_opposite_move_color()
+        list_move = self.__canvas.get_board().generate_legal_moves(self.__canvas.get_board().get_opposite_piece_color(
+                                                       self.__canvas.get_board().get_piece_color(self.__moving_piece)))
+        self.__canvas.get_board().set_legal_moves(list_move)
         self.update()
 
     def update_board_display(self) -> None:

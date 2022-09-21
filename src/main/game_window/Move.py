@@ -1,5 +1,7 @@
 from numpy import array
 
+from game_window.enums.BoardEnum import BoardEnum
+
 
 class Move:
     __slots__ = array(["__start_square", "__end_square", "__piece"])
@@ -19,7 +21,7 @@ class Move:
         if row is None or col is None:
             self.__start_square = None
             return
-        start_square = 8 * row + col
+        start_square = BoardEnum.BOARD_LENGTH.value * row + col
         self.__start_square = start_square
 
     def set_end_square(self, row: int or None, col: int or None) -> None:
@@ -32,7 +34,7 @@ class Move:
         if row is None or col is None:
             self.__end_square = None
             return
-        end_square = 8 * row + col
+        end_square = BoardEnum.BOARD_LENGTH.value * row + col
         self.__end_square = end_square
 
     def get_start_square(self) -> int:
