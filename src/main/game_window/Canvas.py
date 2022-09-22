@@ -70,7 +70,6 @@ class Canvas(QPainter):
                                                  index_y + BoardEnum.LETTER_SCALE_Y.value,
                                                  ColorManager.get_opposite_square_color(color))
                     index_x = current_x
-
             current_y += self.__rect_height
             current_x = CanvasEnum.CANVAS_X.value
             index_y = current_y
@@ -179,7 +178,7 @@ class Canvas(QPainter):
         if self.__freeze_start == -1 or self.__freeze_end == -1:
             return False
         return self.__freeze_piece not in (PiecesEnum.BISHOP.value, PiecesEnum.ROOK.value, PiecesEnum.QUEEN.value,
-                                           PiecesEnum.KNIGHT.value)
+                                           PiecesEnum.KNIGHT.value, PiecesEnum.KING.value)
 
     def is_it_frozen_piece_target_square(self, legal_move: Move, current_square: int) -> bool:
         """

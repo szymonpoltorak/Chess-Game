@@ -144,6 +144,6 @@ class Board:
         :return: bool value whether move is legal or not
         """
         if move.get_moving_piece() in (PiecesEnum.BISHOP.value, PiecesEnum.ROOK.value, PiecesEnum.QUEEN.value,
-                                       PiecesEnum.KNIGHT.value):
+                                       PiecesEnum.KNIGHT.value, PiecesEnum.KING.value):
             return move in self.__legal_moves
         return True

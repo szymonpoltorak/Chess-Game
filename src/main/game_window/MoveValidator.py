@@ -61,9 +61,10 @@ class MoveValidator:
 
             if MoveValidator.is_sliding_piece(piece):
                 MoveValidator.generate_sliding_piece_move(piece, square, moves, color_to_move, board)
-
             if piece == PiecesEnum.KNIGHT.value:
                 MoveValidator.generate_moves_for_knight(moves, piece, color_to_move, board, square)
+            if piece == PiecesEnum.KING.value:
+                MoveValidator.generate_moves_for_king(moves, piece, color_to_move, board, square)
         return moves
 
     @staticmethod
@@ -133,7 +134,7 @@ class MoveValidator:
         for direction in range(MoveEnum.KNIGHT_DIRECTIONS_NUMBER.value):
             move_target = start_square + MoveEnum.KNIGHT_DIRECTIONS.value[direction]
 
-            if not MoveValidator.is_move_target_in_borders(start_square, move_target):
+            if not MoveValidator.is_knight_move_target_in_borders(start_square, move_target):
                 continue
             piece_on_move_target = board.get_board_array()[move_target]
 
@@ -145,7 +146,7 @@ class MoveValidator:
                 continue
 
     @staticmethod
-    def is_move_target_in_borders(start_square: int, move_target: int) -> bool:
+    def is_knight_move_target_in_borders(start_square: int, move_target: int) -> bool:
         """
         Checks if piece move target is in bounds of chess board
         :param start_square: int index of start square
@@ -158,3 +159,43 @@ class MoveValidator:
         if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
             return False
         return abs(start_col - target_col) <= MoveEnum.MAX_KNIGHT_JUMP.value
+
+    @staticmethod
+    def generate_moves_for_king(moves: list[Move], piece: int, color: int, board, start_square: int) -> None:
+        """
+        Static method use to generate possible moves for king.
+        :param moves: list of moves
+        :param piece: int value of a piece
+        :param color: int value of color to move
+        :param board: Board instance
+        :param start_square: start square index
+        :return: None
+        """
+        for direction in range(MoveEnum.KING_DIRECTIONS_NUMBER.value):
+            move_target = start_square + MoveEnum.KING_DIRECTIONS.value[direction]
+
+            if not MoveValidator.is_king_move_target_in_borders(start_square, move_target):
+                continue
+            piece_on_move_target = board.get_board_array()[move_target]
+
+            if ColorManager.get_piece_color(piece_on_move_target) == color:
+                continue
+            moves.append(Move(start_square, move_target, piece))
+
+            if ColorManager.get_piece_color(piece_on_move_target) == ColorManager.get_opposite_piece_color(color):
+                continue
+
+    @staticmethod
+    def is_king_move_target_in_borders(start_square: int, move_target: int) -> bool:
+        """
+        Checks if move target square of king is in bonds of chess board.
+        :param start_square: int index of start square
+        :param move_target: int index of move target square
+        :return: bool
+        """
+        start_col = start_square % BoardEnum.BOARD_LENGTH.value
+        target_col = move_target % BoardEnum.BOARD_LENGTH.value
+
+        if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
+            return False
+        return abs(start_col - target_col) <= 1

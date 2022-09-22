@@ -29,3 +29,7 @@ class MoveEnum(Enum):
     KNIGHT_DIRECTIONS_NUMBER: int = 8
     KNIGHT_DIRECTIONS: tuple[int] = (-17, -15, -10, -6, 6, 10, 15, 17)
     MAX_KNIGHT_JUMP: int = 2
+
+    KING_DIRECTIONS_NUMBER: int = 8
+    KING_DIRECTIONS: tuple[int] = (TOP_LEFT_S, TOP_S, TOP_RIGHT_S, LEFT_S, RIGHT_S, BOTTOM_LEFT_S, BOTTOM_S,
+                                   BOTTOM_RIGHT_S)
