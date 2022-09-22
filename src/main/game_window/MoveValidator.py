@@ -184,6 +184,7 @@ class MoveValidator:
 
             if ColorManager.get_piece_color(piece_on_move_target) == ColorManager.get_opposite_piece_color(color):
                 continue
+        MoveValidator.generate_castling_moves(moves, piece, color, board, start_square)
 
     @staticmethod
     def is_king_move_target_in_borders(start_square: int, move_target: int) -> bool:
@@ -199,3 +200,61 @@ class MoveValidator:
         if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
             return False
         return abs(start_col - target_col) <= 1
+
+    @staticmethod
+    def generate_castling_moves(moves: list[Move], piece: int, color: int, board, start_square: int) -> None:
+        # tutaj robi magika
+        if not MoveValidator.is_anything_on_king_side(board, start_square, color) and board.can_king_castle_king_side(color):
+            move_target = start_square + MoveEnum.CASTLE_MOVE.value
+            moves.append(Move(start_square, move_target, piece))
+        if not MoveValidator.is_anything_on_queen_side(board, start_square) and board.can_king_castle_queen_side(color):
+            move_target = start_square - MoveEnum.CASTLE_MOVE.value
+            moves.append(Move(start_square, move_target, piece))
+
+    @staticmethod
+    def is_anything_on_king_side(board, start_square: int, color: int):
+        for square in range(1, MoveEnum.KING_SIDE.value + 1):
+            distance = start_square + square
+            if color == PiecesEnum.BLACK.value and distance > 7 or color == PiecesEnum.WHITE.value and distance > 63:
+                return True
+            if board.get_board_array()[distance] != 0:
+                return True
+        return False
+
+    @staticmethod
+    def is_anything_on_queen_side(board, start_square: int):
+        square = abs(MoveEnum.QUEEN_SIDE.value)
+
+        while square > 0:
+            if board.get_board_array()[start_square - square] != 0:
+                return True
+            square -= 1
+        return False
+
+    @staticmethod
+    def is_it_castling(move: Move):
+        move_length = abs(move.get_end_square() - move.get_start_square())
+
+        return move.get_moving_piece() == PiecesEnum.KING.value and move_length == MoveEnum.CASTLE_MOVE.value
+
+    @staticmethod
+    def get_rook_position(color: int, is_queen_side: bool) -> int:
+        if is_queen_side and color == PiecesEnum.WHITE.value:
+            return 56
+        elif is_queen_side and color == PiecesEnum.BLACK.value:
+            return 0
+        elif not is_queen_side and color == PiecesEnum.WHITE.value:
+            return 63
+        elif not is_queen_side and color == PiecesEnum.BLACK.value:
+            return 7
+
+    @staticmethod
+    def disable_castling_on_side(color: int, move: Move, board):
+        if color == PiecesEnum.BLACK.value and move.get_start_square() == 0:
+            board.set_castling_queen_side(False, color)
+        elif color == PiecesEnum.BLACK.value and move.get_start_square() == 7:
+            board.set_castling_king_side(False, color)
+        elif color == PiecesEnum.WHITE.value and move.get_start_square() == 56:
+            board.set_castling_queen_side(False, color)
+        elif color == PiecesEnum.WHITE.value and move.get_start_square() == 63:
+            board.set_castling_king_side(False, color)

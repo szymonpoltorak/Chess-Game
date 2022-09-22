@@ -15,14 +15,69 @@ class Board:
     """
     Class to hold and manage board representation.
     """
-    __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders"])
+    __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
+                       "__white_castle_king", "__white_castle_queen",  "__black_castle_king", "__black_castle_queen"])
 
     def __init__(self):
         self.__board_array: ndarray[int] = self.__init_starting_board()
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
+        self.__white_castle_king = True
+        self.__white_castle_queen = True
+        self.__black_castle_king = True
+        self.__black_castle_queen = True
         self.__color_to_move: int = PiecesEnum.WHITE.value
         self.__distances_to_borders = MoveValidator.calculate_distance_to_borders()
         self.__legal_moves = MoveValidator.generate_legal_moves(self.__color_to_move, self)
+
+    def can_king_castle_king_side(self, color: int) -> bool:
+        if color == PiecesEnum.WHITE.value:
+            return self.__white_castle_king
+        else:
+            return self.__black_castle_king
+
+    def can_king_castle_queen_side(self, color: int) -> bool:
+        if color == PiecesEnum.WHITE.value:
+            return self.__white_castle_queen
+        else:
+            return self.__black_castle_queen
+
+    def set_castling_king_side(self, can_castle: bool, color: int):
+        if color == PiecesEnum.WHITE.value:
+            self.__white_castle_king = can_castle
+        else:
+            self.__black_castle_king = can_castle
+
+    def set_castling_queen_side(self, can_castle: bool, color: int):
+        if color == PiecesEnum.WHITE.value:
+            self.__white_castle_queen = can_castle
+        else:
+            self.__black_castle_queen = can_castle
+
+    def castle_king(self, piece: int, move: Move):
+        distance = move.get_start_square() - move.get_end_square()
+
+        if distance == 2:
+            color = ColorManager.get_piece_color(piece)
+            rook_position = MoveValidator.get_rook_position(color, True)
+
+            self.__board_array[move.get_start_square()] = 0
+            self.__board_array[move.get_end_square()] = piece
+            self.__board_array[rook_position] = 0
+            self.__board_array[move.get_end_square() + 1] = color | PiecesEnum.ROOK.value
+            self.set_castling_king_side(False, color)
+            self.set_castling_queen_side(False, color)
+        elif distance == -2:
+            color = ColorManager.get_piece_color(piece)
+            rook_position = MoveValidator.get_rook_position(color, False)
+            print(f"\nColor : {color}\nRook Position : {rook_position}")
+
+            self.__board_array[move.get_start_square()] = 0
+            self.__board_array[move.get_end_square()] = piece
+            self.__board_array[rook_position] = 0
+            self.__board_array[move.get_end_square() - 1] = color | PiecesEnum.ROOK.value
+            self.set_castling_king_side(False, color)
+            self.set_castling_queen_side(False, color)
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)
 
     def set_legal_moves(self, legal_moves: list[Move]) -> None:
         """

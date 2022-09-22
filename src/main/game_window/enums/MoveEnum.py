@@ -33,3 +33,7 @@ class MoveEnum(Enum):
     KING_DIRECTIONS_NUMBER: int = 8
     KING_DIRECTIONS: tuple[int] = (TOP_LEFT_S, TOP_S, TOP_RIGHT_S, LEFT_S, RIGHT_S, BOTTOM_LEFT_S, BOTTOM_S,
                                    BOTTOM_RIGHT_S)
+    CASTLE_MOVE: int = 2
+    KING_SIDE: int = 2
+    QUEEN_SIDE: int = -3
+    CASTLING_OFFSETS: tuple[int] = (QUEEN_SIDE, KING_SIDE)
