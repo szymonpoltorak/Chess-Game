@@ -30,30 +30,58 @@ class Board:
         self.__legal_moves = MoveValidator.generate_legal_moves(self.__color_to_move, self)
 
     def can_king_castle_king_side(self, color: int) -> bool:
+        """
+        Returns if king can castle on king side
+        :param color: int value of color
+        :return: bool
+        """
         if color == PiecesEnum.WHITE.value:
             return self.__white_castle_king
         else:
             return self.__black_castle_king
 
     def can_king_castle_queen_side(self, color: int) -> bool:
+        """
+        Returns if king can castle on queen side
+        :param color: int value of color
+        :return: bool
+        """
         if color == PiecesEnum.WHITE.value:
             return self.__white_castle_queen
         else:
             return self.__black_castle_queen
 
-    def set_castling_king_side(self, can_castle: bool, color: int):
+    def set_castling_king_side(self, can_castle: bool, color: int) -> None:
+        """
+        Sets castling capabilities on king side
+        :param can_castle: bool value
+        :param color: int value of color
+        :return: None
+        """
         if color == PiecesEnum.WHITE.value:
             self.__white_castle_king = can_castle
         else:
             self.__black_castle_king = can_castle
 
-    def set_castling_queen_side(self, can_castle: bool, color: int):
+    def set_castling_queen_side(self, can_castle: bool, color: int) -> None:
+        """
+        Sets castling capabilities on queen side
+        :param can_castle: bool value
+        :param color: int value of color
+        :return: None
+        """
         if color == PiecesEnum.WHITE.value:
             self.__white_castle_queen = can_castle
         else:
             self.__black_castle_queen = can_castle
 
-    def castle_king(self, piece: int, move: Move):
+    def castle_king(self, piece: int, move: Move) -> None:
+        """
+        Method used to castle king it means prepare board for castling
+        :param piece: int value of piece
+        :param move: Move instance
+        :return: None
+        """
         distance = move.get_start_square() - move.get_end_square()
 
         if distance == 2:

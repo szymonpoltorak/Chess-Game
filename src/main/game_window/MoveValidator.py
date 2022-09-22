@@ -203,7 +203,15 @@ class MoveValidator:
 
     @staticmethod
     def generate_castling_moves(moves: list[Move], piece: int, color: int, board, start_square: int) -> None:
-        # tutaj robi magika
+        """
+        Static method to generate castling moves
+        :param moves: list of moves
+        :param piece: int value of a piece
+        :param color: int value of color to move
+        :param board: Board instance
+        :param start_square: start square index
+        :return: None
+        """
         if not MoveValidator.is_anything_on_king_side(board, start_square, color) and board.can_king_castle_king_side(color):
             move_target = start_square + MoveEnum.CASTLE_MOVE.value
             moves.append(Move(start_square, move_target, piece))
@@ -212,7 +220,14 @@ class MoveValidator:
             moves.append(Move(start_square, move_target, piece))
 
     @staticmethod
-    def is_anything_on_king_side(board, start_square: int, color: int):
+    def is_anything_on_king_side(board, start_square: int, color: int) -> bool:
+        """
+        Checks if there is anything on the path between a king side rook and the king
+        :param board: Board instance
+        :param start_square: int index of kings square
+        :param color: int value of color
+        :return: bool
+        """
         for square in range(1, MoveEnum.KING_SIDE.value + 1):
             distance = start_square + square
             if color == PiecesEnum.BLACK.value and distance > 7 or color == PiecesEnum.WHITE.value and distance > 63:
@@ -222,7 +237,13 @@ class MoveValidator:
         return False
 
     @staticmethod
-    def is_anything_on_queen_side(board, start_square: int):
+    def is_anything_on_queen_side(board, start_square: int) -> bool:
+        """
+        Checks if there is anything on the path between a queen side rook and the king
+        :param board: Board instance
+        :param start_square: int index of kings square
+        :return: bool
+        """
         square = abs(MoveEnum.QUEEN_SIDE.value)
 
         while square > 0:
@@ -232,29 +253,47 @@ class MoveValidator:
         return False
 
     @staticmethod
-    def is_it_castling(move: Move):
+    def is_it_castling(move: Move) -> bool:
+        """
+        Checks if this move is castling
+        :param move: Move instance
+        :return: bool
+        """
         move_length = abs(move.get_end_square() - move.get_start_square())
 
         return move.get_moving_piece() == PiecesEnum.KING.value and move_length == MoveEnum.CASTLE_MOVE.value
 
     @staticmethod
     def get_rook_position(color: int, is_queen_side: bool) -> int:
+        """
+        Static method to return rooks board position based on given parameters
+        :param color: rook color
+        :param is_queen_side: bool
+        :return: int value of rook position
+        """
         if is_queen_side and color == PiecesEnum.WHITE.value:
-            return 56
+            return MoveEnum.WHITE_ROOK_QUEEN.value
         elif is_queen_side and color == PiecesEnum.BLACK.value:
-            return 0
+            return MoveEnum.BLACK_ROOK_QUEEN.value
         elif not is_queen_side and color == PiecesEnum.WHITE.value:
-            return 63
+            return MoveEnum.WHITE_ROOK_KING.value
         elif not is_queen_side and color == PiecesEnum.BLACK.value:
-            return 7
+            return MoveEnum.BLACK_ROOK_KING.value
 
     @staticmethod
-    def disable_castling_on_side(color: int, move: Move, board):
-        if color == PiecesEnum.BLACK.value and move.get_start_square() == 0:
+    def disable_castling_on_side(color: int, move: Move, board) -> None:
+        """
+        Disable castling for king on given side
+        :param color: int value of color
+        :param move: Move instance
+        :param board: Board instance
+        :return: None
+        """
+        if color == PiecesEnum.BLACK.value and move.get_start_square() == MoveEnum.BLACK_ROOK_QUEEN.value:
             board.set_castling_queen_side(False, color)
-        elif color == PiecesEnum.BLACK.value and move.get_start_square() == 7:
+        elif color == PiecesEnum.BLACK.value and move.get_start_square() == MoveEnum.BLACK_ROOK_KING.value:
             board.set_castling_king_side(False, color)
-        elif color == PiecesEnum.WHITE.value and move.get_start_square() == 56:
+        elif color == PiecesEnum.WHITE.value and move.get_start_square() == MoveEnum.WHITE_ROOK_QUEEN.value:
             board.set_castling_queen_side(False, color)
-        elif color == PiecesEnum.WHITE.value and move.get_start_square() == 63:
+        elif color == PiecesEnum.WHITE.value and move.get_start_square() == MoveEnum.WHITE_ROOK_KING.value:
             board.set_castling_king_side(False, color)

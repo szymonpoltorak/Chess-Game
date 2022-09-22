@@ -133,7 +133,12 @@ class GameWindow(QWidget):
         self.__canvas.get_board().set_legal_moves(list_move)
         self.update()
 
-    def play_proper_sound(self, deleted_piece: int):
+    def play_proper_sound(self, deleted_piece: int) -> None:
+        """
+        Plays proper sound effect based on deleted piece value
+        :param deleted_piece: int value of piece
+        :return: None
+        """
         if deleted_piece == 0:
             playsound("src/resources/sounds/Move.mp3")
         else:

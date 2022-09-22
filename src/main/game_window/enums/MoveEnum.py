@@ -36,4 +36,8 @@ class MoveEnum(Enum):
     CASTLE_MOVE: int = 2
     KING_SIDE: int = 2
     QUEEN_SIDE: int = -3
-    CASTLING_OFFSETS: tuple[int] = (QUEEN_SIDE, KING_SIDE)
+
+    WHITE_ROOK_QUEEN: int = 56
+    WHITE_ROOK_KING: int = 63
+    BLACK_ROOK_QUEEN: int = 0
+    BLACK_ROOK_KING: int = 7
