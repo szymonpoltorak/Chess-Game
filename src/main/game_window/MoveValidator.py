@@ -60,8 +60,55 @@ class MoveValidator:
                 continue
 
             if MoveValidator.is_sliding_piece(piece):
-                moves = MoveValidator.generate_sliding_piece_move(piece, square, moves, color_to_move, board)
+                MoveValidator.generate_sliding_piece_move(piece, square, moves, color_to_move, board)
+
+            if piece == PiecesEnum.KNIGHT.value:
+                MoveValidator.generate_moves_for_knight(moves, piece, color_to_move, board, square)
         return moves
+
+    @staticmethod
+    def generate_sliding_piece_move(piece: int, start_square: int, moves: list[Move], color: int, board) -> None:
+        """
+        Static method used to generate moves for sliding pieces
+        :param piece: int value of piece
+        :param start_square: int index of current square
+        :param moves: list of moves
+        :param color: int value of color
+        :param board: Board instance
+        :return: None
+        """
+        for direction in range(MoveEnum.SLIDING_DIRECTIONS_NUMBER.value):
+            for direction_step in range(board.get_distances()[start_square][direction]):
+                if not MoveValidator.is_it_sliding_piece(piece, MoveEnum.SLIDING_DIRECTIONS.value[direction]):
+                    continue
+                move_target = start_square + MoveEnum.SLIDING_DIRECTIONS.value[direction] * (direction_step + 1)
+                piece_on_move_target = board.get_board_array()[move_target]
+
+                if ColorManager.get_piece_color(piece_on_move_target) == color:
+                    break
+                moves.append(Move(start_square, move_target, piece))
+
+                if ColorManager.get_piece_color(piece_on_move_target) == ColorManager.get_opposite_piece_color(color):
+                    break
+
+    @staticmethod
+    def is_it_sliding_piece(piece: int, direction: int) -> bool:
+        """
+        Static method used to check if this move should be calculated
+        :param piece: int value of piece
+        :param direction: int value of direction
+        :return: bool value of if move should be calculated or not
+        """
+        diagonal_pieces = (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value)
+        diagonal_directions = (MoveEnum.TOP_LEFT_S.value, MoveEnum.TOP_RIGHT_S.value, MoveEnum.BOTTOM_LEFT_S.value,
+                               MoveEnum.BOTTOM_RIGHT_S.value)
+
+        line_pieces = (PiecesEnum.QUEEN.value, PiecesEnum.ROOK.value)
+        line_directions = (MoveEnum.TOP_S.value, MoveEnum.LEFT_S.value, MoveEnum.RIGHT_S.value, MoveEnum.BOTTOM_S.value)
+
+        if piece in diagonal_pieces and direction in diagonal_directions:
+            return True
+        return piece in line_pieces and direction in line_directions
 
     @staticmethod
     def is_sliding_piece(piece: int) -> bool:
@@ -73,46 +120,41 @@ class MoveValidator:
         return piece in (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value, PiecesEnum.ROOK.value)
 
     @staticmethod
-    def generate_sliding_piece_move(piece: int, start_square: int, moves: list[Move], color: int, board) -> list[Move]:
+    def generate_moves_for_knight(moves: list[Move], piece: int, color: int, board, start_square: int) -> None:
         """
-        Static method used to generate moves for sliding pieces
-        :param piece: int value of piece
-        :param start_square: int index of current square
+        Static method used to generate moves for knights
         :param moves: list of moves
-        :param color: int value of color
-        :param board: Board instance
-        :return: list of moves for sliding pieces
+        :param piece: int value of piece
+        :param color: int value of color to move
+        :param board: board instance
+        :param start_square: int index of current square
+        :return: None
         """
-        for direction in range(MoveEnum.SLIDING_DIRECTIONS.value):
-            for direction_step in range(board.get_distances()[start_square][direction]):
-                if not MoveValidator.should_this_move_be_calculated(piece, MoveEnum.DIRECTIONS.value[direction]):
-                    continue
-                move_target = start_square + MoveEnum.DIRECTIONS.value[direction] * (direction_step + 1)
-                piece_on_move_target = board.get_board_array()[move_target]
+        for direction in range(MoveEnum.KNIGHT_DIRECTIONS_NUMBER.value):
+            move_target = start_square + MoveEnum.KNIGHT_DIRECTIONS.value[direction]
 
-                if ColorManager.get_piece_color(piece_on_move_target) == color:
-                    break
-                moves.append(Move(start_square, move_target, piece))
+            if not MoveValidator.is_move_target_in_borders(start_square, move_target):
+                continue
+            piece_on_move_target = board.get_board_array()[move_target]
 
-                if ColorManager.get_piece_color(piece_on_move_target) == ColorManager.get_opposite_piece_color(color):
-                    break
-        return moves
+            if ColorManager.get_piece_color(piece_on_move_target) == color:
+                continue
+            moves.append(Move(start_square, move_target, piece))
+
+            if ColorManager.get_piece_color(piece_on_move_target) == ColorManager.get_opposite_piece_color(color):
+                continue
 
     @staticmethod
-    def should_this_move_be_calculated(piece: int, direction: int) -> bool:
+    def is_move_target_in_borders(start_square: int, move_target: int) -> bool:
         """
-        Static method used to check if this move should be calculated
-        :param piece: int value of piece
-        :param direction: int value of direction
-        :return: bool value of if move should be calculated or not
+        Checks if piece move target is in bounds of chess board
+        :param start_square: int index of start square
+        :param move_target: int index of move target square
+        :return: bool
         """
-        diagonal_pieces = (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value)
-        diagonal_directions = (MoveEnum.TOP_LEFT.value, MoveEnum.TOP_RIGHT.value, MoveEnum.BOTTOM_LEFT.value,
-                               MoveEnum.BOTTOM_RIGHT.value)
+        start_col = start_square % BoardEnum.BOARD_LENGTH.value
+        target_col = move_target % BoardEnum.BOARD_LENGTH.value
 
-        line_pieces = (PiecesEnum.QUEEN.value, PiecesEnum.ROOK.value)
-        line_directions = (MoveEnum.TOP.value, MoveEnum.LEFT.value, MoveEnum.RIGHT.value, MoveEnum.BOTTOM.value)
-
-        if piece in diagonal_pieces and direction in diagonal_directions:
-            return True
-        return piece in line_pieces and direction in line_directions
+        if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
+            return False
+        return abs(start_col - target_col) <= MoveEnum.MAX_KNIGHT_JUMP.value

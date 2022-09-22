@@ -143,6 +143,7 @@ class Board:
         :param move: current move player wants to play
         :return: bool value whether move is legal or not
         """
-        if move.get_moving_piece() in (PiecesEnum.BISHOP.value, PiecesEnum.ROOK.value, PiecesEnum.QUEEN.value):
+        if move.get_moving_piece() in (PiecesEnum.BISHOP.value, PiecesEnum.ROOK.value, PiecesEnum.QUEEN.value,
+                                       PiecesEnum.KNIGHT.value):
             return move in self.__legal_moves
         return True

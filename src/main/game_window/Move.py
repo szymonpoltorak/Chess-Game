@@ -24,6 +24,22 @@ class Move:
         start_square = BoardEnum.BOARD_LENGTH.value * row + col
         self.__start_square = start_square
 
+    def set_start_square_with_value(self, start_square: int) -> None:
+        """
+        Enables to update start square field with single square int value
+        :param start_square: int value of square index
+        :return: None
+        """
+        self.__start_square = start_square
+
+    def set_end_square_with_value(self, end_square: int) -> None:
+        """
+        Enables to update end square field with single square int value
+        :param end_square: int value of end square index
+        :return: None
+        """
+        self.__end_square = end_square
+
     def set_end_square(self, row: int or None, col: int or None) -> None:
         """
         Method to set row and col index of an end movement square

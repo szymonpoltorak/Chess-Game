@@ -20,13 +20,16 @@ class Canvas(QPainter):
     """
     Class which manages painting board and pieces.
     """
-    __slots__ = array(["__board", "__rect_width", "__rect_height"])
+    __slots__ = array(["__board", "__rect_width", "__rect_height", "__freeze_piece", "__freeze_start", "__freeze_end"])
 
     def __init__(self):
         super(Canvas, self).__init__()
         self.__board: Board = Board()
         self.__rect_width = int(CanvasEnum.CANVAS_WIDTH.value / 8)
         self.__rect_height = int(CanvasEnum.CANVAS_HEIGHT.value / 8)
+        self.__freeze_piece = -1
+        self.__freeze_start = -1
+        self.__freeze_end = -1
 
     def draw_chess_board(self, move: Move) -> None:
         """
@@ -71,6 +74,8 @@ class Canvas(QPainter):
             current_y += self.__rect_height
             current_x = CanvasEnum.CANVAS_X.value
             index_y = current_y
+
+        self.paint_possible_moves_for_frozen_piece()
         self.__draw_position_from_fen()
 
     def draw_character_on_board(self, character, position_x: int, position_y: int, color: str) -> None:
@@ -138,6 +143,64 @@ class Canvas(QPainter):
             current_x += self.__rect_width
 
             return current_x
+
+    def paint_possible_moves_for_frozen_piece(self) -> None:
+        """
+        Method to paint possible moves for not moven piece on board
+        :return: None
+        """
+        current_x = CanvasEnum.CANVAS_X.value
+        current_y = CanvasEnum.CANVAS_Y.value
+
+        for row in range(BoardEnum.BOARD_LENGTH.value):
+            if self.is_it_frozen_piece():
+                break
+            for col in range(BoardEnum.BOARD_LENGTH.value):
+                current_square = BoardEnum.BOARD_LENGTH.value * row + col
+                legal_moves = self.__board.get_legal_moves()
+
+                for legal_move in legal_moves:
+                    if self.is_it_frozen_piece_target_square(legal_move, current_square):
+                        rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
+                        self.fillRect(rectangle, QColor("#b0272f"))
+                        break
+                current_x += self.__rect_width
+            current_y += self.__rect_height
+            current_x = CanvasEnum.CANVAS_X.value
+        self.__freeze_piece = -1
+        self.__freeze_start = -1
+        self.__freeze_end = -1
+
+    def is_it_frozen_piece(self) -> bool:
+        """
+        Method used to check if piece was not moved at all
+        :return: bool value
+        """
+        if self.__freeze_start == -1 or self.__freeze_end == -1:
+            return False
+        return self.__freeze_piece not in (PiecesEnum.BISHOP.value, PiecesEnum.ROOK.value, PiecesEnum.QUEEN.value,
+                                           PiecesEnum.KNIGHT.value)
+
+    def is_it_frozen_piece_target_square(self, legal_move: Move, current_square: int) -> bool:
+        """
+        Methods checks if current square is a valid move for a frozen piece
+        :param legal_move: current legal move instance
+        :param current_square: int index of current square
+        :return: bool value
+        """
+        if legal_move.get_end_square() != current_square or legal_move.get_moving_piece() != self.__freeze_piece:
+            return False
+        return legal_move.get_start_square() == self.__freeze_start
+
+    def copy_current_move(self, move) -> None:
+        """
+        Method copies values of a current move
+        :param move:
+        :return:
+        """
+        self.__freeze_piece = move.get_moving_piece()
+        self.__freeze_start = move.get_start_square()
+        self.__freeze_end = move.get_end_square()
 
     def get_board(self) -> Board:
         """

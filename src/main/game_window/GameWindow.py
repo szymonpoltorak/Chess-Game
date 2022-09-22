@@ -107,6 +107,7 @@ class GameWindow(QWidget):
         if not self.__canvas.get_board().is_it_legal_move(self.__current_move) or self.__current_move.get_start_square() == self.__current_move.get_end_square():
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, self.__current_move.get_start_square())
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
+            self.__canvas.copy_current_move(self.__current_move)
             self.__current_move.set_start_square(None, None)
             self.__current_move.set_end_square(None, None)
             self.update()
