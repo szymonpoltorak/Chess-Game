@@ -12,6 +12,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
 from game_window.MoveValidator import MoveValidator
+from game_window.ValidateUtils import ValidateUtils
 
 
 class GameWindow(QWidget):
@@ -118,9 +119,9 @@ class GameWindow(QWidget):
 
         if self.__current_move.get_moving_piece() == PiecesEnum.ROOK.value:
             color = ColorManager.get_piece_color(self.__moving_piece)
-            MoveValidator.disable_castling_on_side(color, self.__current_move, self.__canvas.get_board())
+            ValidateUtils.disable_castling_on_side(color, self.__current_move, self.__canvas.get_board())
 
-        if MoveValidator.is_it_castling(self.__current_move):
+        if ValidateUtils.is_it_castling(self.__current_move):
             self.__canvas.get_board().castle_king(self.__moving_piece, self.__current_move)
         else:
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)

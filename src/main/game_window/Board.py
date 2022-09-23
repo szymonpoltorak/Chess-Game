@@ -10,6 +10,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.FenFactory import FenFactory
 from game_window.Move import Move
 from game_window.MoveValidator import MoveValidator
+from game_window.ValidateUtils import ValidateUtils
 
 
 class Board:
@@ -87,7 +88,7 @@ class Board:
 
         if distance == MoveEnum.CASTLE_MOVE.value:
             color = ColorManager.get_piece_color(piece)
-            rook_position = MoveValidator.get_rook_position(color, True)
+            rook_position = ValidateUtils.get_rook_position(color, True)
 
             self.__board_array[move.get_start_square()] = 0
             self.__board_array[move.get_end_square()] = piece
@@ -97,7 +98,7 @@ class Board:
             self.set_castling_queen_side(False, color)
         elif distance == -MoveEnum.CASTLE_MOVE.value:
             color = ColorManager.get_piece_color(piece)
-            rook_position = MoveValidator.get_rook_position(color, False)
+            rook_position = ValidateUtils.get_rook_position(color, False)
 
             self.__board_array[move.get_start_square()] = 0
             self.__board_array[move.get_end_square()] = piece
