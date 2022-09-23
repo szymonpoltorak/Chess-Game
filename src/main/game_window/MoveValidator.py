@@ -86,47 +86,18 @@ class MoveValidator:
             board.set_castling_king_side(False, color)
 
     @staticmethod
-    def is_king_move_target_in_borders(start_square: int, move_target: int) -> bool:
-        """
-        Checks if move target square of king is in bonds of chess board.
-        :param start_square: int index of start square
-        :param move_target: int index of move target square
-        :return: bool
-        """
-        start_col = start_square % BoardEnum.BOARD_LENGTH.value
-        target_col = move_target % BoardEnum.BOARD_LENGTH.value
-
-        if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
-            return False
-        return abs(start_col - target_col) <= 1
-
-    @staticmethod
-    def is_knight_move_target_in_borders(start_square: int, move_target: int) -> bool:
-        """
-        Checks if piece_square move target is in bounds of chess board
-        :param start_square: int index of start square
-        :param move_target: int index of move target square
-        :return: bool
-        """
-        start_col = start_square % BoardEnum.BOARD_LENGTH.value
-        target_col = move_target % BoardEnum.BOARD_LENGTH.value
-
-        if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
-            return False
-        return abs(start_col - target_col) <= MoveEnum.MAX_KNIGHT_JUMP.value
-
-    @staticmethod
-    def is_attack_target_in_border_bounds(start_square: int, move_target: int) -> bool:
+    def is_attack_target_in_border_bounds(start_square: int, move_target: int, attack_range: int) -> bool:
         """
         Static method to check if pawns attack target is in board bonds
         :param start_square: int index of start square
         :param move_target: int index of attack target square
+        :param attack_range: int value of range attack
         :return: bool
         """
         start_col = start_square % BoardEnum.BOARD_LENGTH.value
         target_col = move_target % BoardEnum.BOARD_LENGTH.value
 
-        return abs(start_col - target_col) <= 1
+        return abs(start_col - target_col) <= attack_range
 
     @staticmethod
     def is_it_sliding_piece(piece: int, direction: int) -> bool:
@@ -227,10 +198,10 @@ class MoveValidator:
         right_piece = board.get_board_array()[right_piece_square]
 
         if color != ColorManager.get_piece_color(left_piece) and left_piece != PiecesEnum.NONE.value:
-            if MoveValidator.is_attack_target_in_border_bounds(start_square, left_piece_square):
+            if MoveValidator.is_attack_target_in_border_bounds(start_square, left_piece_square, MoveEnum.PAWN_RANGE.value):
                 moves.append(Move(start_square, left_piece_square, piece))
         if color != ColorManager.get_piece_color(right_piece) and right_piece != PiecesEnum.NONE.value:
-            if MoveValidator.is_attack_target_in_border_bounds(start_square, right_piece_square):
+            if MoveValidator.is_attack_target_in_border_bounds(start_square, right_piece_square, MoveEnum.PAWN_RANGE.value):
                 moves.append(Move(start_square, right_piece_square, piece))
         MoveValidator.check_en_passant_movement(start_square, piece, color, moves, board)
 
@@ -251,9 +222,7 @@ class MoveValidator:
     def was_it_en_passant_move(move: Move, board):
         if move.get_moving_piece() != PiecesEnum.PAWN.value or board.get_en_passant_square() == -1 or board.get_en_passant_piece_square() == -1:
             return False
-        if move.get_end_square() != board.get_en_passant_square():
-            return False
-        return True
+        return move.get_end_square() == board.get_en_passant_square()
 
     @staticmethod
     def get_attack_direction(color: int, direction: str) -> int:

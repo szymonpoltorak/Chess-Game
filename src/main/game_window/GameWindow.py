@@ -124,6 +124,10 @@ class GameWindow(QWidget):
 
         if MoveValidator.is_it_castling(self.__current_move):
             self.__canvas.get_board().castle_king(self.__moving_piece, self.__current_move)
+        elif self.__current_move.get_moving_piece() == PiecesEnum.KING.value:
+            self.__canvas.get_board().set_castling_king_side(False, ColorManager.get_piece_color(self.__moving_piece))
+            self.__canvas.get_board().set_castling_queen_side(False, ColorManager.get_piece_color(self.__moving_piece))
+            self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)
         else:
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)
 

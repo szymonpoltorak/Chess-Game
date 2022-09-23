@@ -109,7 +109,9 @@ class MoveGenerator:
         for direction in range(MoveEnum.KNIGHT_DIRECTIONS_NUMBER.value):
             move_target = start_square + MoveEnum.KNIGHT_DIRECTIONS.value[direction]
 
-            if not MoveValidator.is_knight_move_target_in_borders(start_square, move_target):
+            if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
+                continue
+            if not MoveValidator.is_attack_target_in_border_bounds(start_square, move_target, MoveEnum.MAX_KNIGHT_JUMP.value):
                 continue
             piece_on_move_target = board.get_board_array()[move_target]
 
@@ -134,7 +136,9 @@ class MoveGenerator:
         for direction in range(MoveEnum.KING_DIRECTIONS_NUMBER.value):
             move_target = start_square + MoveEnum.KING_DIRECTIONS.value[direction]
 
-            if not MoveValidator.is_king_move_target_in_borders(start_square, move_target):
+            if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
+                continue
+            if not MoveValidator.is_attack_target_in_border_bounds(start_square, move_target, MoveEnum.KING_RANGE.value):
                 continue
             piece_on_move_target = board.get_board_array()[move_target]
 
