@@ -115,7 +115,7 @@ class Canvas(QPainter):
         Loads pixmap from resources based on current letter loaded from fen string.
         :param current_x: current x coordinate from which we start drawing.
         :param current_y: current y coordinate from which we start drawing.
-        :param piece_letter: letter representing piece on chess board, got from fen string.
+        :param piece_letter: letter representing piece_square on chess board, got from fen string.
         :return: x coordinate of current square
         """
         try:
@@ -145,7 +145,7 @@ class Canvas(QPainter):
 
     def paint_possible_moves_for_frozen_piece(self) -> None:
         """
-        Method to paint possible moves for not moven piece on board
+        Method to paint possible moves for not moven piece_square on board
         :return: None
         """
         current_x = CanvasEnum.CANVAS_X.value
@@ -172,14 +172,14 @@ class Canvas(QPainter):
 
     def is_it_frozen_piece(self) -> bool:
         """
-        Method used to check if piece was not moved at all
+        Method used to check if piece_square was not moved at all
         :return: bool value
         """
         return self.__freeze_start != -1 and self.__freeze_end != -1
 
     def is_it_frozen_piece_target_square(self, legal_move: Move, current_square: int) -> bool:
         """
-        Methods checks if current square is a valid move for a frozen piece
+        Methods checks if current square is a valid move for a frozen piece_square
         :param legal_move: current legal move instance
         :param current_square: int index of current square
         :return: bool value

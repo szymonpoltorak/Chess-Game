@@ -74,7 +74,7 @@ class MoveGenerator:
     def generate_sliding_piece_move(piece: int, start_square: int, moves: list[Move], color: int, board) -> None:
         """
         Static method used to generate moves for sliding pieces
-        :param piece: int value of piece
+        :param piece: int value of piece_square
         :param start_square: int index of current square
         :param moves: list of moves
         :param color: int value of color
@@ -100,7 +100,7 @@ class MoveGenerator:
         """
         Static method used to generate moves for knights
         :param moves: list of moves
-        :param piece: int value of piece
+        :param piece: int value of piece_square
         :param color: int value of color to move
         :param board: board instance
         :param start_square: int index of current square
@@ -125,7 +125,7 @@ class MoveGenerator:
         """
         Static method use to generate possible moves for king.
         :param moves: list of moves
-        :param piece: int value of a piece
+        :param piece: int value of a piece_square
         :param color: int value of color to move
         :param board: Board instance
         :param start_square: start square index
@@ -151,7 +151,7 @@ class MoveGenerator:
         """
         Static method to generate castling moves
         :param moves: list of moves
-        :param piece: int value of a piece
+        :param piece: int value of a piece_square
         :param color: int value of color to move
         :param board: Board instance
         :param start_square: start square index
@@ -169,7 +169,7 @@ class MoveGenerator:
         """
         Static method to generate moves for pawns
         :param moves: list of moves
-        :param piece: int value of a piece
+        :param piece: int value of a piece_square
         :param color: int value of color to move
         :param board: Board instance
         :param start_square: start square index

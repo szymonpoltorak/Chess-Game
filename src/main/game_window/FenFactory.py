@@ -44,9 +44,9 @@ class FenFactory:
     @staticmethod
     def get_proper_color_value(piece_value: int) -> int:
         """
-        Gives proper color value based on piece value.
-        :param piece_value: int piece value
-        :return: piece color value
+        Gives proper color value based on piece_square value.
+        :param piece_value: int piece_square value
+        :return: piece_square color value
         """
         white = PiecesEnum.WHITE.value
         black = PiecesEnum.BLACK.value
@@ -59,8 +59,8 @@ class FenFactory:
     def get_proper_fen_character(color_value: int, letter: str):
         """
         Returns proper fen characters based on color value.
-        :param color_value: int value of piece color
-        :param letter: str representation of piece
+        :param color_value: int value of piece_square color
+        :param letter: str representation of piece_square
         :return: proper fen str letter
         """
         if color_value == PiecesEnum.WHITE.value:

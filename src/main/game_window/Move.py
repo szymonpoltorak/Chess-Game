@@ -56,28 +56,28 @@ class Move:
     def get_start_square(self) -> int:
         """
         Gives access to tuple with start move square coordinates
-        :return: int start index of piece on board
+        :return: int start index of piece_square on board
         """
         return self.__start_square
 
     def get_end_square(self) -> int:
         """
         Gives access to tuple with end move square coordinates
-        :return: int end index of piece on board
+        :return: int end index of piece_square on board
         """
         return self.__end_square
 
     def get_moving_piece(self) -> int:
         """
-        Gives access to moving piece value
-        :return: int piece value
+        Gives access to moving piece_square value
+        :return: int piece_square value
         """
         return self.__piece
 
     def set_moving_piece(self, piece: int) -> None:
         """
-        Method used to set moving piece.
-        :param piece: int value of moving piece
+        Method used to set moving piece_square.
+        :param piece: int value of moving piece_square
         :return: None
         """
         self.__piece = piece

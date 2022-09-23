@@ -49,5 +49,7 @@ class MoveEnum(Enum):
 
     PAWN_DOWN_SINGLE_MOVE: int = 8
     PAWN_DOWN_DOUBLE_MOVE: int = 16
-    PAWN_DOWN_LEFT_ATTACK: int = 9
-    PAWN_DOWN_RIGHT_ATTACK: int = 7
+    PAWN_DOWN_LEFT_ATTACK: int = 7
+    PAWN_DOWN_RIGHT_ATTACK: int = 9
+
+    NONE_EN_PASSANT_SQUARE: int = -1

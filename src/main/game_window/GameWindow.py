@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import QWidget
 from game_window.Canvas import Canvas
 from game_window.ColorManager import ColorManager
 from game_window.enums.CanvasEnum import CanvasEnum
+from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
@@ -115,6 +116,7 @@ class GameWindow(QWidget):
             return
         deleted_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
         final_piece_index = 8 * row + col
+        move_length = self.__current_move.get_end_square() - self.__current_move.get_start_square()
 
         if self.__current_move.get_moving_piece() == PiecesEnum.ROOK.value:
             color = ColorManager.get_piece_color(self.__moving_piece)
@@ -125,6 +127,17 @@ class GameWindow(QWidget):
         else:
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)
 
+        if MoveValidator.was_it_en_passant_move(self.__current_move, self.__canvas.get_board()):
+            self.__canvas.get_board().make_en_passant_capture(self.__moving_piece)
+            deleted_piece = 1
+        elif move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
+            self.__canvas.get_board().set_en_passant_square(self.__current_move.get_end_square() -
+                                                            MoveEnum.PAWN_UP_SINGLE_MOVE.value)
+            self.__canvas.get_board().set_en_passant_piece_square(self.__current_move.get_end_square())
+        elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
+            self.__canvas.get_board().set_en_passant_square(self.__current_move.get_end_square() -
+                                                            MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
+            self.__canvas.get_board().set_en_passant_piece_square(self.__current_move.get_end_square())
         self.play_proper_sound(deleted_piece)
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__canvas.get_board().set_opposite_move_color()
@@ -135,8 +148,8 @@ class GameWindow(QWidget):
 
     def play_proper_sound(self, deleted_piece: int) -> None:
         """
-        Plays proper sound effect based on deleted piece value
-        :param deleted_piece: int value of piece
+        Plays proper sound effect based on deleted piece_square value
+        :param deleted_piece: int value of piece_square
         :return: None
         """
         if deleted_piece == 0:

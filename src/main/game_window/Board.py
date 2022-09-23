@@ -18,7 +18,8 @@ class Board:
     Class to hold and manage board representation.
     """
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
-                       "__white_castle_king", "__white_castle_queen",  "__black_castle_king", "__black_castle_queen"])
+                       "__white_castle_king", "__white_castle_queen",  "__black_castle_king", "__black_castle_queen",
+                       "__en_passant_square", "__en_passant_piece_square"])
 
     def __init__(self):
         self.__board_array: ndarray[int] = self.__init_starting_board()
@@ -27,6 +28,8 @@ class Board:
         self.__white_castle_queen = True
         self.__black_castle_king = True
         self.__black_castle_queen = True
+        self.__en_passant_square = -1
+        self.__en_passant_piece_square = -1
         self.__color_to_move: int = PiecesEnum.WHITE.value
         self.__distances_to_borders = MoveGenerator.calculate_distance_to_borders()
         self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
@@ -80,7 +83,7 @@ class Board:
     def castle_king(self, piece: int, move: Move) -> None:
         """
         Method used to castle king it means prepare board for castling
-        :param piece: int value of piece
+        :param piece: int value of piece_square
         :param move: Move instance
         :return: None
         """
@@ -125,6 +128,18 @@ class Board:
             self.__color_to_move = PiecesEnum.WHITE.value
         else:
             self.__color_to_move = PiecesEnum.BLACK.value
+
+    def set_en_passant_square(self, square: int) -> None:
+        self.__en_passant_square = square
+
+    def set_en_passant_piece_square(self, piece_square: int) -> None:
+        self.__en_passant_piece_square = piece_square
+
+    def get_en_passant_square(self) -> int:
+        return self.__en_passant_square
+
+    def get_en_passant_piece_square(self) -> int:
+        return self.__en_passant_piece_square
 
     def get_legal_moves(self) -> list[Move]:
         """
@@ -186,10 +201,10 @@ class Board:
 
     def delete_piece_from_board(self, row: int, col: int) -> int:
         """
-        Deletes piece from board and updates fen string.
+        Deletes piece_square from board and updates fen string.
         :param row: row int index
         :param col: col int index
-        :return: deleted piece value
+        :return: deleted piece_square value
         """
         board_index = BoardEnum.BOARD_LENGTH.value * row + col
 
@@ -201,9 +216,9 @@ class Board:
 
     def add_piece_to_the_board(self, piece: int, square: int) -> None:
         """
-        Adds piece to board array and updates fen string.
-        :param piece: int value of piece
-        :param square: int index of where to add a piece
+        Adds piece_square to board array and updates fen string.
+        :param piece: int value of piece_square
+        :param square: int index of where to add a piece_square
         :return: None
         """
         self.__board_array[square] = piece
@@ -211,10 +226,10 @@ class Board:
 
     def should_this_piece_move(self, row: int, col: int) -> bool:
         """
-        Checks if piece on boards row and col indexes should move.
+        Checks if piece_square on boards row and col indexes should move.
         :param row: int value of row index
         :param col: int value of col index
-        :return: bool value if piece should move or not
+        :return: bool value if piece_square should move or not
         """
         board_index = BoardEnum.BOARD_LENGTH.value * row + col
         color = ColorManager.get_piece_color(self.__board_array[board_index])
@@ -228,3 +243,11 @@ class Board:
         :return: bool value whether move is legal or not
         """
         return move in self.__legal_moves
+
+    def make_en_passant_capture(self, piece: int) -> None:
+        self.__board_array[self.__en_passant_square] = piece
+        self.__board_array[self.__en_passant_piece_square] = 0
+
+        self.__en_passant_square = MoveEnum.NONE_EN_PASSANT_SQUARE.value
+        self.__en_passant_piece_square = MoveEnum.NONE_EN_PASSANT_SQUARE.value
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)
