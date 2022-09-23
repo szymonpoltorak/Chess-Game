@@ -152,7 +152,7 @@ class Canvas(QPainter):
         current_y = CanvasEnum.CANVAS_Y.value
 
         for row in range(BoardEnum.BOARD_LENGTH.value):
-            if self.is_it_frozen_piece():
+            if not self.is_it_frozen_piece():
                 break
             for col in range(BoardEnum.BOARD_LENGTH.value):
                 current_square = BoardEnum.BOARD_LENGTH.value * row + col
@@ -175,10 +175,7 @@ class Canvas(QPainter):
         Method used to check if piece was not moved at all
         :return: bool value
         """
-        if self.__freeze_start == -1 or self.__freeze_end == -1:
-            return False
-        return self.__freeze_piece not in (PiecesEnum.BISHOP.value, PiecesEnum.ROOK.value, PiecesEnum.QUEEN.value,
-                                           PiecesEnum.KNIGHT.value, PiecesEnum.KING.value)
+        return self.__freeze_start != -1 and self.__freeze_end != -1
 
     def is_it_frozen_piece_target_square(self, legal_move: Move, current_square: int) -> bool:
         """

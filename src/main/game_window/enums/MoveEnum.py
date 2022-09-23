@@ -37,7 +37,17 @@ class MoveEnum(Enum):
     KING_SIDE: int = 2
     QUEEN_SIDE: int = -3
 
-    WHITE_ROOK_QUEEN: int = 56
-    WHITE_ROOK_KING: int = 63
-    BLACK_ROOK_QUEEN: int = 0
-    BLACK_ROOK_KING: int = 7
+    BOTTOM_ROOK_QUEEN: int = 56
+    BOTTOM_ROOK_KING: int = 63
+    TOP_ROOK_QUEEN: int = 0
+    TOP_ROOK_KING: int = 7
+
+    PAWN_UP_SINGLE_MOVE: int = -8
+    PAWN_UP_DOUBLE_MOVE: int = -16
+    PAWN_UP_LEFT_ATTACK: int = -9
+    PAWN_UP_RIGHT_ATTACK: int = -7
+
+    PAWN_DOWN_SINGLE_MOVE: int = 8
+    PAWN_DOWN_DOUBLE_MOVE: int = 16
+    PAWN_DOWN_LEFT_ATTACK: int = 9
+    PAWN_DOWN_RIGHT_ATTACK: int = 7

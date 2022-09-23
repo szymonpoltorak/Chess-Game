@@ -9,8 +9,8 @@ from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.FenFactory import FenFactory
 from game_window.Move import Move
+from game_window.MoveGenerator import MoveGenerator
 from game_window.MoveValidator import MoveValidator
-from game_window.ValidateUtils import ValidateUtils
 
 
 class Board:
@@ -28,8 +28,8 @@ class Board:
         self.__black_castle_king = True
         self.__black_castle_queen = True
         self.__color_to_move: int = PiecesEnum.WHITE.value
-        self.__distances_to_borders = MoveValidator.calculate_distance_to_borders()
-        self.__legal_moves = MoveValidator.generate_legal_moves(self.__color_to_move, self)
+        self.__distances_to_borders = MoveGenerator.calculate_distance_to_borders()
+        self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
 
     def can_king_castle_king_side(self, color: int) -> bool:
         """
@@ -88,7 +88,7 @@ class Board:
 
         if distance == MoveEnum.CASTLE_MOVE.value:
             color = ColorManager.get_piece_color(piece)
-            rook_position = ValidateUtils.get_rook_position(color, True)
+            rook_position = MoveValidator.get_rook_position(color, True)
 
             self.__board_array[move.get_start_square()] = 0
             self.__board_array[move.get_end_square()] = piece
@@ -98,7 +98,7 @@ class Board:
             self.set_castling_queen_side(False, color)
         elif distance == -MoveEnum.CASTLE_MOVE.value:
             color = ColorManager.get_piece_color(piece)
-            rook_position = ValidateUtils.get_rook_position(color, False)
+            rook_position = MoveValidator.get_rook_position(color, False)
 
             self.__board_array[move.get_start_square()] = 0
             self.__board_array[move.get_end_square()] = piece
@@ -227,7 +227,4 @@ class Board:
         :param move: current move player wants to play
         :return: bool value whether move is legal or not
         """
-        if move.get_moving_piece() in (PiecesEnum.BISHOP.value, PiecesEnum.ROOK.value, PiecesEnum.QUEEN.value,
-                                       PiecesEnum.KNIGHT.value, PiecesEnum.KING.value):
-            return move in self.__legal_moves
-        return True
+        return move in self.__legal_moves

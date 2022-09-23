@@ -11,8 +11,8 @@ from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
+from game_window.MoveGenerator import MoveGenerator
 from game_window.MoveValidator import MoveValidator
-from game_window.ValidateUtils import ValidateUtils
 
 
 class GameWindow(QWidget):
@@ -113,15 +113,14 @@ class GameWindow(QWidget):
             self.__current_move.set_end_square(None, None)
             self.update()
             return
-
         deleted_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
         final_piece_index = 8 * row + col
 
         if self.__current_move.get_moving_piece() == PiecesEnum.ROOK.value:
             color = ColorManager.get_piece_color(self.__moving_piece)
-            ValidateUtils.disable_castling_on_side(color, self.__current_move, self.__canvas.get_board())
+            MoveValidator.disable_castling_on_side(color, self.__current_move, self.__canvas.get_board())
 
-        if ValidateUtils.is_it_castling(self.__current_move):
+        if MoveValidator.is_it_castling(self.__current_move):
             self.__canvas.get_board().castle_king(self.__moving_piece, self.__current_move)
         else:
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)
@@ -129,7 +128,7 @@ class GameWindow(QWidget):
         self.play_proper_sound(deleted_piece)
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__canvas.get_board().set_opposite_move_color()
-        list_move = MoveValidator.generate_legal_moves(ColorManager.get_opposite_piece_color(
+        list_move = MoveGenerator.generate_legal_moves(ColorManager.get_opposite_piece_color(
                                         ColorManager.get_piece_color(self.__moving_piece)), self.__canvas.get_board())
         self.__canvas.get_board().set_legal_moves(list_move)
         self.update()
