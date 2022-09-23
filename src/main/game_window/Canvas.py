@@ -8,24 +8,30 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QStaticText
 
 from game_window.Board import Board
+from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.CanvasEnum import CanvasEnum
+from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.Move import Move
 
 
 class Canvas(QPainter):
     """
     Class which manages painting board and pieces.
     """
-    __slots__ = array(["__board", "__rect_width", "__rect_height"])
+    __slots__ = array(["__board", "__rect_width", "__rect_height", "__freeze_piece", "__freeze_start", "__freeze_end"])
 
     def __init__(self):
         super(Canvas, self).__init__()
         self.__board: Board = Board()
         self.__rect_width = int(CanvasEnum.CANVAS_WIDTH.value / 8)
         self.__rect_height = int(CanvasEnum.CANVAS_HEIGHT.value / 8)
+        self.__freeze_piece = -1
+        self.__freeze_start = -1
+        self.__freeze_end = -1
 
-    def draw_chess_board(self) -> None:
+    def draw_chess_board(self, move: Move) -> None:
         """
         Method draws a whole chess board on canvas.
         :return: None
@@ -40,27 +46,35 @@ class Canvas(QPainter):
 
         for row in range(BoardEnum.BOARD_LENGTH.value):
             for col in range(BoardEnum.BOARD_LENGTH.value):
-                color = self.pick_proper_color(row, col)
+                color = ColorManager.pick_proper_color(row, col)
                 rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
+                current_square = BoardEnum.BOARD_LENGTH.value * row + col
 
-                self.fillRect(rectangle, QColor(color))
-
+                if move.get_start_square() == move.get_end_square():
+                    self.fillRect(rectangle, QColor(color))
+                elif move.get_start_square() == current_square:
+                    self.fillRect(rectangle, QColor(MoveEnum.START_SQUARE_COLOR.value))
+                elif move.get_end_square() == current_square:
+                    self.fillRect(rectangle, QColor(MoveEnum.END_SQUARE_COLOR.value))
+                else:
+                    self.fillRect(rectangle, QColor(color))
                 current_x += self.__rect_width
 
                 if col == CanvasEnum.FIRST_COLUMN.value:
                     self.draw_character_on_board(current_number, index_x + BoardEnum.NUMBER_SCALE_X.value,
                                                  index_y + BoardEnum.NUMBER_SCALE_Y.value,
-                                                 self.get_opposite_color(color))
+                                                 ColorManager.get_opposite_square_color(color))
                     current_number -= 1
                 if row == CanvasEnum.LAST_ROW.value:
                     self.draw_character_on_board(letters[col], index_x + BoardEnum.LETTER_SCALE_X.value,
                                                  index_y + BoardEnum.LETTER_SCALE_Y.value,
-                                                 self.get_opposite_color(color))
+                                                 ColorManager.get_opposite_square_color(color))
                     index_x = current_x
-
             current_y += self.__rect_height
             current_x = CanvasEnum.CANVAS_X.value
             index_y = current_y
+
+        self.paint_possible_moves_for_frozen_piece()
         self.__draw_position_from_fen()
 
     def draw_character_on_board(self, character, position_x: int, position_y: int, color: str) -> None:
@@ -129,30 +143,60 @@ class Canvas(QPainter):
 
             return current_x
 
-    def pick_proper_color(self, row: int, col: int) -> str:
+    def paint_possible_moves_for_frozen_piece(self) -> None:
         """
-        Method chooses proper color for square on a chess board based on row and col index.
-        :param row: current row on chess board
-        :param col: current column on chess board
-        :return: string value of a color
+        Method to paint possible moves for not moven piece on board
+        :return: None
         """
-        is_light_color = (row + col) % 2 == 0
+        current_x = CanvasEnum.CANVAS_X.value
+        current_y = CanvasEnum.CANVAS_Y.value
 
-        if is_light_color:
-            return BoardEnum.PRIMARY_BOARD_COLOR.value
-        else:
-            return BoardEnum.SECONDARY_BOARD_COLOR.value
+        for row in range(BoardEnum.BOARD_LENGTH.value):
+            if not self.is_it_frozen_piece():
+                break
+            for col in range(BoardEnum.BOARD_LENGTH.value):
+                current_square = BoardEnum.BOARD_LENGTH.value * row + col
+                legal_moves = self.__board.get_legal_moves()
 
-    def get_opposite_color(self, color: str) -> str:
+                for legal_move in legal_moves:
+                    if self.is_it_frozen_piece_target_square(legal_move, current_square):
+                        rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
+                        self.fillRect(rectangle, QColor("#b0272f"))
+                        break
+                current_x += self.__rect_width
+            current_y += self.__rect_height
+            current_x = CanvasEnum.CANVAS_X.value
+        self.__freeze_piece = -1
+        self.__freeze_start = -1
+        self.__freeze_end = -1
+
+    def is_it_frozen_piece(self) -> bool:
         """
-        Returns opposite color of given one.
-        :param color: given color string of which we want to have opposite one
-        :return: opposite color string
+        Method used to check if piece was not moved at all
+        :return: bool value
         """
-        if color == BoardEnum.PRIMARY_BOARD_COLOR.value:
-            return BoardEnum.SECONDARY_BOARD_COLOR.value
-        else:
-            return BoardEnum.PRIMARY_BOARD_COLOR.value
+        return self.__freeze_start != -1 and self.__freeze_end != -1
+
+    def is_it_frozen_piece_target_square(self, legal_move: Move, current_square: int) -> bool:
+        """
+        Methods checks if current square is a valid move for a frozen piece
+        :param legal_move: current legal move instance
+        :param current_square: int index of current square
+        :return: bool value
+        """
+        if legal_move.get_end_square() != current_square or legal_move.get_moving_piece() != self.__freeze_piece:
+            return False
+        return legal_move.get_start_square() == self.__freeze_start
+
+    def copy_current_move(self, move) -> None:
+        """
+        Method copies values of a current move
+        :param move:
+        :return:
+        """
+        self.__freeze_piece = move.get_moving_piece()
+        self.__freeze_start = move.get_start_square()
+        self.__freeze_end = move.get_end_square()
 
     def get_board(self) -> Board:
         """

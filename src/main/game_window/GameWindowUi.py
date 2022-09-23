@@ -148,7 +148,7 @@ class GameWindowUi:
         self.__next_move_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__next_move_button.setMinimumSize(QtCore.QSize(GameWindowEnum.BUTTON_WIDTH.value,
                                                             GameWindowEnum.BUTTON_HEIGHT.value))
-        self.__next_move_button.setToolTip("Next Move")
+        self.__next_move_button.setToolTip("Next MoveController")
         self.__next_move_button.setObjectName("__next_move_button")
         self.__button_horizontal_layout.addWidget(self.__next_move_button)
 
