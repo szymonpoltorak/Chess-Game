@@ -14,13 +14,14 @@ from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
 from game_window.MoveValidator import MoveValidator
+from game_window.PromotionUtil import PromotionUtil
 
 
 class GameWindow(QWidget):
     """
     Covers play game window.
     """
-    __slots__ = array(["__ui", "__canvas", "__moving_piece", "__current_move"])
+    __slots__ = array(["__ui", "__canvas", "__moving_piece", "__current_move", "__promotion_util"])
 
     def __init__(self):
         super(GameWindow, self).__init__()
@@ -28,6 +29,7 @@ class GameWindow(QWidget):
         self.__canvas = Canvas()
         self.__moving_piece = None
         self.__current_move = Move(None, None, None)
+        self.__promotion_util = PromotionUtil()
 
         with open("src/resources/styles/GameWindow.min.css", "r", encoding="utf-8") as style:
             self.__ui = GameWindowUi(self)
@@ -41,6 +43,9 @@ class GameWindow(QWidget):
         """
         self.__canvas.begin(self)
         self.__canvas.draw_chess_board(self.__current_move)
+
+        if self.__promotion_util.is_this_pawn_promoting():
+            self.__canvas.paint_promotion_window(self.__promotion_util, self.__current_move.get_end_square())
         self.__canvas.end()
 
     def get_ui(self) -> GameWindowUi:
@@ -78,6 +83,8 @@ class GameWindow(QWidget):
         :param mouse_press_event: event of mouse pressed on QWidget
         :return: 
         """
+        if self.__promotion_util.is_this_pawn_promoting():
+            return
         row, col = self.__start_mouse_events(mouse_press_event)
 
         if row is None or col is None or not self.__canvas.get_board().should_this_piece_move(row, col):
@@ -99,6 +106,11 @@ class GameWindow(QWidget):
         :param mouse_release_event: event of mouse released on QWidget
         :return: None
         """
+        if self.__promotion_util.is_this_pawn_promoting():
+            self.__promotion_util.check_user_choice(mouse_release_event, self.__canvas.get_rect_height(),
+                                                    self.__canvas.get_board())
+            self.update()
+            return
         row, col = self.__start_mouse_events(mouse_release_event)
 
         if self.__current_move.get_start_square() is None or row is None or col is None:
@@ -117,16 +129,19 @@ class GameWindow(QWidget):
         deleted_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
         final_piece_index = 8 * row + col
         move_length = self.__current_move.get_end_square() - self.__current_move.get_start_square()
+        color = ColorManager.get_piece_color(self.__moving_piece)
+
+        if MoveValidator.is_pawn_promoting(self.__current_move, color):
+            self.__promotion_util.set_promotion_data(color, mouse_release_event.x(), mouse_release_event.y(), final_piece_index)
 
         if self.__current_move.get_moving_piece() == PiecesEnum.ROOK.value:
-            color = ColorManager.get_piece_color(self.__moving_piece)
             MoveValidator.disable_castling_on_side(color, self.__current_move, self.__canvas.get_board())
 
         if MoveValidator.is_it_castling(self.__current_move):
             self.__canvas.get_board().castle_king(self.__moving_piece, self.__current_move)
         elif self.__current_move.get_moving_piece() == PiecesEnum.KING.value:
-            self.__canvas.get_board().set_castling_king_side(False, ColorManager.get_piece_color(self.__moving_piece))
-            self.__canvas.get_board().set_castling_queen_side(False, ColorManager.get_piece_color(self.__moving_piece))
+            self.__canvas.get_board().set_castling_king_side(False, color)
+            self.__canvas.get_board().set_castling_queen_side(False, color)
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)
         else:
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)
@@ -145,8 +160,8 @@ class GameWindow(QWidget):
         self.play_proper_sound(deleted_piece)
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__canvas.get_board().set_opposite_move_color()
-        list_move = MoveGenerator.generate_legal_moves(ColorManager.get_opposite_piece_color(
-                                        ColorManager.get_piece_color(self.__moving_piece)), self.__canvas.get_board())
+        list_move = MoveGenerator.generate_legal_moves(ColorManager.get_opposite_piece_color(color),
+                                                       self.__canvas.get_board())
         self.__canvas.get_board().set_legal_moves(list_move)
         self.update()
 

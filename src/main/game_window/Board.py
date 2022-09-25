@@ -141,6 +141,9 @@ class Board:
     def get_en_passant_piece_square(self) -> int:
         return self.__en_passant_piece_square
 
+    def convert_board_to_string(self):
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)
+
     def get_legal_moves(self) -> list[Move]:
         """
         Gives access to legal moves list.

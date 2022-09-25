@@ -240,3 +240,11 @@ class MoveValidator:
             return MoveEnum.PAWN_DOWN_LEFT_ATTACK.value
         elif direction.upper() == "RIGHT" and color == PiecesEnum.BLACK.value:
             return MoveEnum.PAWN_DOWN_RIGHT_ATTACK.value
+
+    @staticmethod
+    def is_pawn_promoting(move: Move, color: int) -> bool:
+        if move.get_moving_piece() != PiecesEnum.PAWN.value:
+            return False
+        if color == PiecesEnum.WHITE.value and 0 <= move.get_end_square() <= 7:
+            return True
+        return color == PiecesEnum.BLACK.value and 57 <= move.get_end_square() <= 63
