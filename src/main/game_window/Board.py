@@ -71,16 +71,33 @@ class Board:
         else:
             self.__black_castle_king = can_castle
 
-    def update_move_counter(self):
+    def update_move_counter(self) -> None:
+        """
+        Increments move counter by 1
+        :return: None
+        """
         self.__move_counter += 1
 
-    def get_move_counter(self):
+    def get_move_counter(self) -> int:
+        """
+        Gives access to move counter current value
+        :return: int value of counter
+        """
         return self.__move_counter
 
-    def get_no_sack_and_pawn_count(self):
+    def get_no_sack_and_pawn_count(self) -> int:
+        """
+        Gives access to counter of how many moves have passed since last pawn move or any sack
+        :return: int value of counter
+        """
         return self.__no_sack_and_pawn_count
 
-    def update_no_sack_and_pawn_count(self, to_zero: bool):
+    def update_no_sack_and_pawn_count(self, to_zero: bool) -> None:
+        """
+        Updates no sack and no pawn move counter or makes it equal to 0
+        :param to_zero: bool value if counter should be made 0 or not
+        :return: None
+        """
         if to_zero:
             self.__no_sack_and_pawn_count = 0
             return
