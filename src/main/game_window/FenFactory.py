@@ -48,7 +48,12 @@ class FenFactory:
         return fen
 
     @staticmethod
-    def convert_square_into_board_double_index(square) -> str:
+    def convert_square_into_board_double_index(square: int) -> str:
+        """
+        Method to convert square board index into chess board index
+        :param square: int value of square
+        :return: str
+        """
         if square == -1:
             return " -"
 
@@ -60,18 +65,34 @@ class FenFactory:
 
     @staticmethod
     def get_color_to_move_fen_letter(color: int) -> str:
+        """
+        Method returns a letter of current to move color
+        :param color: int value of color
+        :return: str
+        """
         if color == PiecesEnum.WHITE.value:
             return " w"
         return " b"
 
     @staticmethod
     def get_proper_letter_size(color: int, letter: str) -> str:
+        """
+        Method returns proper case of letter (upper of lower) for fen
+        :param color: int value of color
+        :param letter: str
+        :return: str
+        """
         if color == PiecesEnum.WHITE.value:
             return letter.upper()
         return letter
 
     @staticmethod
     def add_castling_letters_to_fen(board) -> str:
+        """
+        Method to get proper letters representing castling capabilities of kings
+        :param board: Board instance
+        :return: str
+        """
         castle_string = " "
 
         if board.can_king_castle_king_side(PiecesEnum.WHITE.value):

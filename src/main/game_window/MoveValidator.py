@@ -2,6 +2,7 @@ from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.Move import Move
 
 
@@ -149,7 +150,7 @@ class MoveValidator:
                                                                                 MoveEnum.PAWN_UP_SINGLE_MOVE.value):
                 moves.append(Move(start_square, double_move_target, piece))
             if board.get_board_array()[move_target] == 0:
-                moves.append(Move(start_square, move_target, piece))
+                MoveValidator.add_moves_and_promotions(start_square, move_target, piece, moves)
         else:
             double_move_target = start_square + MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value
             move_target = start_square + MoveEnum.PAWN_DOWN_SINGLE_MOVE.value
@@ -161,7 +162,7 @@ class MoveValidator:
                                                                                MoveEnum.PAWN_DOWN_SINGLE_MOVE.value):
                 moves.append(Move(start_square, double_move_target, piece))
             if board.get_board_array()[move_target] == 0:
-                moves.append(Move(start_square, move_target, piece))
+                MoveValidator.add_moves_and_promotions(start_square, move_target, piece, moves)
 
     @staticmethod
     def no_piece_in_pawns_way(double_move_target: int, start_square: int, board, step: int) -> bool:
@@ -199,14 +200,41 @@ class MoveValidator:
 
         if color != ColorManager.get_piece_color(left_piece) and left_piece != PiecesEnum.NONE.value:
             if MoveValidator.is_attack_target_in_border_bounds(start_square, left_piece_square, MoveEnum.PAWN_RANGE.value):
-                moves.append(Move(start_square, left_piece_square, piece))
+                MoveValidator.add_moves_and_promotions(start_square, left_piece_square, piece, moves)
         if color != ColorManager.get_piece_color(right_piece) and right_piece != PiecesEnum.NONE.value:
             if MoveValidator.is_attack_target_in_border_bounds(start_square, right_piece_square, MoveEnum.PAWN_RANGE.value):
-                moves.append(Move(start_square, right_piece_square, piece))
+                MoveValidator.add_moves_and_promotions(start_square, right_piece_square, piece, moves)
         MoveValidator.check_en_passant_movement(start_square, piece, color, moves, board)
 
     @staticmethod
-    def check_en_passant_movement(start_square: int, piece: int, color: int, moves: list[Move], board):
+    def add_moves_and_promotions(start_square: int, move_target: int, piece: int, moves: list[Move]) -> None:
+        """
+        Checks if move is a promotion or not and add move to the list
+        :param move_target: int target square of the move
+        :param start_square: int index of starting square
+        :param piece: int value of a piece_square
+        :param moves: list of moves
+        :return: None
+        """
+        if 56 <= move_target <= 63 or 0 <= move_target <= 7:
+            moves.append(Move(start_square, move_target, piece, SpecialFlags.PROMOTE_TO_QUEEN.value))
+            moves.append(Move(start_square, move_target, piece, SpecialFlags.PROMOTE_TO_ROOK.value))
+            moves.append(Move(start_square, move_target, piece, SpecialFlags.PROMOTE_TO_BISHOP.value))
+            moves.append(Move(start_square, move_target, piece, SpecialFlags.PROMOTE_TO_KNIGHT.value))
+        else:
+            moves.append(Move(start_square, move_target, piece))
+
+    @staticmethod
+    def check_en_passant_movement(start_square: int, piece: int, color: int, moves: list[Move], board) -> None:
+        """
+        Checks if there is an en passant movement and add it to list
+        :param start_square:
+        :param piece: int value of piece
+        :param color: int value of color
+        :param moves: list of moves
+        :param board: Board instance
+        :return: None
+        """
         en_passant_square = board.get_en_passant_square()
         en_passant_target_left = start_square + MoveValidator.get_attack_direction(color, "LEFT")
         en_passant_target_right = start_square + MoveValidator.get_attack_direction(color, "RIGHT")
@@ -214,12 +242,18 @@ class MoveValidator:
         if en_passant_square == -1:
             return
         if en_passant_square == en_passant_target_left:
-            moves.append(Move(start_square, en_passant_target_left, piece))
+            moves.append(Move(start_square, en_passant_target_left, piece, SpecialFlags.EN_PASSANT.value))
         elif en_passant_square == en_passant_target_right:
-            moves.append(Move(start_square, en_passant_target_right, piece))
+            moves.append(Move(start_square, en_passant_target_right, piece, SpecialFlags.EN_PASSANT.value))
 
     @staticmethod
-    def was_it_en_passant_move(move: Move, board):
+    def was_it_en_passant_move(move: Move, board) -> bool:
+        """
+        Methods checks if it was an en passant move
+        :param move: Move instance
+        :param board: Board instance
+        :return: bool
+        """
         if move.get_moving_piece() != PiecesEnum.PAWN.value or board.get_en_passant_square() == -1 or board.get_en_passant_piece_square() == -1:
             return False
         return move.get_end_square() == board.get_en_passant_square()
@@ -243,6 +277,12 @@ class MoveValidator:
 
     @staticmethod
     def is_pawn_promoting(move: Move, color: int) -> bool:
+        """
+        Methods checks if pawn is promoting or not
+        :param move: Move instance
+        :param color: int value of color
+        :return: bool
+        """
         if move.get_moving_piece() != PiecesEnum.PAWN.value:
             return False
         if color == PiecesEnum.WHITE.value and 0 <= move.get_end_square() <= 7:

@@ -4,12 +4,14 @@ from game_window.enums.BoardEnum import BoardEnum
 
 
 class Move:
-    __slots__ = array(["__start_square", "__end_square", "__piece"])
+    __slots__ = array(["__start_square", "__end_square", "__piece", "__special_flag"])
 
-    def __init__(self, start_square: tuple[int, int] or None, end_square: tuple[int, int] or None, piece: int or None):
+    def __init__(self, start_square: tuple[int, int] or None, end_square: tuple[int, int] or None, piece: int or None,
+                 special_flag: int = -1):
         self.__start_square = start_square
         self.__end_square = end_square
         self.__piece = piece
+        self.__special_flag = special_flag
 
     def set_start_square(self, row: int or None, col: int or None) -> None:
         """
@@ -52,6 +54,13 @@ class Move:
             return
         end_square = BoardEnum.BOARD_LENGTH.value * row + col
         self.__end_square = end_square
+
+    def get_special_flag_value(self):
+        """
+        Returns the value of special move flag which stands for special move value
+        :return: int value of special flag
+        """
+        return self.__special_flag
 
     def get_start_square(self) -> int:
         """

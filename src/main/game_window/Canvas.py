@@ -93,7 +93,13 @@ class Canvas(QPainter):
         self.setFont(QFont(font))
         self.drawStaticText(position_x, position_y, QStaticText(str(character)))
 
-    def paint_promotion_window(self, data: PromotionUtil, current_square: int):
+    def paint_promotion_window(self, data: PromotionUtil, current_square: int) -> None:
+        """
+        Method used to paint promotion window for pawn
+        :param data: PromotionUtil instance containing needed data
+        :param current_square: int value of square
+        :return: None
+        """
         col = current_square % 8
         row = int((current_square - col) / 8)
         square_y = row * self.__rect_height + CanvasEnum.CANVAS_Y.value
@@ -115,7 +121,13 @@ class Canvas(QPainter):
             self.load_proper_image(square_x, square_y, self.get_promotion_piece_letter(i, data.get_piece_color()))
             square_y += self.__rect_height
 
-    def get_promotion_piece_letter(self, index: int, color: int):
+    def get_promotion_piece_letter(self, index: int, color: int) -> str:
+        """
+        Method used to get letter of a piece with proper case
+        :param index: int index of letter
+        :param color: int value of color
+        :return: str
+        """
         letters = array(["q", "b", "n", "r"])
 
         if color == PiecesEnum.WHITE.value:

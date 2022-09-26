@@ -149,7 +149,15 @@ class GameWindow(QWidget):
         self.__canvas.get_board().update_fen()
         self.update()
 
-    def handle_pawn_special_events(self, mouse_event: QMouseEvent, color: int, piece_index: int, deleted_piece: int):
+    def handle_pawn_special_events(self, mouse_event: QMouseEvent, color: int, piece_index: int, deleted_piece: int) -> int:
+        """
+        Method used to handle every pawn special events
+        :param mouse_event: mouse release event
+        :param color: int value of color
+        :param piece_index: int value of piece index
+        :param deleted_piece: value of deleted piece
+        :return: int
+        """
         move_length = self.__current_move.get_end_square() - self.__current_move.get_start_square()
 
         if MoveValidator.is_pawn_promoting(self.__current_move, color):
@@ -171,7 +179,13 @@ class GameWindow(QWidget):
             self.__canvas.get_board().set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
         return deleted_piece
 
-    def handle_castling_event(self, final_piece_index: int, color: int):
+    def handle_castling_event(self, final_piece_index: int, color: int) -> None:
+        """
+        Method used to handle castling movements
+        :param final_piece_index: int value of piece index
+        :param color: int value of color
+        :return: None
+        """
         if self.__current_move.get_moving_piece() == PiecesEnum.ROOK.value:
             MoveValidator.disable_castling_on_side(color, self.__current_move, self.__canvas.get_board())
         if MoveValidator.is_it_castling(self.__current_move):

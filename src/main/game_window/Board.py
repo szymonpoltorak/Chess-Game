@@ -147,21 +147,6 @@ class Board:
         else:
             self.__color_to_move = PiecesEnum.BLACK.value
 
-    def set_en_passant_square(self, square: int) -> None:
-        self.__en_passant_square = square
-
-    def set_en_passant_piece_square(self, piece_square: int) -> None:
-        self.__en_passant_piece_square = piece_square
-
-    def get_en_passant_square(self) -> int:
-        return self.__en_passant_square
-
-    def get_en_passant_piece_square(self) -> int:
-        return self.__en_passant_piece_square
-
-    def convert_board_to_string(self):
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
-
     def get_legal_moves(self) -> list[Move]:
         """
         Gives access to legal moves list.
@@ -266,12 +251,51 @@ class Board:
         return move in self.__legal_moves
 
     def update_fen(self):
+        """
+        Method used to update fen string with current board state
+        :return: None
+        """
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
     def make_en_passant_capture(self, piece: int) -> None:
+        """
+        Method used to make an en passant capture on board array
+        :param piece: int value of piece
+        :return: None
+        """
         self.__board_array[self.__en_passant_square] = piece
         self.__board_array[self.__en_passant_piece_square] = 0
 
         self.__en_passant_square = MoveEnum.NONE_EN_PASSANT_SQUARE.value
         self.__en_passant_piece_square = MoveEnum.NONE_EN_PASSANT_SQUARE.value
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
+
+    def set_en_passant_square(self, square: int) -> None:
+        """
+        Method used to set en passant square
+        :param square: int value of square
+        :return: None
+        """
+        self.__en_passant_square = square
+
+    def set_en_passant_piece_square(self, piece_square: int) -> None:
+        """
+        Method used to set an en passant pieces quare value
+        :param piece_square: int piece square value
+        :return: None
+        """
+        self.__en_passant_piece_square = piece_square
+
+    def get_en_passant_square(self) -> int:
+        """
+        Gives access to an en passant square value
+        :return:
+        """
+        return self.__en_passant_square
+
+    def get_en_passant_piece_square(self) -> int:
+        """
+        Gives access to an en passant piece square value
+        :return:
+        """
+        return self.__en_passant_piece_square
