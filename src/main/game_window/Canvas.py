@@ -104,7 +104,6 @@ class Canvas(QPainter):
         elif row == 7:
             square_y = row * self.__rect_height + CanvasEnum.CANVAS_Y.value - 3 * self.__rect_height
         data.set_promotion_data(data.get_piece_color(), square_x, square_y, data.get_pawn_square())
-        print(f"X: {square_x}\nY:{square_y}\n")
 
         for i in range(4):
             rectangle = QRect(square_x, square_y, self.__rect_width, self.__rect_height)

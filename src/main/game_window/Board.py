@@ -19,7 +19,8 @@ class Board:
     """
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
                        "__white_castle_king", "__white_castle_queen",  "__black_castle_king", "__black_castle_queen",
-                       "__en_passant_square", "__en_passant_piece_square"])
+                       "__en_passant_square", "__en_passant_piece_square", "__move_counter",
+                       "__no_sack_and_pawn_count"])
 
     def __init__(self):
         self.__board_array: ndarray[int] = self.__init_starting_board()
@@ -30,6 +31,8 @@ class Board:
         self.__black_castle_queen = True
         self.__en_passant_square = -1
         self.__en_passant_piece_square = -1
+        self.__move_counter = 1
+        self.__no_sack_and_pawn_count = 0
         self.__color_to_move: int = PiecesEnum.WHITE.value
         self.__distances_to_borders = MoveGenerator.calculate_distance_to_borders()
         self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
@@ -67,6 +70,21 @@ class Board:
             self.__white_castle_king = can_castle
         else:
             self.__black_castle_king = can_castle
+
+    def update_move_counter(self):
+        self.__move_counter += 1
+
+    def get_move_counter(self):
+        return self.__move_counter
+
+    def get_no_sack_and_pawn_count(self):
+        return self.__no_sack_and_pawn_count
+
+    def update_no_sack_and_pawn_count(self, to_zero: bool):
+        if to_zero:
+            self.__no_sack_and_pawn_count = 0
+            return
+        self.__no_sack_and_pawn_count += 1
 
     def set_castling_queen_side(self, can_castle: bool, color: int) -> None:
         """
@@ -109,7 +127,7 @@ class Board:
             self.__board_array[move.get_end_square() - 1] = color | PiecesEnum.ROOK.value
             self.set_castling_king_side(False, color)
             self.set_castling_queen_side(False, color)
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
     def set_legal_moves(self, legal_moves: list[Move]) -> None:
         """
@@ -142,7 +160,7 @@ class Board:
         return self.__en_passant_piece_square
 
     def convert_board_to_string(self):
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
     def get_legal_moves(self) -> list[Move]:
         """
@@ -213,7 +231,7 @@ class Board:
 
         piece = self.__board_array[board_index]
         self.__board_array[board_index] = 0
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
         return piece
 
@@ -225,7 +243,7 @@ class Board:
         :return: None
         """
         self.__board_array[square] = piece
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
     def should_this_piece_move(self, row: int, col: int) -> bool:
         """
@@ -247,10 +265,13 @@ class Board:
         """
         return move in self.__legal_moves
 
+    def update_fen(self):
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
+
     def make_en_passant_capture(self, piece: int) -> None:
         self.__board_array[self.__en_passant_square] = piece
         self.__board_array[self.__en_passant_piece_square] = 0
 
         self.__en_passant_square = MoveEnum.NONE_EN_PASSANT_SQUARE.value
         self.__en_passant_piece_square = MoveEnum.NONE_EN_PASSANT_SQUARE.value
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self.__board_array)
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
