@@ -14,6 +14,7 @@ from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.Move import Move
+from game_window.PromotionUtil import PromotionUtil
 
 
 class Canvas(QPainter):
@@ -73,7 +74,6 @@ class Canvas(QPainter):
             current_y += self.__rect_height
             current_x = CanvasEnum.CANVAS_X.value
             index_y = current_y
-
         self.paint_possible_moves_for_frozen_piece()
         self.__draw_position_from_fen()
 
@@ -92,6 +92,47 @@ class Canvas(QPainter):
         self.setPen(QColor(color))
         self.setFont(QFont(font))
         self.drawStaticText(position_x, position_y, QStaticText(str(character)))
+
+    def paint_promotion_window(self, data: PromotionUtil, current_square: int) -> None:
+        """
+        Method used to paint promotion window for pawn
+        :param data: PromotionUtil instance containing needed data
+        :param current_square: int value of square
+        :return: None
+        """
+        col = current_square % 8
+        row = int((current_square - col) / 8)
+        square_y = row * self.__rect_height + CanvasEnum.CANVAS_Y.value
+        square_x = col * self.__rect_width + CanvasEnum.CANVAS_X.value
+
+        if row == 0:
+            square_y = row * self.__rect_height + CanvasEnum.CANVAS_Y.value
+        elif row == 7:
+            square_y = row * self.__rect_height + CanvasEnum.CANVAS_Y.value - 3 * self.__rect_height
+        data.set_promotion_data(data.get_piece_color(), square_x, square_y, data.get_pawn_square())
+
+        for i in range(4):
+            rectangle = QRect(square_x, square_y, self.__rect_width, self.__rect_height)
+
+            if i % 2 == 0:
+                self.fillRect(rectangle, QColor("#4c5052"))
+            else:
+                self.fillRect(rectangle, QColor("#8b969e"))
+            self.load_proper_image(square_x, square_y, self.get_promotion_piece_letter(i, data.get_piece_color()))
+            square_y += self.__rect_height
+
+    def get_promotion_piece_letter(self, index: int, color: int) -> str:
+        """
+        Method used to get letter of a piece with proper case
+        :param index: int index of letter
+        :param color: int value of color
+        :return: str
+        """
+        letters = array(["q", "b", "n", "r"])
+
+        if color == PiecesEnum.WHITE.value:
+            return letters[index].upper()
+        return letters[index]
 
     def __draw_position_from_fen(self) -> None:
         """
@@ -115,7 +156,7 @@ class Canvas(QPainter):
         Loads pixmap from resources based on current letter loaded from fen string.
         :param current_x: current x coordinate from which we start drawing.
         :param current_y: current y coordinate from which we start drawing.
-        :param piece_letter: letter representing piece on chess board, got from fen string.
+        :param piece_letter: letter representing piece_square on chess board, got from fen string.
         :return: x coordinate of current square
         """
         try:
@@ -132,7 +173,6 @@ class Canvas(QPainter):
                 color = "w"
             else:
                 color = "b"
-
             pixmap = QPixmap(f"{pieces_path}{color}{piece}{extension}")
             pixmap = pixmap.scaledToHeight(PiecesEnum.SCALE_HEIGHT.value, Qt.SmoothTransformation)
             pixmap = pixmap.scaledToWidth(PiecesEnum.SCALE_WIDTH.value, Qt.SmoothTransformation)
@@ -145,7 +185,7 @@ class Canvas(QPainter):
 
     def paint_possible_moves_for_frozen_piece(self) -> None:
         """
-        Method to paint possible moves for not moven piece on board
+        Method to paint possible moves for not moven piece_square on board
         :return: None
         """
         current_x = CanvasEnum.CANVAS_X.value
@@ -172,14 +212,14 @@ class Canvas(QPainter):
 
     def is_it_frozen_piece(self) -> bool:
         """
-        Method used to check if piece was not moved at all
+        Method used to check if piece_square was not moved at all
         :return: bool value
         """
         return self.__freeze_start != -1 and self.__freeze_end != -1
 
     def is_it_frozen_piece_target_square(self, legal_move: Move, current_square: int) -> bool:
         """
-        Methods checks if current square is a valid move for a frozen piece
+        Methods checks if current square is a valid move for a frozen piece_square
         :param legal_move: current legal move instance
         :param current_square: int index of current square
         :return: bool value

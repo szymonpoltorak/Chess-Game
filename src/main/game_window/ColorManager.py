@@ -6,8 +6,8 @@ class ColorManager:
     @staticmethod
     def get_piece_color(piece: int) -> int:
         """
-        Static method used to calculate the current piece color
-        :param piece: int value of piece with color
+        Static method used to calculate the current piece_square color
+        :param piece: int value of piece_square with color
         :return: int value of color
         """
         if piece == PiecesEnum.NONE.value:

@@ -2,10 +2,12 @@ from numpy import int8
 from numpy import ndarray
 from numpy import zeros
 
+from game_window.CheckUtil import CheckUtil
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.Move import Move
 from game_window.MoveValidator import MoveValidator
 
@@ -45,6 +47,31 @@ class MoveGenerator:
 
     @staticmethod
     def generate_legal_moves(color_to_move: int, board) -> list[Move]:
+        pseudo_legal_moves = MoveGenerator.generate_moves(color_to_move, board)
+        legal_moves = []
+
+        for move_to_verify in pseudo_legal_moves:
+            is_it_valid_move = True
+            deleted_piece = board.make_move(move_to_verify, color_to_move)
+            opponent_moves = MoveGenerator.generate_moves(ColorManager.get_opposite_piece_color(color_to_move), board)
+            kings_square = CheckUtil.find_friendly_king_squares(board.get_board_array(), color_to_move)
+
+            for move in opponent_moves:
+                if move_to_verify.get_special_flag_value() == SpecialFlags.CASTLING.value:
+                    if move.get_end_square() in CheckUtil.get_castling_squares(move_to_verify):
+                        is_it_valid_move = False
+                        break
+                if move.get_end_square() == kings_square:
+                    is_it_valid_move = False
+                    break
+            if is_it_valid_move:
+                legal_moves.append(move_to_verify)
+            board.un_make_move(move_to_verify, deleted_piece)
+
+        return legal_moves
+
+    @staticmethod
+    def generate_moves(color_to_move: int, board) -> list[Move]:
         """
         Static method used  to generate legal moves for pieces of given color
         :param color_to_move: int value of color to be moved
@@ -74,7 +101,7 @@ class MoveGenerator:
     def generate_sliding_piece_move(piece: int, start_square: int, moves: list[Move], color: int, board) -> None:
         """
         Static method used to generate moves for sliding pieces
-        :param piece: int value of piece
+        :param piece: int value of piece_square
         :param start_square: int index of current square
         :param moves: list of moves
         :param color: int value of color
@@ -100,7 +127,7 @@ class MoveGenerator:
         """
         Static method used to generate moves for knights
         :param moves: list of moves
-        :param piece: int value of piece
+        :param piece: int value of piece_square
         :param color: int value of color to move
         :param board: board instance
         :param start_square: int index of current square
@@ -109,7 +136,9 @@ class MoveGenerator:
         for direction in range(MoveEnum.KNIGHT_DIRECTIONS_NUMBER.value):
             move_target = start_square + MoveEnum.KNIGHT_DIRECTIONS.value[direction]
 
-            if not MoveValidator.is_knight_move_target_in_borders(start_square, move_target):
+            if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
+                continue
+            if not MoveValidator.is_attack_target_in_border_bounds(start_square, move_target, MoveEnum.MAX_KNIGHT_JUMP.value):
                 continue
             piece_on_move_target = board.get_board_array()[move_target]
 
@@ -125,7 +154,7 @@ class MoveGenerator:
         """
         Static method use to generate possible moves for king.
         :param moves: list of moves
-        :param piece: int value of a piece
+        :param piece: int value of a piece_square
         :param color: int value of color to move
         :param board: Board instance
         :param start_square: start square index
@@ -134,7 +163,9 @@ class MoveGenerator:
         for direction in range(MoveEnum.KING_DIRECTIONS_NUMBER.value):
             move_target = start_square + MoveEnum.KING_DIRECTIONS.value[direction]
 
-            if not MoveValidator.is_king_move_target_in_borders(start_square, move_target):
+            if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
+                continue
+            if not MoveValidator.is_attack_target_in_border_bounds(start_square, move_target, MoveEnum.KING_RANGE.value):
                 continue
             piece_on_move_target = board.get_board_array()[move_target]
 
@@ -151,7 +182,7 @@ class MoveGenerator:
         """
         Static method to generate castling moves
         :param moves: list of moves
-        :param piece: int value of a piece
+        :param piece: int value of a piece_square
         :param color: int value of color to move
         :param board: Board instance
         :param start_square: start square index
@@ -159,17 +190,17 @@ class MoveGenerator:
         """
         if not MoveValidator.is_anything_on_king_side(board, start_square, color) and board.can_king_castle_king_side(color):
             move_target = start_square + MoveEnum.CASTLE_MOVE.value
-            moves.append(Move(start_square, move_target, piece))
+            moves.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
         if not MoveValidator.is_anything_on_queen_side(board, start_square) and board.can_king_castle_queen_side(color):
             move_target = start_square - MoveEnum.CASTLE_MOVE.value
-            moves.append(Move(start_square, move_target, piece))
+            moves.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
 
     @staticmethod
     def generate_pawn_moves(moves: list[Move], piece: int, color: int, board, start_square: int) -> None:
         """
         Static method to generate moves for pawns
         :param moves: list of moves
-        :param piece: int value of a piece
+        :param piece: int value of a piece_square
         :param color: int value of color to move
         :param board: Board instance
         :param start_square: start square index
