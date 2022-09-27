@@ -15,7 +15,7 @@ class CheckUtil:
         return -1
 
     @staticmethod
-    def get_castling_squares(move: Move):
+    def get_castling_squares(move: Move) -> ndarray[int]:
         move_distance = move.get_end_square() - move.get_start_square()
 
         if move_distance > 0:

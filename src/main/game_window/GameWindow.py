@@ -3,6 +3,7 @@ from playsound import playsound
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QWidget
 
 from game_window.Canvas import Canvas
@@ -83,6 +84,9 @@ class GameWindow(QWidget):
         :param mouse_press_event: event of mouse pressed on QWidget
         :return: 
         """
+        if not self.__canvas.get_board().get_legal_moves():
+            return
+
         if self.__promotion_util.is_this_pawn_promoting():
             return
         row, col = self.__start_mouse_events(mouse_press_event)
@@ -145,6 +149,9 @@ class GameWindow(QWidget):
 
         list_move = MoveGenerator.generate_legal_moves(ColorManager.get_opposite_piece_color(color),
                                                        self.__canvas.get_board())
+
+        if not list_move:
+            QMessageBox.about(self, "GAME IS OVER", "CHECK MATE!")
         self.__canvas.get_board().set_legal_moves(list_move)
         self.__canvas.get_board().update_fen()
         self.update()
