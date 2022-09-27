@@ -316,3 +316,16 @@ class Board:
         :return:
         """
         return self.__en_passant_piece_square
+
+    def make_move(self, move: Move, color: int) -> int:
+        deleted_piece: int = self.__board_array[move.get_end_square()]
+
+        self.__board_array[move.get_start_square()] = 0
+        self.__board_array[move.get_end_square()] = color + move.get_moving_piece()
+
+        return deleted_piece
+
+    def un_make_move(self, move: Move, deleted_piece: int) -> None:
+        moved_piece = self.__board_array[move.get_end_square()]
+        self.__board_array[move.get_end_square()] = deleted_piece
+        self.__board_array[move.get_start_square()] = moved_piece

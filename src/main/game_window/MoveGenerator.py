@@ -2,6 +2,7 @@ from numpy import int8
 from numpy import ndarray
 from numpy import zeros
 
+from game_window.CheckUtil import CheckUtil
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
@@ -46,6 +47,31 @@ class MoveGenerator:
 
     @staticmethod
     def generate_legal_moves(color_to_move: int, board) -> list[Move]:
+        pseudo_legal_moves = MoveGenerator.generate_moves(color_to_move, board)
+        legal_moves = []
+
+        for move_to_verify in pseudo_legal_moves:
+            is_it_valid_move = True
+            deleted_piece = board.make_move(move_to_verify, color_to_move)
+            opponent_moves = MoveGenerator.generate_moves(ColorManager.get_opposite_piece_color(color_to_move), board)
+            kings_square = CheckUtil.find_friendly_king_squares(board.get_board_array(), color_to_move)
+
+            for move in opponent_moves:
+                if move_to_verify.get_special_flag_value() == SpecialFlags.CASTLING.value:
+                    if move.get_end_square() in CheckUtil.get_castling_squares(move_to_verify):
+                        is_it_valid_move = False
+                        break
+                if move.get_end_square() == kings_square:
+                    is_it_valid_move = False
+                    break
+            if is_it_valid_move:
+                legal_moves.append(move_to_verify)
+            board.un_make_move(move_to_verify, deleted_piece)
+
+        return legal_moves
+
+    @staticmethod
+    def generate_moves(color_to_move: int, board) -> list[Move]:
         """
         Static method used  to generate legal moves for pieces of given color
         :param color_to_move: int value of color to be moved
