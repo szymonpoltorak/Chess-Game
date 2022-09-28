@@ -131,7 +131,7 @@ class GameWindow(QWidget):
             self.__current_move.set_end_square(None, None)
             self.update()
             return
-        self.__canvas.get_board().update_move_counter()
+        self.__canvas.get_board().get_fen_factory().update_move_counter()
         deleted_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
         final_piece_index = 8 * row + col
         color = ColorManager.get_piece_color(self.__moving_piece)
@@ -144,9 +144,9 @@ class GameWindow(QWidget):
         self.__canvas.get_board().set_opposite_move_color()
 
         if deleted_piece != 0 or self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
-            self.__canvas.get_board().update_no_sack_and_pawn_count(True)
+            self.__canvas.get_board().get_fen_factory().update_no_sack_and_pawn_count(True)
         else:
-            self.__canvas.get_board().update_no_sack_and_pawn_count(False)
+            self.__canvas.get_board().get_fen_factory().update_no_sack_and_pawn_count(False)
 
         self.update_board_data(color)
         self.update()
@@ -179,16 +179,16 @@ class GameWindow(QWidget):
             self.__canvas.get_board().make_en_passant_capture(self.__moving_piece)
             deleted_piece = 1
         elif move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
-            self.__canvas.get_board().set_en_passant_square(self.__current_move.get_end_square() -
-                                                            MoveEnum.PAWN_UP_SINGLE_MOVE.value)
-            self.__canvas.get_board().set_en_passant_piece_square(self.__current_move.get_end_square())
+            self.__canvas.get_board().get_fen_factory().set_en_passant_square(self.__current_move.get_end_square() -
+                                                                              MoveEnum.PAWN_UP_SINGLE_MOVE.value)
+            self.__canvas.get_board().get_fen_factory().set_en_passant_piece_square(self.__current_move.get_end_square())
         elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
-            self.__canvas.get_board().set_en_passant_square(self.__current_move.get_end_square() -
-                                                            MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
-            self.__canvas.get_board().set_en_passant_piece_square(self.__current_move.get_end_square())
-        elif self.__canvas.get_board().get_en_passant_square() != -1:
-            self.__canvas.get_board().set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-            self.__canvas.get_board().set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+            self.__canvas.get_board().get_fen_factory().set_en_passant_square(self.__current_move.get_end_square() -
+                                                                              MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
+            self.__canvas.get_board().get_fen_factory().set_en_passant_piece_square(self.__current_move.get_end_square())
+        elif self.__canvas.get_board().get_fen_factory().get_en_passant_square() != -1:
+            self.__canvas.get_board().get_fen_factory().set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+            self.__canvas.get_board().get_fen_factory().set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
         return deleted_piece
 
     def handle_castling_event(self, final_piece_index: int, color: int) -> None:
@@ -203,8 +203,8 @@ class GameWindow(QWidget):
         if MoveValidator.is_it_castling(self.__current_move):
             self.__canvas.get_board().castle_king(self.__moving_piece, self.__current_move)
         elif self.__current_move.get_moving_piece() == PiecesEnum.KING.value:
-            self.__canvas.get_board().set_castling_king_side(False, color)
-            self.__canvas.get_board().set_castling_queen_side(False, color)
+            self.__canvas.get_board().get_fen_factory().set_castling_king_side(False, color)
+            self.__canvas.get_board().get_fen_factory().set_castling_queen_side(False, color)
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)
         else:
             self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)

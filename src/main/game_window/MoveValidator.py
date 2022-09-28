@@ -78,13 +78,13 @@ class MoveValidator:
         :return: None
         """
         if color == PiecesEnum.BLACK.value and move.get_start_square() == MoveEnum.TOP_ROOK_QUEEN.value:
-            board.set_castling_queen_side(False, color)
+            board.get_fen_factory().set_castling_queen_side(False, color)
         elif color == PiecesEnum.BLACK.value and move.get_start_square() == MoveEnum.TOP_ROOK_KING.value:
-            board.set_castling_king_side(False, color)
+            board.get_fen_factory().set_castling_king_side(False, color)
         elif color == PiecesEnum.WHITE.value and move.get_start_square() == MoveEnum.BOTTOM_ROOK_QUEEN.value:
-            board.set_castling_queen_side(False, color)
+            board.get_fen_factory().set_castling_queen_side(False, color)
         elif color == PiecesEnum.WHITE.value and move.get_start_square() == MoveEnum.BOTTOM_ROOK_KING.value:
-            board.set_castling_king_side(False, color)
+            board.get_fen_factory().set_castling_king_side(False, color)
 
     @staticmethod
     def is_attack_target_in_border_bounds(start_square: int, move_target: int, attack_range: int) -> bool:
@@ -235,7 +235,7 @@ class MoveValidator:
         :param board: Board instance
         :return: None
         """
-        en_passant_square = board.get_en_passant_square()
+        en_passant_square = board.get_fen_factory().get_en_passant_square()
         en_passant_target_left = start_square + MoveValidator.get_attack_direction(color, "LEFT")
         en_passant_target_right = start_square + MoveValidator.get_attack_direction(color, "RIGHT")
 
@@ -254,9 +254,9 @@ class MoveValidator:
         :param board: Board instance
         :return: bool
         """
-        if move.get_moving_piece() != PiecesEnum.PAWN.value or board.get_en_passant_square() == -1 or board.get_en_passant_piece_square() == -1:
+        if move.get_moving_piece() != PiecesEnum.PAWN.value or board.get_fen_factory().get_en_passant_square() == -1 or board.get_fen_factory().get_en_passant_piece_square() == -1:
             return False
-        return move.get_end_square() == board.get_en_passant_square()
+        return move.get_end_square() == board.get_fen_factory().get_en_passant_square()
 
     @staticmethod
     def get_attack_direction(color: int, direction: str) -> int:
