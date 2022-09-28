@@ -4,7 +4,7 @@ from PyQt5.QtGui import QMouseEvent
 from game_window.enums.PiecesEnum import PiecesEnum
 
 
-class PromotionUtil:
+class PromotionData:
     __slots__ = array(["__piece_color", "__position_x", "__position_y", "__is_promoting", "__square"])
 
     def __init__(self):

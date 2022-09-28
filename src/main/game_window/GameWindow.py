@@ -15,7 +15,7 @@ from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
 from game_window.MoveValidator import MoveValidator
-from game_window.PromotionUtil import PromotionUtil
+from game_window.PromotionData import PromotionData
 
 
 class GameWindow(QWidget):
@@ -30,7 +30,7 @@ class GameWindow(QWidget):
         self.__canvas = Canvas()
         self.__moving_piece = None
         self.__current_move = Move(None, None, None)
-        self.__promotion_util = PromotionUtil()
+        self.__promotion_util = PromotionData()
 
         with open("src/resources/styles/GameWindow.min.css", "r", encoding="utf-8") as style:
             self.__ui = GameWindowUi(self)
@@ -113,7 +113,8 @@ class GameWindow(QWidget):
         if self.__promotion_util.is_this_pawn_promoting():
             self.__promotion_util.check_user_choice(mouse_release_event, self.__canvas.get_rect_height(),
                                                     self.__canvas.get_board())
-            self.update()
+            color = ColorManager.get_piece_color(self.__moving_piece)
+            self.update_board_data(color)
             return
         row, col = self.__start_mouse_events(mouse_release_event)
 
@@ -147,6 +148,10 @@ class GameWindow(QWidget):
         else:
             self.__canvas.get_board().update_no_sack_and_pawn_count(False)
 
+        self.update_board_data(color)
+        self.update()
+
+    def update_board_data(self, color: int):
         list_move = MoveGenerator.generate_legal_moves(ColorManager.get_opposite_piece_color(color),
                                                        self.__canvas.get_board())
 

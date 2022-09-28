@@ -14,7 +14,7 @@ from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.Move import Move
-from game_window.PromotionUtil import PromotionUtil
+from game_window.PromotionData import PromotionData
 
 
 class Canvas(QPainter):
@@ -93,10 +93,10 @@ class Canvas(QPainter):
         self.setFont(QFont(font))
         self.drawStaticText(position_x, position_y, QStaticText(str(character)))
 
-    def paint_promotion_window(self, data: PromotionUtil, current_square: int) -> None:
+    def paint_promotion_window(self, data: PromotionData, current_square: int) -> None:
         """
         Method used to paint promotion window for pawn
-        :param data: PromotionUtil instance containing needed data
+        :param data: PromotionData instance containing needed data
         :param current_square: int value of square
         :return: None
         """
