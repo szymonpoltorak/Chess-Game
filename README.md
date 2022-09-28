@@ -4,12 +4,12 @@ Chess Engine made w GUI. Programme will cover the engine itself written in pytho
 scene for party analysis, user profile, login screen, players list, settings and of course new game.
 
 ## Technology Stack
-* PyQt 5,
+* PyQt 5.15.7,
 * Python 3.10,
-* Sass,
-* Css,
+* Sass 1.54,
+* Css 3,
 * playsound 1.2.2,
-* NumPy.
+* NumPy 1.23.3.
 
 ## Credits to Authors
 I am not the author of those graphics and sounds and I do not claim the right of ownership over them. I use them just in
