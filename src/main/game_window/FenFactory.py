@@ -1,8 +1,13 @@
+from typing import TYPE_CHECKING
+
 from numpy import array
 from numpy import ndarray
 
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+
+if TYPE_CHECKING:
+    from game_window.Board import Board
 
 
 class FenFactory:
@@ -10,7 +15,7 @@ class FenFactory:
     Class containing methods to manage fen creation.
     """
     @staticmethod
-    def convert_board_array_to_fen(board) -> str:
+    def convert_board_array_to_fen(board: 'Board') -> str:
         """
         Method converts int array into fen string
         :param board: Board instance
@@ -41,9 +46,9 @@ class FenFactory:
             current_element += BoardEnum.BOARD_LENGTH.value
         fen += FenFactory.get_color_to_move_fen_letter(board.get_color_to_move())
         fen += FenFactory.add_castling_letters_to_fen(board)
-        fen += FenFactory.convert_square_into_board_double_index(board.get_en_passant_square())
-        fen += f" {board.get_no_sack_and_pawn_count()}"
-        fen += f" {board.get_move_counter()}"
+        fen += FenFactory.convert_square_into_board_double_index(board.get_fen_factory().get_en_passant_square())
+        fen += f" {board.get_fen_factory().get_no_sack_and_pawn_count()}"
+        fen += f" {board.get_fen_factory().get_move_counter()}"
 
         return fen
 
@@ -87,7 +92,7 @@ class FenFactory:
         return letter
 
     @staticmethod
-    def add_castling_letters_to_fen(board) -> str:
+    def add_castling_letters_to_fen(board: 'Board') -> str:
         """
         Method to get proper letters representing castling capabilities of kings
         :param board: Board instance
@@ -95,13 +100,13 @@ class FenFactory:
         """
         castle_string = " "
 
-        if board.can_king_castle_king_side(PiecesEnum.WHITE.value):
+        if board.get_fen_factory().can_king_castle_king_side(PiecesEnum.WHITE.value):
             castle_string += FenFactory.get_proper_letter_size(PiecesEnum.WHITE.value, "k")
-        if board.can_king_castle_queen_side(PiecesEnum.WHITE.value):
+        if board.get_fen_factory().can_king_castle_queen_side(PiecesEnum.WHITE.value):
             castle_string += FenFactory.get_proper_letter_size(PiecesEnum.WHITE.value, "q")
-        if board.can_king_castle_queen_side(PiecesEnum.BLACK.value):
+        if board.get_fen_factory().can_king_castle_queen_side(PiecesEnum.BLACK.value):
             castle_string += FenFactory.get_proper_letter_size(PiecesEnum.BLACK.value, "k")
-        if board.can_king_castle_queen_side(PiecesEnum.BLACK.value):
+        if board.get_fen_factory().can_king_castle_queen_side(PiecesEnum.BLACK.value):
             castle_string += FenFactory.get_proper_letter_size(PiecesEnum.BLACK.value, "q")
         if castle_string == " ":
             return " -"
