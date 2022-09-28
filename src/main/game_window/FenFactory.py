@@ -46,9 +46,9 @@ class FenFactory:
             current_element += BoardEnum.BOARD_LENGTH.value
         fen += FenFactory.get_color_to_move_fen_letter(board.get_color_to_move())
         fen += FenFactory.add_castling_letters_to_fen(board)
-        fen += FenFactory.convert_square_into_board_double_index(board.get_fen_factory().get_en_passant_square())
-        fen += f" {board.get_fen_factory().get_no_sack_and_pawn_count()}"
-        fen += f" {board.get_fen_factory().get_move_counter()}"
+        fen += FenFactory.convert_square_into_board_double_index(board.get_fen_data().get_en_passant_square())
+        fen += f" {board.get_fen_data().get_no_sack_and_pawn_count()}"
+        fen += f" {board.get_fen_data().get_move_counter()}"
 
         return fen
 
@@ -100,13 +100,13 @@ class FenFactory:
         """
         castle_string = " "
 
-        if board.get_fen_factory().can_king_castle_king_side(PiecesEnum.WHITE.value):
+        if board.get_fen_data().can_king_castle_king_side(PiecesEnum.WHITE.value):
             castle_string += FenFactory.get_proper_letter_size(PiecesEnum.WHITE.value, "k")
-        if board.get_fen_factory().can_king_castle_queen_side(PiecesEnum.WHITE.value):
+        if board.get_fen_data().can_king_castle_queen_side(PiecesEnum.WHITE.value):
             castle_string += FenFactory.get_proper_letter_size(PiecesEnum.WHITE.value, "q")
-        if board.get_fen_factory().can_king_castle_queen_side(PiecesEnum.BLACK.value):
+        if board.get_fen_data().can_king_castle_queen_side(PiecesEnum.BLACK.value):
             castle_string += FenFactory.get_proper_letter_size(PiecesEnum.BLACK.value, "k")
-        if board.get_fen_factory().can_king_castle_queen_side(PiecesEnum.BLACK.value):
+        if board.get_fen_data().can_king_castle_queen_side(PiecesEnum.BLACK.value):
             castle_string += FenFactory.get_proper_letter_size(PiecesEnum.BLACK.value, "q")
         if castle_string == " ":
             return " -"
@@ -147,15 +147,16 @@ class FenFactory:
         :param color_value: int value of color
         :return: proper str letter
         """
-        if board[index] == color_value | PiecesEnum.PAWN.value:
+        piece = board[index]
+        if piece == color_value | PiecesEnum.PAWN.value:
             return FenFactory.get_proper_fen_character(color_value, "p")
-        elif board[index] == color_value | PiecesEnum.KING.value:
+        elif piece == color_value | PiecesEnum.KING.value:
             return FenFactory.get_proper_fen_character(color_value, "k")
-        elif board[index] == color_value | PiecesEnum.QUEEN.value:
+        elif piece == color_value | PiecesEnum.QUEEN.value:
             return FenFactory.get_proper_fen_character(color_value, "q")
-        elif board[index] == color_value | PiecesEnum.BISHOP.value:
+        elif piece == color_value | PiecesEnum.BISHOP.value:
             return FenFactory.get_proper_fen_character(color_value, "b")
-        elif board[index] == color_value | PiecesEnum.KNIGHT.value:
+        elif piece == color_value | PiecesEnum.KNIGHT.value:
             return FenFactory.get_proper_fen_character(color_value, "n")
-        elif board[index] == color_value | PiecesEnum.ROOK.value:
+        elif piece == color_value | PiecesEnum.ROOK.value:
             return FenFactory.get_proper_fen_character(color_value, "r")

@@ -192,6 +192,12 @@ class Board:
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
     def make_move(self, move: Move, color: int) -> int:
+        """
+        Method used to make a given move. It means to update the board int array
+        :param move: Move instance - move we want to make
+        :param color: color of a piece
+        :return: int value of deleted piece
+        """
         deleted_piece: int = self.__board_array[move.get_end_square()]
 
         self.__board_array[move.get_start_square()] = 0
@@ -200,9 +206,19 @@ class Board:
         return deleted_piece
 
     def un_make_move(self, move: Move, deleted_piece: int) -> None:
+        """
+        Removes given move with a value of deleted piece
+        :param move: move to be unmade
+        :param deleted_piece: deleted piece in move value
+        :return: None
+        """
         moved_piece = self.__board_array[move.get_end_square()]
         self.__board_array[move.get_end_square()] = deleted_piece
         self.__board_array[move.get_start_square()] = moved_piece
 
-    def get_fen_factory(self):
+    def get_fen_data(self) -> FenData:
+        """
+        Gives access to the fen data field.
+        :return: FenData instance
+        """
         return self.__fen_data

@@ -6,8 +6,7 @@ from game_window.enums.BoardEnum import BoardEnum
 class Move:
     __slots__ = array(["__start_square", "__end_square", "__piece", "__special_flag"])
 
-    def __init__(self, start_square: tuple[int, int] or None, end_square: tuple[int, int] or None, piece: int or None,
-                 special_flag: int = -1):
+    def __init__(self, start_square: int or None, end_square: int or None, piece: int or None, special_flag: int = -1):
         self.__start_square = start_square
         self.__end_square = end_square
         self.__piece = piece
@@ -25,22 +24,6 @@ class Move:
             return
         start_square = BoardEnum.BOARD_LENGTH.value * row + col
         self.__start_square = start_square
-
-    def set_start_square_with_value(self, start_square: int) -> None:
-        """
-        Enables to update start square field with single square int value
-        :param start_square: int value of square index
-        :return: None
-        """
-        self.__start_square = start_square
-
-    def set_end_square_with_value(self, end_square: int) -> None:
-        """
-        Enables to update end square field with single square int value
-        :param end_square: int value of end square index
-        :return: None
-        """
-        self.__end_square = end_square
 
     def set_end_square(self, row: int or None, col: int or None) -> None:
         """

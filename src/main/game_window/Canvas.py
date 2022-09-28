@@ -77,7 +77,7 @@ class Canvas(QPainter):
         self.paint_possible_moves_for_frozen_piece()
         self.__draw_position_from_fen()
 
-    def draw_character_on_board(self, character: str, position_x: int, position_y: int, color: str) -> None:
+    def draw_character_on_board(self, character: int or str, position_x: int, position_y: int, color: str) -> None:
         """
         Draw characters : number and letters on board edges.
         :param character: characters string which we want to paint on canvas
