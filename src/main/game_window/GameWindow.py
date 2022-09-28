@@ -3,7 +3,6 @@ from playsound import playsound
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 from PyQt5.QtGui import QMouseEvent
-from PyQt5.QtGui import QPaintEvent
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QWidget
 
@@ -16,7 +15,7 @@ from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
 from game_window.MoveValidator import MoveValidator
-from game_window.PromotionData import PromotionData
+from game_window.PromotionUtil import PromotionUtil
 
 
 class GameWindow(QWidget):
@@ -31,13 +30,13 @@ class GameWindow(QWidget):
         self.__canvas = Canvas()
         self.__moving_piece = None
         self.__current_move = Move(None, None, None)
-        self.__promotion_util = PromotionData()
+        self.__promotion_util = PromotionUtil()
 
         with open("src/resources/styles/GameWindow.min.css", "r", encoding="utf-8") as style:
             self.__ui = GameWindowUi(self)
             self.setStyleSheet(style.read())
 
-    def paintEvent(self, event: QPaintEvent) -> None:
+    def paintEvent(self, event) -> None:
         """
         Override paintEvent method to paint on canvas.
         :param event:
@@ -114,8 +113,7 @@ class GameWindow(QWidget):
         if self.__promotion_util.is_this_pawn_promoting():
             self.__promotion_util.check_user_choice(mouse_release_event, self.__canvas.get_rect_height(),
                                                     self.__canvas.get_board())
-            color = ColorManager.get_piece_color(self.__moving_piece)
-            self.update_board_data(color)
+            self.update()
             return
         row, col = self.__start_mouse_events(mouse_release_event)
 
@@ -151,7 +149,6 @@ class GameWindow(QWidget):
 
         self.update_board_data(color)
 
-    def update_board_data(self, color: int):
         list_move = MoveGenerator.generate_legal_moves(ColorManager.get_opposite_piece_color(color),
                                                        self.__canvas.get_board())
 
@@ -179,6 +176,7 @@ class GameWindow(QWidget):
             self.__canvas.get_board().make_en_passant_capture(self.__moving_piece)
             deleted_piece = 1
         elif move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
+
             self.__canvas.get_board().get_fen_data().set_en_passant_square(self.__current_move.get_end_square() -
                                                                            MoveEnum.PAWN_UP_SINGLE_MOVE.value)
             self.__canvas.get_board().get_fen_data().set_en_passant_piece_square(self.__current_move.get_end_square())

@@ -1,13 +1,8 @@
-from typing import TYPE_CHECKING
-
 from numpy import array
 from numpy import ndarray
 
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-
-if TYPE_CHECKING:
-    from game_window.Board import Board
 
 
 class FenFactory:
@@ -15,7 +10,7 @@ class FenFactory:
     Class containing methods to manage fen creation.
     """
     @staticmethod
-    def convert_board_array_to_fen(board: 'Board') -> str:
+    def convert_board_array_to_fen(board) -> str:
         """
         Method converts int array into fen string
         :param board: Board instance
@@ -92,14 +87,14 @@ class FenFactory:
         return letter
 
     @staticmethod
-    def add_castling_letters_to_fen(board: 'Board') -> str:
+    def add_castling_letters_to_fen(board) -> str:
         """
         Method to get proper letters representing castling capabilities of kings
         :param board: Board instance
         :return: str
         """
         castle_string = " "
-
+        
         if board.get_fen_data().can_king_castle_king_side(PiecesEnum.WHITE.value):
             castle_string += FenFactory.get_proper_letter_size(PiecesEnum.WHITE.value, "k")
         if board.get_fen_data().can_king_castle_queen_side(PiecesEnum.WHITE.value):

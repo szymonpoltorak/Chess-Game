@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from numpy import int8
 from numpy import ndarray
 from numpy import zeros
@@ -12,9 +10,6 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.Move import Move
 from game_window.MoveValidator import MoveValidator
-
-if TYPE_CHECKING:
-    from game_window.Board import Board
 
 
 class MoveGenerator:
@@ -51,7 +46,7 @@ class MoveGenerator:
         return distances
 
     @staticmethod
-    def generate_legal_moves(color_to_move: int, board: 'Board') -> list[Move]:
+    def generate_legal_moves(color_to_move: int, board) -> list[Move]:
         pseudo_legal_moves = MoveGenerator.generate_moves(color_to_move, board)
         legal_moves = []
 
@@ -76,7 +71,7 @@ class MoveGenerator:
         return legal_moves
 
     @staticmethod
-    def generate_moves(color_to_move: int, board: 'Board') -> list[Move]:
+    def generate_moves(color_to_move: int, board) -> list[Move]:
         """
         Static method used  to generate legal moves for pieces of given color
         :param color_to_move: int value of color to be moved
@@ -101,7 +96,7 @@ class MoveGenerator:
         return moves
 
     @staticmethod
-    def generate_sliding_piece_move(piece: int, start_square: int, moves: list[Move], color: int, board: 'Board') -> None:
+    def generate_sliding_piece_move(piece: int, start_square: int, moves: list[Move], color: int, board) -> None:
         """
         Static method used to generate moves for sliding pieces
         :param piece: int value of piece_square
@@ -126,6 +121,7 @@ class MoveGenerator:
                     break
 
     @staticmethod
+
     def generate_moves_for_knight_and_king(moves: list[Move], piece: int, color: int, board: 'Board', start_square: int) -> None:
         """
         Static method used to generate moves for knights and kings
@@ -162,7 +158,7 @@ class MoveGenerator:
             MoveGenerator.generate_castling_moves(moves, piece, color, board, start_square)
 
     @staticmethod
-    def generate_castling_moves(moves: list[Move], piece: int, color: int, board: 'Board', start_square: int) -> None:
+    def generate_castling_moves(moves: list[Move], piece: int, color: int, board, start_square: int) -> None:
         """
         Static method to generate castling moves
         :param moves: list of moves
@@ -180,7 +176,7 @@ class MoveGenerator:
             moves.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
 
     @staticmethod
-    def generate_pawn_moves(moves: list[Move], piece: int, color: int, board: 'Board', start_square: int) -> None:
+    def generate_pawn_moves(moves: list[Move], piece: int, color: int, board, start_square: int) -> None:
         """
         Static method to generate moves for pawns
         :param moves: list of moves
