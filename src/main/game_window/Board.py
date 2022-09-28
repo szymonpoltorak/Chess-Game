@@ -25,7 +25,7 @@ class Board:
     def __init__(self):
         self.__board_array: ndarray[int] = self.__init_starting_board()
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
-        self.__fen_factory = FenData()
+        self.__fen_data = FenData()
         self.__color_to_move: int = PiecesEnum.WHITE.value
         self.__distances_to_borders = MoveGenerator.calculate_distance_to_borders()
         self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
@@ -46,8 +46,8 @@ class Board:
         self.__board_array[move.get_end_square()] = piece
         self.__board_array[rook_position] = 0
         self.__board_array[move.get_end_square() + sign(distance)] = color | PiecesEnum.ROOK.value
-        self.__fen_factory.set_castling_king_side(False, color)
-        self.__fen_factory.set_castling_queen_side(False, color)
+        self.__fen_data.set_castling_king_side(False, color)
+        self.__fen_data.set_castling_queen_side(False, color)
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
     def set_legal_moves(self, legal_moves: list[Move]) -> None:
@@ -184,11 +184,11 @@ class Board:
         :param piece: int value of piece
         :return: None
         """
-        self.__board_array[self.__fen_factory.get_en_passant_square()] = piece
-        self.__board_array[self.__fen_factory.get_en_passant_piece_square()] = 0
+        self.__board_array[self.__fen_data.get_en_passant_square()] = piece
+        self.__board_array[self.__fen_data.get_en_passant_piece_square()] = 0
 
-        self.__fen_factory.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-        self.__fen_factory.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+        self.__fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+        self.__fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
     def make_move(self, move: Move, color: int) -> int:
@@ -205,4 +205,4 @@ class Board:
         self.__board_array[move.get_start_square()] = moved_piece
 
     def get_fen_factory(self):
-        return self.__fen_factory
+        return self.__fen_data

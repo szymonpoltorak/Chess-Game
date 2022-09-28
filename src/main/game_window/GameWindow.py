@@ -3,6 +3,7 @@ from playsound import playsound
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtGui import QPaintEvent
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QWidget
 
@@ -36,7 +37,7 @@ class GameWindow(QWidget):
             self.__ui = GameWindowUi(self)
             self.setStyleSheet(style.read())
 
-    def paintEvent(self, event) -> None:
+    def paintEvent(self, event: QPaintEvent) -> None:
         """
         Override paintEvent method to paint on canvas.
         :param event:

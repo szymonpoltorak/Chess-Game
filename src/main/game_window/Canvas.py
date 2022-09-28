@@ -25,7 +25,7 @@ class Canvas(QPainter):
 
     def __init__(self):
         super(Canvas, self).__init__()
-        self.__board: Board = Board()
+        self.__board = Board()
         self.__rect_width = int(CanvasEnum.CANVAS_WIDTH.value / 8)
         self.__rect_height = int(CanvasEnum.CANVAS_HEIGHT.value / 8)
         self.__freeze_piece = -1
@@ -77,7 +77,7 @@ class Canvas(QPainter):
         self.paint_possible_moves_for_frozen_piece()
         self.__draw_position_from_fen()
 
-    def draw_character_on_board(self, character, position_x: int, position_y: int, color: str) -> None:
+    def draw_character_on_board(self, character: str, position_x: int, position_y: int, color: str) -> None:
         """
         Draw characters : number and letters on board edges.
         :param character: characters string which we want to paint on canvas
@@ -228,11 +228,11 @@ class Canvas(QPainter):
             return False
         return legal_move.get_start_square() == self.__freeze_start
 
-    def copy_current_move(self, move) -> None:
+    def copy_current_move(self, move: Move) -> None:
         """
         Method copies values of a current move
-        :param move:
-        :return:
+        :param move: current move (Move instance)
+        :return: None
         """
         self.__freeze_piece = move.get_moving_piece()
         self.__freeze_start = move.get_start_square()

@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
@@ -5,6 +7,8 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.Move import Move
 
+if TYPE_CHECKING:
+    from game_window.Board import Board
 
 class MoveValidator:
     @staticmethod
@@ -25,7 +29,7 @@ class MoveValidator:
         return False
 
     @staticmethod
-    def is_anything_on_queen_side(board, start_square: int) -> bool:
+    def is_anything_on_queen_side(board: 'Board', start_square: int) -> bool:
         """
         Checks if there is anything on the path between a queen side rook and the king
         :param board: Board instance
@@ -69,7 +73,7 @@ class MoveValidator:
             return MoveEnum.TOP_ROOK_KING.value
 
     @staticmethod
-    def disable_castling_on_side(color: int, move: Move, board) -> None:
+    def disable_castling_on_side(color: int, move: Move, board: 'Board') -> None:
         """
         Disable castling for king on given side
         :param color: int value of color
@@ -129,7 +133,7 @@ class MoveValidator:
         return piece in (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value, PiecesEnum.ROOK.value)
 
     @staticmethod
-    def add_pawn_moves(start_square: int, piece: int, color: int, moves: list[Move], board) -> None:
+    def add_pawn_moves(start_square: int, piece: int, color: int, moves: list[Move], board: 'Board') -> None:
         """
         Adds possible pawn movements
         :param start_square: int index of starting square
@@ -180,7 +184,7 @@ class MoveValidator:
         return piece_double_up == 0 and piece_single_up == 0
 
     @staticmethod
-    def add_pawn_attacks(start_square: int, piece: int, color: int, moves: list[Move], board) -> None:
+    def add_pawn_attacks(start_square: int, piece: int, color: int, moves: list[Move], board: 'Board') -> None:
         """
         Static method used to add pawn attacks
         :param start_square: int index of starting square
@@ -225,7 +229,7 @@ class MoveValidator:
             moves.append(Move(start_square, move_target, piece))
 
     @staticmethod
-    def check_en_passant_movement(start_square: int, piece: int, color: int, moves: list[Move], board) -> None:
+    def check_en_passant_movement(start_square: int, piece: int, color: int, moves: list[Move], board: 'Board') -> None:
         """
         Checks if there is an en passant movement and add it to list
         :param start_square:
@@ -247,7 +251,7 @@ class MoveValidator:
             moves.append(Move(start_square, en_passant_target_right, piece, SpecialFlags.EN_PASSANT.value))
 
     @staticmethod
-    def was_it_en_passant_move(move: Move, board) -> bool:
+    def was_it_en_passant_move(move: Move, board: 'Board') -> bool:
         """
         Methods checks if it was an en passant move
         :param move: Move instance

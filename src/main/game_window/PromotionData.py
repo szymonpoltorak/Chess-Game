@@ -1,6 +1,7 @@
 from numpy import array
 from PyQt5.QtGui import QMouseEvent
 
+from game_window.Board import Board
 from game_window.enums.PiecesEnum import PiecesEnum
 
 
@@ -64,7 +65,7 @@ class PromotionData:
         """
         return self.__is_promoting
 
-    def check_user_choice(self, mouse_event: QMouseEvent, rect_size: int, board) -> None:
+    def check_user_choice(self, mouse_event: QMouseEvent, rect_size: int, board: Board) -> None:
         """
         Method used to check user promotion choice
         :param mouse_event: mouse release event
