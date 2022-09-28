@@ -1,6 +1,5 @@
 from numpy import array
 from numpy import ndarray
-from numpy import sign
 from numpy import zeros
 
 from game_window.BoardInitializer import BoardInitializer
@@ -8,7 +7,6 @@ from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.FenData import FenData
 from game_window.FenFactory import FenFactory
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
@@ -20,15 +18,102 @@ class Board:
     Class to hold and manage board representation.
     """
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
-                       "__fen_data"])
+                       "__white_castle_king", "__white_castle_queen",  "__black_castle_king", "__black_castle_queen",
+                       "__en_passant_square", "__en_passant_piece_square", "__move_counter",
+                       "__no_sack_and_pawn_count"])
 
     def __init__(self):
         self.__board_array: ndarray[int] = self.__init_starting_board()
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
-        self.__fen_data = FenData()
+        self.__white_castle_king = True
+        self.__white_castle_queen = True
+        self.__black_castle_king = True
+        self.__black_castle_queen = True
+        self.__en_passant_square = -1
+        self.__en_passant_piece_square = -1
+        self.__move_counter = 1
+        self.__no_sack_and_pawn_count = 0
         self.__color_to_move: int = PiecesEnum.WHITE.value
         self.__distances_to_borders = MoveGenerator.calculate_distance_to_borders()
         self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
+
+    def can_king_castle_king_side(self, color: int) -> bool:
+        """
+        Returns if king can castle on king side
+        :param color: int value of color
+        :return: bool
+        """
+        if color == PiecesEnum.WHITE.value:
+            return self.__white_castle_king
+        else:
+            return self.__black_castle_king
+
+    def can_king_castle_queen_side(self, color: int) -> bool:
+        """
+        Returns if king can castle on queen side
+        :param color: int value of color
+        :return: bool
+        """
+        if color == PiecesEnum.WHITE.value:
+            return self.__white_castle_queen
+        else:
+            return self.__black_castle_queen
+
+    def set_castling_king_side(self, can_castle: bool, color: int) -> None:
+        """
+        Sets castling capabilities on king side
+        :param can_castle: bool value
+        :param color: int value of color
+        :return: None
+        """
+        if color == PiecesEnum.WHITE.value:
+            self.__white_castle_king = can_castle
+        else:
+            self.__black_castle_king = can_castle
+
+    def update_move_counter(self) -> None:
+        """
+        Increments move counter by 1
+        :return: None
+        """
+        self.__move_counter += 1
+
+    def get_move_counter(self) -> int:
+        """
+        Gives access to move counter current value
+        :return: int value of counter
+        """
+        return self.__move_counter
+
+    def get_no_sack_and_pawn_count(self) -> int:
+        """
+        Gives access to counter of how many moves have passed since last pawn move or any sack
+        :return: int value of counter
+        """
+        return self.__no_sack_and_pawn_count
+
+    def update_no_sack_and_pawn_count(self, to_zero: bool) -> None:
+        """
+        Updates no sack and no pawn move counter or makes it equal to 0
+        :param to_zero: bool value if counter should be made 0 or not
+        :return: None
+        """
+        if to_zero:
+            self.__no_sack_and_pawn_count = 0
+            return
+        self.__no_sack_and_pawn_count += 1
+
+    def set_castling_queen_side(self, can_castle: bool, color: int) -> None:
+        """
+        Sets castling capabilities on queen side
+        :param can_castle: bool value
+        :param color: int value of color
+        :return: None
+        """
+        if color == PiecesEnum.WHITE.value:
+            self.__white_castle_queen = can_castle
+        else:
+            self.__black_castle_queen = can_castle
 
     def castle_king(self, piece: int, move: Move) -> None:
         """
@@ -38,16 +123,27 @@ class Board:
         :return: None
         """
         distance = move.get_start_square() - move.get_end_square()
-        color = ColorManager.get_piece_color(piece)
-        is_queen_side = distance > 0
-        rook_position = MoveValidator.get_rook_position(color, is_queen_side)
 
-        self.__board_array[move.get_start_square()] = 0
-        self.__board_array[move.get_end_square()] = piece
-        self.__board_array[rook_position] = 0
-        self.__board_array[move.get_end_square() + sign(distance)] = color | PiecesEnum.ROOK.value
-        self.__fen_data.set_castling_king_side(False, color)
-        self.__fen_data.set_castling_queen_side(False, color)
+        if distance == MoveEnum.CASTLE_MOVE.value:
+            color = ColorManager.get_piece_color(piece)
+            rook_position = MoveValidator.get_rook_position(color, True)
+
+            self.__board_array[move.get_start_square()] = 0
+            self.__board_array[move.get_end_square()] = piece
+            self.__board_array[rook_position] = 0
+            self.__board_array[move.get_end_square() + 1] = color | PiecesEnum.ROOK.value
+            self.set_castling_king_side(False, color)
+            self.set_castling_queen_side(False, color)
+        elif distance == -MoveEnum.CASTLE_MOVE.value:
+            color = ColorManager.get_piece_color(piece)
+            rook_position = MoveValidator.get_rook_position(color, False)
+
+            self.__board_array[move.get_start_square()] = 0
+            self.__board_array[move.get_end_square()] = piece
+            self.__board_array[rook_position] = 0
+            self.__board_array[move.get_end_square() - 1] = color | PiecesEnum.ROOK.value
+            self.set_castling_king_side(False, color)
+            self.set_castling_queen_side(False, color)
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
     def set_legal_moves(self, legal_moves: list[Move]) -> None:
@@ -184,12 +280,42 @@ class Board:
         :param piece: int value of piece
         :return: None
         """
-        self.__board_array[self.__fen_data.get_en_passant_square()] = piece
-        self.__board_array[self.__fen_data.get_en_passant_piece_square()] = 0
+        self.__board_array[self.__en_passant_square] = piece
+        self.__board_array[self.__en_passant_piece_square] = 0
 
-        self.__fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-        self.__fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+        self.__en_passant_square = MoveEnum.NONE_EN_PASSANT_SQUARE.value
+        self.__en_passant_piece_square = MoveEnum.NONE_EN_PASSANT_SQUARE.value
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
+
+    def set_en_passant_square(self, square: int) -> None:
+        """
+        Method used to set en passant square
+        :param square: int value of square
+        :return: None
+        """
+        self.__en_passant_square = square
+
+    def set_en_passant_piece_square(self, piece_square: int) -> None:
+        """
+        Method used to set an en passant pieces quare value
+        :param piece_square: int piece square value
+        :return: None
+        """
+        self.__en_passant_piece_square = piece_square
+
+    def get_en_passant_square(self) -> int:
+        """
+        Gives access to an en passant square value
+        :return:
+        """
+        return self.__en_passant_square
+
+    def get_en_passant_piece_square(self) -> int:
+        """
+        Gives access to an en passant piece square value
+        :return:
+        """
+        return self.__en_passant_piece_square
 
     def make_move(self, move: Move, color: int) -> int:
         deleted_piece: int = self.__board_array[move.get_end_square()]
@@ -203,6 +329,3 @@ class Board:
         moved_piece = self.__board_array[move.get_end_square()]
         self.__board_array[move.get_end_square()] = deleted_piece
         self.__board_array[move.get_start_square()] = moved_piece
-
-    def get_fen_factory(self):
-        return self.__fen_data

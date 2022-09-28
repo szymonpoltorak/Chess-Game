@@ -14,7 +14,7 @@ from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.Move import Move
-from game_window.PromotionData import PromotionData
+from game_window.PromotionUtil import PromotionUtil
 
 
 class Canvas(QPainter):
@@ -25,7 +25,7 @@ class Canvas(QPainter):
 
     def __init__(self):
         super(Canvas, self).__init__()
-        self.__board = Board()
+        self.__board: Board = Board()
         self.__rect_width = int(CanvasEnum.CANVAS_WIDTH.value / 8)
         self.__rect_height = int(CanvasEnum.CANVAS_HEIGHT.value / 8)
         self.__freeze_piece = -1
@@ -77,7 +77,7 @@ class Canvas(QPainter):
         self.paint_possible_moves_for_frozen_piece()
         self.__draw_position_from_fen()
 
-    def draw_character_on_board(self, character: str, position_x: int, position_y: int, color: str) -> None:
+    def draw_character_on_board(self, character, position_x: int, position_y: int, color: str) -> None:
         """
         Draw characters : number and letters on board edges.
         :param character: characters string which we want to paint on canvas
@@ -93,10 +93,10 @@ class Canvas(QPainter):
         self.setFont(QFont(font))
         self.drawStaticText(position_x, position_y, QStaticText(str(character)))
 
-    def paint_promotion_window(self, data: PromotionData, current_square: int) -> None:
+    def paint_promotion_window(self, data: PromotionUtil, current_square: int) -> None:
         """
         Method used to paint promotion window for pawn
-        :param data: PromotionData instance containing needed data
+        :param data: PromotionUtil instance containing needed data
         :param current_square: int value of square
         :return: None
         """
@@ -228,11 +228,11 @@ class Canvas(QPainter):
             return False
         return legal_move.get_start_square() == self.__freeze_start
 
-    def copy_current_move(self, move: Move) -> None:
+    def copy_current_move(self, move) -> None:
         """
         Method copies values of a current move
-        :param move: current move (Move instance)
-        :return: None
+        :param move:
+        :return:
         """
         self.__freeze_piece = move.get_moving_piece()
         self.__freeze_start = move.get_start_square()
