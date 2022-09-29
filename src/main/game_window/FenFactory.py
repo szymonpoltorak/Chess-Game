@@ -127,18 +127,6 @@ class FenFactory:
         return black
 
     @staticmethod
-    def get_proper_fen_character(color_value: int, letter: str):
-        """
-        Returns proper fen characters based on color value.
-        :param color_value: int value of piece_square color
-        :param letter: str representation of piece_square
-        :return: proper fen str letter
-        """
-        if color_value == PiecesEnum.WHITE.value:
-            return letter.upper()
-        return letter
-
-    @staticmethod
     def get_proper_piece_for_fen(board: ndarray[int], index: int, color_value: int) -> str:
         """
         Gets proper fen letter for board int array.
@@ -149,14 +137,14 @@ class FenFactory:
         """
         piece = board[index]
         if piece == color_value | PiecesEnum.PAWN.value:
-            return FenFactory.get_proper_fen_character(color_value, "p")
+            return FenFactory.get_proper_letter_size(color_value, "p")
         elif piece == color_value | PiecesEnum.KING.value:
-            return FenFactory.get_proper_fen_character(color_value, "k")
+            return FenFactory.get_proper_letter_size(color_value, "k")
         elif piece == color_value | PiecesEnum.QUEEN.value:
-            return FenFactory.get_proper_fen_character(color_value, "q")
+            return FenFactory.get_proper_letter_size(color_value, "q")
         elif piece == color_value | PiecesEnum.BISHOP.value:
-            return FenFactory.get_proper_fen_character(color_value, "b")
+            return FenFactory.get_proper_letter_size(color_value, "b")
         elif piece == color_value | PiecesEnum.KNIGHT.value:
-            return FenFactory.get_proper_fen_character(color_value, "n")
+            return FenFactory.get_proper_letter_size(color_value, "n")
         elif piece == color_value | PiecesEnum.ROOK.value:
-            return FenFactory.get_proper_fen_character(color_value, "r")
+            return FenFactory.get_proper_letter_size(color_value, "r")
