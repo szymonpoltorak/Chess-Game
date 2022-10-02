@@ -115,7 +115,7 @@ $menu-icon-hover-color: rgb(22 163 74);
   @include button-theme;
 }
 
-#__analyze_button {
+#__switch_side_button {
   @include button-theme;
 }
 
@@ -136,7 +136,7 @@ $menu-icon-hover-color: rgb(22 163 74);
   @include button-hover-theme;
 }
 
-#__analyze_button:hover {
+#__switch_side_button:hover {
   @include button-hover-theme;
 }
 

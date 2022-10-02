@@ -1,7 +1,6 @@
 from numpy import array
 from numpy import ndarray
 from numpy import sign
-from numpy import zeros
 
 from game_window.BoardInitializer import BoardInitializer
 from game_window.ColorManager import ColorManager
@@ -20,10 +19,12 @@ class Board:
     Class to hold and manage board representation.
     """
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
-                       "__fen_data"])
+                       "__fen_data", "__upper_player_color", "__down_player_color"])
 
     def __init__(self):
-        self.__board_array: ndarray[int] = self.__init_starting_board()
+        self.__upper_player_color = PiecesEnum.BLACK.value
+        self.__down_player_color = PiecesEnum.WHITE.value
+        self.__board_array: ndarray[int] = BoardInitializer.init_starting_board(self.__upper_player_color, self.__down_player_color)
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__fen_data = FenData()
         self.__color_to_move: int = PiecesEnum.WHITE.value
@@ -40,7 +41,8 @@ class Board:
         distance = move.get_start_square() - move.get_end_square()
         color = ColorManager.get_piece_color(piece)
         is_queen_side = distance > 0
-        rook_position = MoveValidator.get_rook_position(color, is_queen_side)
+        rook_position = MoveValidator.get_rook_position(color, is_queen_side, self.__upper_player_color,
+                                                        self.__down_player_color)
 
         self.__board_array[move.get_start_square()] = 0
         self.__board_array[move.get_end_square()] = piece
@@ -102,29 +104,6 @@ class Board:
         :return: int value of color
         """
         return self.__color_to_move
-
-    def __init_starting_board(self) -> ndarray[int]:
-        """
-        Method initializes starting board.
-        :return: board int array
-        """
-        board = zeros(BoardEnum.BOARD_SIZE.value)
-        index = 0
-        white_pieces = BoardInitializer.init_white_pieces_array()
-        black_pieces = BoardInitializer.init_black_pieces_array()
-
-        for _ in range(2 * BoardEnum.BOARD_LENGTH.value):
-            board[index] = black_pieces[index]
-            index += 1
-
-        index += 4 * BoardEnum.BOARD_LENGTH.value
-        border_edge_index = 2 * BoardEnum.BOARD_LENGTH.value - 1
-
-        for _ in range(2 * BoardEnum.BOARD_LENGTH.value):
-            board[index] = white_pieces[border_edge_index]
-            border_edge_index -= 1
-            index += 1
-        return board
 
     def delete_piece_from_board(self, row: int, col: int) -> int:
         """
@@ -212,9 +191,19 @@ class Board:
         :param deleted_piece: deleted piece in move value
         :return: None
         """
-        moved_piece = self.__board_array[move.get_end_square()]
-        self.__board_array[move.get_end_square()] = deleted_piece
+        end_square = move.get_end_square()
+
+        moved_piece = self.__board_array[end_square]
+        self.__board_array[end_square] = deleted_piece
         self.__board_array[move.get_start_square()] = moved_piece
+
+    def switch_colors(self):
+        self.set_opposite_color_sides()
+        self.__board_array = BoardInitializer.init_starting_board(self.__upper_player_color, self.__down_player_color)
+        self.__fen_data.__init__()
+        self.__color_to_move = PiecesEnum.WHITE.value
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
+        self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
 
     def get_fen_data(self) -> FenData:
         """
@@ -222,3 +211,13 @@ class Board:
         :return: FenData instance
         """
         return self.__fen_data
+
+    def set_opposite_color_sides(self):
+        self.__upper_player_color = ColorManager.get_opposite_piece_color(self.__upper_player_color)
+        self.__down_player_color = ColorManager.get_opposite_piece_color(self.__down_player_color)
+
+    def get_upper_color(self):
+        return self.__upper_player_color
+
+    def get_down_color(self):
+        return self.__down_player_color

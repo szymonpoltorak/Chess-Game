@@ -34,7 +34,7 @@ def test_get_attack_direction_left_white():
     color = PiecesEnum.WHITE.value
 
     # when
-    result = MoveValidator.get_attack_direction(color, direction)
+    result = MoveValidator.get_attack_direction(color, direction, PiecesEnum.BLACK.value)
 
     # then
     assert expected == result
@@ -47,7 +47,7 @@ def test_get_attack_direction_right_black():
     color = PiecesEnum.BLACK.value
 
     # when
-    result = MoveValidator.get_attack_direction(color, direction)
+    result = MoveValidator.get_attack_direction(color, direction, PiecesEnum.BLACK.value)
 
     # then
     assert expected == result
@@ -62,7 +62,7 @@ def test_is_pawn_promoting_white_pawn_is_promoting():
     expected = True
 
     # when
-    result = MoveValidator.is_pawn_promoting(move, color)
+    result = MoveValidator.is_pawn_promoting(move, color, PiecesEnum.WHITE.value)
 
     # then
     assert expected == result
@@ -77,7 +77,7 @@ def test_is_pawn_promoting_it_is_not_pawn():
     expected = False
 
     # when
-    result = MoveValidator.is_pawn_promoting(move, color)
+    result = MoveValidator.is_pawn_promoting(move, color, PiecesEnum.WHITE.value)
 
     # then
     assert expected == result
@@ -92,7 +92,7 @@ def test_is_pawn_promoting_black_pawn_is_promoting():
     expected = True
 
     # when
-    result = MoveValidator.is_pawn_promoting(move, color)
+    result = MoveValidator.is_pawn_promoting(move, color, PiecesEnum.WHITE.value)
 
     # then
     assert expected == result

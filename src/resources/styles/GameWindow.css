@@ -106,7 +106,7 @@
   font-weight: bold;
 }
 
-#__analyze_button {
+#__switch_side_button {
   border-radius: 20%;
   background-color: #4f545c;
   color: #d4d7dc;
@@ -128,7 +128,7 @@
   background-color: rgb(22, 163, 74);
 }
 
-#__analyze_button:hover {
+#__switch_side_button:hover {
   border-radius: 10%;
   background-color: rgb(22, 163, 74);
 }

@@ -172,11 +172,17 @@ class MoveGenerator:
         :param start_square: start square index
         :return: None
         """
-        if not MoveValidator.is_anything_on_king_side(board, start_square, color) and board.get_fen_data().can_king_castle_king_side(color):
-            move_target = start_square + MoveEnum.CASTLE_MOVE.value
+        if not MoveValidator.is_anything_on_king_side(board, start_square) and board.get_fen_data().can_king_castle_king_side(color):
+            if not MoveValidator.is_board_inverted(board):
+                move_target = start_square + MoveEnum.CASTLE_MOVE.value
+            else:
+                move_target = start_square - MoveEnum.CASTLE_MOVE.value
             moves.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
         if not MoveValidator.is_anything_on_queen_side(board, start_square) and board.get_fen_data().can_king_castle_queen_side(color):
-            move_target = start_square - MoveEnum.CASTLE_MOVE.value
+            if not MoveValidator.is_board_inverted(board):
+                move_target = start_square - MoveEnum.CASTLE_MOVE.value
+            else:
+                move_target = start_square + MoveEnum.CASTLE_MOVE.value
             moves.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
 
     @staticmethod

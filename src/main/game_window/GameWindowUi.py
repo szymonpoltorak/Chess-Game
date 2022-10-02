@@ -17,7 +17,7 @@ class GameWindowUi:
     """
     __slots__ = array(["__side_bar", "__right_container", "__pgn_table", "__button_frame", "__button_horizontal_layout",
                        "__user_frame", "__user_icon", "__user_name", "__engine_frame", "__engine_icon", "__engine_name",
-                       "__new_game_button", "__prev_move_button", "__next_move_button", "__analyze_button"])
+                       "__new_game_button", "__prev_move_button", "__next_move_button", "__switch_side_button"])
 
     def __init__(self, game_window: QWidget):
         appid = "mycompany.myproduct.subproduct.version"
@@ -152,13 +152,13 @@ class GameWindowUi:
         self.__next_move_button.setObjectName("__next_move_button")
         self.__button_horizontal_layout.addWidget(self.__next_move_button)
 
-        self.__analyze_button = QtWidgets.QPushButton(self.__button_frame)
-        self.__analyze_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
-        self.__analyze_button.setMinimumSize(QtCore.QSize(GameWindowEnum.BUTTON_WIDTH.value,
-                                                          GameWindowEnum.BUTTON_HEIGHT.value))
-        self.__analyze_button.setToolTip("Analyze Party")
-        self.__analyze_button.setObjectName("__analyze_button")
-        self.__button_horizontal_layout.addWidget(self.__analyze_button)
+        self.__switch_side_button = QtWidgets.QPushButton(self.__button_frame)
+        self.__switch_side_button.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
+        self.__switch_side_button.setMinimumSize(QtCore.QSize(GameWindowEnum.BUTTON_WIDTH.value,
+                                                              GameWindowEnum.BUTTON_HEIGHT.value))
+        self.__switch_side_button.setToolTip("Switch Colors")
+        self.__switch_side_button.setObjectName("__switch_side_button")
+        self.__button_horizontal_layout.addWidget(self.__switch_side_button)
 
     def __retranslate_ui(self, game_window: QWidget) -> None:
         """
@@ -171,7 +171,7 @@ class GameWindowUi:
         self.__new_game_button.setText(_translate("game_window", "New Game"))
         self.__prev_move_button.setText(_translate("game_window", "<"))
         self.__next_move_button.setText(_translate("game_window", ">"))
-        self.__analyze_button.setText(_translate("game_window", "Analyze"))
+        self.__switch_side_button.setText(_translate("game_window", "Switch Colors"))
         self.__user_name.setText(_translate("game_window", "User"))
         self.__engine_name.setText(_translate("game_window", "Engine"))
 
@@ -181,3 +181,9 @@ class GameWindowUi:
         :return: SideBar field
         """
         return self.__side_bar
+
+    def get_new_game_button(self):
+        return self.__new_game_button
+
+    def get_switch_side_button(self):
+        return self.__switch_side_button
