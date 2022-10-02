@@ -37,6 +37,7 @@ class GameWindow(QWidget):
             self.__ui = GameWindowUi(self)
             self.setStyleSheet(style.read())
             self.__ui.get_new_game_button().clicked.connect(self.reset_game)
+            self.__ui.get_switch_side_button().clicked.connect(self.switch_sides)
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """
@@ -149,7 +150,6 @@ class GameWindow(QWidget):
             self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(True)
         else:
             self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(False)
-
         self.update_board_data(color)
 
     def update_board_data(self, color: int):
@@ -173,7 +173,7 @@ class GameWindow(QWidget):
         """
         move_length = self.__current_move.get_end_square() - self.__current_move.get_start_square()
 
-        if MoveValidator.is_pawn_promoting(self.__current_move, color):
+        if MoveValidator.is_pawn_promoting(self.__current_move, color, self.__canvas.get_board().get_upper_color()):
             self.__promotion_util.set_promotion_data(color, mouse_event.x(), mouse_event.y(),
                                                      piece_index)
         if MoveValidator.was_it_en_passant_move(self.__current_move, self.__canvas.get_board()):
@@ -225,4 +225,8 @@ class GameWindow(QWidget):
         self.__canvas.get_board().__init__()
         self.__current_move.set_start_square(None, None)
         self.__current_move.set_end_square(None, None)
+        self.update()
+
+    def switch_sides(self):
+        self.__canvas.get_board().switch_colors()
         self.update()

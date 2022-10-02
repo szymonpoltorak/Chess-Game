@@ -13,21 +13,18 @@ if TYPE_CHECKING:
 
 class MoveValidator:
     @staticmethod
-    def is_anything_on_king_side(board, start_square: int, color: int) -> bool:
+    def is_anything_on_king_side(board: 'Board', start_square: int) -> bool:
         """
         Checks if there is anything on the path between a king side rook and the king
         :param board: Board instance
         :param start_square: int index of kings square
-        :param color: int value of color
         :return: bool
         """
-        for square in range(1, MoveEnum.KING_SIDE.value + 1):
-            distance = start_square + square
-            if color == PiecesEnum.BLACK.value and distance > 7 or color == PiecesEnum.WHITE.value and distance > 63:
-                return True
-            if board.get_board_array()[distance] != 0:
-                return True
-        return False
+        if MoveValidator.is_board_inverted(board):
+            step = -1
+        else:
+            step = 1
+        return MoveValidator.check_castling_squares(step, MoveEnum.KING_SIDE.value, start_square, board)
 
     @staticmethod
     def is_anything_on_queen_side(board: 'Board', start_square: int) -> bool:
@@ -37,12 +34,21 @@ class MoveValidator:
         :param start_square: int index of kings square
         :return: bool
         """
-        square = abs(MoveEnum.QUEEN_SIDE.value)
+        if MoveValidator.is_board_inverted(board):
+            step = 1
+        else:
+            step = -1
+        return MoveValidator.check_castling_squares(step, MoveEnum.QUEEN_SIDE.value, start_square, board)
 
-        while square > 0:
-            if board.get_board_array()[start_square - square] != 0:
+    @staticmethod
+    def check_castling_squares(step: int, side_value: int, start_square: int, board: 'Board'):
+        for i in range(1, side_value + 1):
+            index = start_square + step * i
+
+            if index > 63 or index < 0:
+                break
+            if board.get_board_array()[start_square + step * i] != 0:
                 return True
-            square -= 1
         return False
 
     @staticmethod
@@ -57,20 +63,26 @@ class MoveValidator:
         return move.get_moving_piece() == PiecesEnum.KING.value and move_length == MoveEnum.CASTLE_MOVE.value
 
     @staticmethod
-    def get_rook_position(color: int, is_queen_side: bool) -> int:
+    def is_board_inverted(board: 'Board'):
+        return board.get_upper_color() == PiecesEnum.WHITE.value
+
+    @staticmethod
+    def get_rook_position(color: int, is_queen_side: bool, upper_color: int, down_color: int) -> int:
         """
         Static method to return rooks board position based on given parameters
+        :param down_color: value of down pieces color
+        :param upper_color: value of upper pieces color
         :param color: rook color
         :param is_queen_side: bool
         :return: int value of rook position
         """
-        if is_queen_side and color == PiecesEnum.WHITE.value:
+        if is_queen_side and color == down_color:
             return MoveEnum.BOTTOM_ROOK_QUEEN.value
-        elif is_queen_side and color == PiecesEnum.BLACK.value:
+        elif is_queen_side and color == upper_color:
             return MoveEnum.TOP_ROOK_QUEEN.value
-        elif not is_queen_side and color == PiecesEnum.WHITE.value:
+        elif not is_queen_side and color == down_color:
             return MoveEnum.BOTTOM_ROOK_KING.value
-        elif not is_queen_side and color == PiecesEnum.BLACK.value:
+        elif not is_queen_side and color == upper_color:
             return MoveEnum.TOP_ROOK_KING.value
 
     @staticmethod
@@ -82,13 +94,16 @@ class MoveValidator:
         :param board: Board instance
         :return: None
         """
-        if color == PiecesEnum.BLACK.value and move.get_start_square() == MoveEnum.TOP_ROOK_QUEEN.value:
+        upper_color = board.get_upper_color()
+        down_color = board.get_down_color()
+
+        if color == upper_color and move.get_start_square() == MoveEnum.TOP_ROOK_QUEEN.value:
             board.get_fen_data().set_castling_queen_side(False, color)
-        elif color == PiecesEnum.BLACK.value and move.get_start_square() == MoveEnum.TOP_ROOK_KING.value:
+        elif color == upper_color and move.get_start_square() == MoveEnum.TOP_ROOK_KING.value:
             board.get_fen_data().set_castling_king_side(False, color)
-        elif color == PiecesEnum.WHITE.value and move.get_start_square() == MoveEnum.BOTTOM_ROOK_QUEEN.value:
+        elif color == down_color and move.get_start_square() == MoveEnum.BOTTOM_ROOK_QUEEN.value:
             board.get_fen_data().set_castling_queen_side(False, color)
-        elif color == PiecesEnum.WHITE.value and move.get_start_square() == MoveEnum.BOTTOM_ROOK_KING.value:
+        elif color == down_color and move.get_start_square() == MoveEnum.BOTTOM_ROOK_KING.value:
             board.get_fen_data().set_castling_king_side(False, color)
 
     @staticmethod
@@ -148,8 +163,10 @@ class MoveValidator:
         direction = 1
         pawn_index_bounds_min = 48
         pawn_index_bounds_max = 55
+        upper_color = board.get_upper_color()
+        down_color = ColorManager.get_opposite_piece_color(upper_color)
 
-        if color == PiecesEnum.WHITE.value:
+        if color == down_color:
             if double_move_target < 0 or move_target < 0:
                 return
         else:
@@ -195,8 +212,8 @@ class MoveValidator:
         :param board: Board instance
         :return: None
         """
-        left_piece_square = start_square + MoveValidator.get_attack_direction(color, "LEFT")
-        right_piece_square = start_square + MoveValidator.get_attack_direction(color, "RIGHT")
+        left_piece_square = start_square + MoveValidator.get_attack_direction(color, "LEFT", board.get_upper_color())
+        right_piece_square = start_square + MoveValidator.get_attack_direction(color, "RIGHT", board.get_upper_color())
 
         if left_piece_square < 0 or left_piece_square > 63 or right_piece_square < 0 or right_piece_square > 63:
             return
@@ -242,9 +259,10 @@ class MoveValidator:
         :param board: Board instance
         :return: None
         """
+        upper_color = board.get_upper_color()
         en_passant_square = board.get_fen_data().get_en_passant_square()
-        en_passant_target_left = start_square + MoveValidator.get_attack_direction(color, "LEFT")
-        en_passant_target_right = start_square + MoveValidator.get_attack_direction(color, "RIGHT")
+        en_passant_target_left = start_square + MoveValidator.get_attack_direction(color, "LEFT", upper_color)
+        en_passant_target_right = start_square + MoveValidator.get_attack_direction(color, "RIGHT", upper_color)
 
         if en_passant_square == -1:
             return
@@ -266,32 +284,38 @@ class MoveValidator:
         return move.get_end_square() == board.get_fen_data().get_en_passant_square()
 
     @staticmethod
-    def get_attack_direction(color: int, direction: str) -> int:
+    def get_attack_direction(color: int, direction: str, upper_color: int) -> int:
         """
         Gets proper int direction of square
+        :param upper_color: color of upper pieces
         :param color: int value of color
         :param direction: str attack direction
         :return: int
         """
-        if direction.upper() == "LEFT" and color == PiecesEnum.WHITE.value:
+        down_color = ColorManager.get_opposite_piece_color(upper_color)
+
+        if direction.upper() == "LEFT" and color == down_color:
             return MoveEnum.PAWN_UP_LEFT_ATTACK.value
-        elif direction.upper() == "RIGHT" and color == PiecesEnum.WHITE.value:
+        elif direction.upper() == "RIGHT" and color == down_color:
             return MoveEnum.PAWN_UP_RIGHT_ATTACK.value
-        elif direction.upper() == "LEFT" and color == PiecesEnum.BLACK.value:
+        elif direction.upper() == "LEFT" and color == upper_color:
             return MoveEnum.PAWN_DOWN_LEFT_ATTACK.value
-        elif direction.upper() == "RIGHT" and color == PiecesEnum.BLACK.value:
+        elif direction.upper() == "RIGHT" and color == upper_color:
             return MoveEnum.PAWN_DOWN_RIGHT_ATTACK.value
 
     @staticmethod
-    def is_pawn_promoting(move: Move, color: int) -> bool:
+    def is_pawn_promoting(move: Move, color: int, upper_color: int) -> bool:
         """
         Methods checks if pawn is promoting or not
+        :param upper_color: color of upper pieces
         :param move: Move instance
         :param color: int value of color
         :return: bool
         """
         if move.get_moving_piece() != PiecesEnum.PAWN.value:
             return False
-        if color == PiecesEnum.WHITE.value and 0 <= move.get_end_square() <= 7:
+        if upper_color and 0 <= move.get_end_square() <= 7:
             return True
-        return color == PiecesEnum.BLACK.value and 57 <= move.get_end_square() <= 63
+        
+        opposite_color = ColorManager.get_opposite_piece_color(upper_color)
+        return color == opposite_color and 57 <= move.get_end_square() <= 63

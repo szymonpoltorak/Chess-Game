@@ -36,7 +36,7 @@ class MoveEnum(Enum):
                                    BOTTOM_RIGHT_S)
     CASTLE_MOVE: int = 2
     KING_SIDE: int = 2
-    QUEEN_SIDE: int = -3
+    QUEEN_SIDE: int = 3
 
     BOTTOM_ROOK_QUEEN: int = 56
     BOTTOM_ROOK_KING: int = 63
