@@ -36,6 +36,7 @@ class GameWindow(QWidget):
         with open("src/resources/styles/GameWindow.min.css", "r", encoding="utf-8") as style:
             self.__ui = GameWindowUi(self)
             self.setStyleSheet(style.read())
+            self.__ui.get_new_game_button().clicked.connect(self.reset_game)
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """
@@ -219,3 +220,9 @@ class GameWindow(QWidget):
             playsound("src/resources/sounds/Move.mp3")
         else:
             playsound("src/resources/sounds/Capture.mp3")
+
+    def reset_game(self):
+        self.__canvas.get_board().__init__()
+        self.__current_move.set_start_square(None, None)
+        self.__current_move.set_end_square(None, None)
+        self.update()

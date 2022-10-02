@@ -181,3 +181,6 @@ class GameWindowUi:
         :return: SideBar field
         """
         return self.__side_bar
+
+    def get_new_game_button(self):
+        return self.__new_game_button
