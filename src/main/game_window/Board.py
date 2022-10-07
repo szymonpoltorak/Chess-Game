@@ -120,6 +120,20 @@ class Board:
 
         return piece
 
+    def delete_pieces_on_squares(self, start_square: int, end_square: int) -> int:
+        """
+        Deletes pieces on squares in computer move
+        :param start_square: a starting square of a moving piece index
+        :param end_square: board array index
+        :return: deleted piece_square value
+        """
+        self.__board_array[start_square] = 0
+        piece = self.__board_array[end_square]
+        self.__board_array[end_square] = 0
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
+
+        return piece
+
     def add_piece_to_the_board(self, piece: int, square: int) -> None:
         """
         Adds piece_square to board array and updates fen string.
@@ -169,33 +183,6 @@ class Board:
         self.__fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
         self.__fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
-
-    def make_move(self, move: Move, color: int) -> int:
-        """
-        Method used to make a given move. It means to update the board int array
-        :param move: Move instance - move we want to make
-        :param color: color of a piece
-        :return: int value of deleted piece
-        """
-        deleted_piece: int = self.__board_array[move.get_end_square()]
-
-        self.__board_array[move.get_start_square()] = 0
-        self.__board_array[move.get_end_square()] = color + move.get_moving_piece()
-
-        return deleted_piece
-
-    def un_make_move(self, move: Move, deleted_piece: int) -> None:
-        """
-        Removes given move with a value of deleted piece
-        :param move: move to be unmade
-        :param deleted_piece: deleted piece in move value
-        :return: None
-        """
-        end_square = move.get_end_square()
-
-        moved_piece = self.__board_array[end_square]
-        self.__board_array[end_square] = deleted_piece
-        self.__board_array[move.get_start_square()] = moved_piece
 
     def switch_colors(self):
         self.set_opposite_color_sides()

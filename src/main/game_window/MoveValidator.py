@@ -17,7 +17,7 @@ class MoveValidator:
         """
         Checks if there is anything on the path between a king side rook and the king
         :param board: Board instance
-        :param start_square: int index of kings square
+        :param start_square: int index of kings end_square
         :return: bool
         """
         if MoveValidator.is_board_inverted(board):
@@ -31,7 +31,7 @@ class MoveValidator:
         """
         Checks if there is anything on the path between a queen side rook and the king
         :param board: Board instance
-        :param start_square: int index of kings square
+        :param start_square: int index of kings end_square
         :return: bool
         """
         if MoveValidator.is_board_inverted(board):
@@ -110,8 +110,8 @@ class MoveValidator:
     def is_attack_target_in_border_bounds(start_square: int, move_target: int, attack_range: int) -> bool:
         """
         Static method to check if pawns attack target is in board bonds
-        :param start_square: int index of start square
-        :param move_target: int index of attack target square
+        :param start_square: int index of start end_square
+        :param move_target: int index of attack target end_square
         :param attack_range: int value of range attack
         :return: bool
         """
@@ -152,7 +152,7 @@ class MoveValidator:
     def add_pawn_moves(start_square: int, piece: int, color: int, moves: list[Move], board: 'Board') -> None:
         """
         Adds possible pawn movements
-        :param start_square: int index of starting square
+        :param start_square: int index of starting end_square
         :param piece: int value of a piece_square
         :param color: int value of color to move
         :param moves: list of moves
@@ -190,8 +190,8 @@ class MoveValidator:
     def no_piece_in_pawns_way(double_move_target: int, start_square: int, board, step: int) -> bool:
         """
         Static method used to check if there is any piece_square on pawns way
-        :param double_move_target: int target square of pawns double move
-        :param start_square: int index of starting square
+        :param double_move_target: int target end_square of pawns double move
+        :param start_square: int index of starting end_square
         :param board: Board instance
         :param step: int value of step
         :return: bool
@@ -205,7 +205,7 @@ class MoveValidator:
     def add_pawn_attacks(start_square: int, piece: int, color: int, moves: list[Move], board: 'Board') -> None:
         """
         Static method used to add pawn attacks
-        :param start_square: int index of starting square
+        :param start_square: int index of starting end_square
         :param piece: int value of a piece_square
         :param color: int value of color to move
         :param moves: list of moves
@@ -234,8 +234,8 @@ class MoveValidator:
     def add_moves_and_promotions(start_square: int, move_target: int, piece: int, moves: list[Move]) -> None:
         """
         Checks if move is a promotion or not and add move to the list
-        :param move_target: int target square of the move
-        :param start_square: int index of starting square
+        :param move_target: int target end_square of the move
+        :param start_square: int index of starting end_square
         :param piece: int value of a piece_square
         :param moves: list of moves
         :return: None
@@ -286,7 +286,7 @@ class MoveValidator:
     @staticmethod
     def get_attack_direction(color: int, direction: str, upper_color: int) -> int:
         """
-        Gets proper int direction of square
+        Gets proper int direction of end_square
         :param upper_color: color of upper pieces
         :param color: int value of color
         :param direction: str attack direction

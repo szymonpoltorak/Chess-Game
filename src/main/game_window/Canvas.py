@@ -97,7 +97,7 @@ class Canvas(QPainter):
         """
         Method used to paint promotion window for pawn
         :param data: PromotionData instance containing needed data
-        :param current_square: int value of square
+        :param current_square: int value of end_square
         :return: None
         """
         col = current_square % 8
@@ -157,7 +157,7 @@ class Canvas(QPainter):
         :param current_x: current x coordinate from which we start drawing.
         :param current_y: current y coordinate from which we start drawing.
         :param piece_letter: letter representing piece_square on chess board, got from fen string.
-        :return: x coordinate of current square
+        :return: x coordinate of current end_square
         """
         try:
             blank_spaces = int(piece_letter)
@@ -219,9 +219,9 @@ class Canvas(QPainter):
 
     def is_it_frozen_piece_target_square(self, legal_move: Move, current_square: int) -> bool:
         """
-        Methods checks if current square is a valid move for a frozen piece_square
+        Methods checks if current end_square is a valid move for a frozen piece_square
         :param legal_move: current legal move instance
-        :param current_square: int index of current square
+        :param current_square: int index of current end_square
         :return: bool value
         """
         if legal_move.get_end_square() != current_square or legal_move.get_moving_piece() != self.__freeze_piece:

@@ -9,12 +9,14 @@ from PyQt5.QtWidgets import QWidget
 
 from game_window.Canvas import Canvas
 from game_window.ColorManager import ColorManager
+from game_window.engine.Engine import Engine
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
+from game_window.MoveUtil import MoveUtil
 from game_window.MoveValidator import MoveValidator
 from game_window.PromotionData import PromotionData
 
@@ -116,8 +118,7 @@ class GameWindow(QWidget):
         if self.__promotion_util.is_this_pawn_promoting():
             self.__promotion_util.check_user_choice(mouse_release_event, self.__canvas.get_rect_height(),
                                                     self.__canvas.get_board())
-            color = ColorManager.get_piece_color(self.__moving_piece)
-            self.update_board_data(color)
+            self.update_board_data()
             return
         row, col = self.__start_mouse_events(mouse_release_event)
 
@@ -150,16 +151,26 @@ class GameWindow(QWidget):
             self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(True)
         else:
             self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(False)
-        self.update_board_data(color)
+        self.update_board_data()
 
-    def update_board_data(self, color: int):
-        list_move = MoveGenerator.generate_legal_moves(ColorManager.get_opposite_piece_color(color),
-                                                       self.__canvas.get_board())
-
-        if not list_move:
-            QMessageBox.about(self, "GAME IS OVER", "CHECK MATE!")
-        self.__canvas.get_board().set_legal_moves(list_move)
+    def update_board_data(self):
         self.__canvas.get_board().update_fen()
+        self.update()
+
+        print(self.__canvas.get_board().get_fen_string())
+        if self.__promotion_util.is_this_pawn_promoting():
+            return
+        computer_move = Engine.get_computer_move(self.__canvas.get_board())
+
+        if computer_move is None:
+            QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
+            return
+
+        self.play_proper_sound(MoveUtil.make_engine_move(self.__canvas.get_board(), computer_move))
+        player_moves = MoveGenerator.generate_legal_moves(self.__canvas.get_board().get_down_color(),
+                                                          self.__canvas.get_board())
+        self.__canvas.get_board().set_legal_moves(player_moves)
+        print(self.__canvas.get_board().get_fen_string())
         self.update()
 
     def handle_pawn_special_events(self, mouse_event: QMouseEvent, color: int, piece_index: int, deleted_piece: int) -> int:
