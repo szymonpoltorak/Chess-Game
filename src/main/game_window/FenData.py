@@ -6,7 +6,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 class FenData:
     __slots__ = array(["__white_castle_king", "__white_castle_queen", "__black_castle_king", "__black_castle_queen",
                        "__en_passant_square", "__en_passant_piece_square", "__move_counter",
-                       "__no_sack_and_pawn_count"])
+                       "__no_sack_and_pawn_count"], dtype=str)
 
     def __init__(self):
         self.__white_castle_king = True

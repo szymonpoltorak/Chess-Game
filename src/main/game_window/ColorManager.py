@@ -3,6 +3,8 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class ColorManager:
+    __slots__ = ()
+
     @staticmethod
     def get_piece_color(piece: int) -> int:
         """

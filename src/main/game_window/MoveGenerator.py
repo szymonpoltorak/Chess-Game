@@ -19,6 +19,8 @@ if TYPE_CHECKING:
 
 
 class MoveGenerator:
+    __slots__ = ()
+
     @staticmethod
     def calculate_distance_to_borders() -> ndarray[int]:
         """

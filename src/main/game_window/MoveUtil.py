@@ -14,6 +14,8 @@ if TYPE_CHECKING:
 
 
 class MoveUtil:
+    __slots__ = ()
+
     @staticmethod
     def make_move(move: Move, color: int, board_array: ndarray[int]) -> int:
         """
@@ -32,7 +34,7 @@ class MoveUtil:
         return deleted_piece
 
     @staticmethod
-    def un_make_move(move: Move, deleted_piece: int, board_array: ndarray[int]) -> None: #It may not work properly
+    def un_make_move(move: Move, deleted_piece: int, board_array: ndarray[int]) -> None: #It may not work property
         """
         Removes given move with a value of deleted piece
         :param board_array: array of ints

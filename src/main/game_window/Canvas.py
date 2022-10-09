@@ -21,7 +21,8 @@ class Canvas(QPainter):
     """
     Class which manages painting board and pieces.
     """
-    __slots__ = array(["__board", "__rect_width", "__rect_height", "__freeze_piece", "__freeze_start", "__freeze_end"])
+    __slots__ = array(["__board", "__rect_width", "__rect_height", "__freeze_piece", "__freeze_start", "__freeze_end"],
+                      dtype=str)
 
     def __init__(self):
         super(Canvas, self).__init__()

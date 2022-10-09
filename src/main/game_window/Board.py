@@ -19,17 +19,18 @@ class Board:
     Class to hold and manage board representation.
     """
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
-                       "__fen_data", "__engine_color", "__player_color"])
+                       "__fen_data", "__engine_color", "__player_color"], dtype=str)
 
     def __init__(self):
-        self.__engine_color = PiecesEnum.BLACK.value
-        self.__player_color = PiecesEnum.WHITE.value
-        self.__board_array: ndarray[int] = BoardInitializer.init_starting_board(self.__engine_color, self.__player_color)
+        self.__engine_color: int = PiecesEnum.BLACK.value
+        self.__player_color: int = PiecesEnum.WHITE.value
+        self.__board_array: ndarray[int] = BoardInitializer.init_starting_board(self.__engine_color,
+                                                                                self.__player_color)
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
-        self.__fen_data = FenData()
+        self.__fen_data: FenData = FenData()
         self.__color_to_move: int = PiecesEnum.WHITE.value
-        self.__distances_to_borders = MoveGenerator.calculate_distance_to_borders()
-        self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
+        self.__distances_to_borders: ndarray[int] = MoveGenerator.calculate_distance_to_borders()
+        self.__legal_moves: list[Move] = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
 
     def castle_king(self, piece: int, move: Move) -> None:
         """
@@ -38,12 +39,13 @@ class Board:
         :param move: Move instance
         :return: None
         """
-        start_square, end_square = move.get_start_square(), move.get_end_square()
-        distance = start_square - end_square
-        color = ColorManager.get_piece_color(piece)
-        is_queen_side = distance > 0
-        rook_position = MoveValidator.get_rook_position(color, is_queen_side, self.__engine_color,
-                                                        self.__player_color)
+        start_square: int = move.get_start_square()
+        end_square: int = move.get_end_square()
+        distance: int = start_square - end_square
+        color: int = ColorManager.get_piece_color(piece)
+        is_queen_side: bool = distance > 0
+        rook_position: int = MoveValidator.get_rook_position(color, is_queen_side, self.__engine_color,
+                                                             self.__player_color)
 
         self.__board_array[start_square], self.__board_array[end_square] = 0, piece
         self.__board_array[rook_position] = 0
@@ -110,9 +112,9 @@ class Board:
         :param col: col int index
         :return: deleted piece_square value
         """
-        board_index = BoardEnum.BOARD_LENGTH.value * row + col
+        board_index: int = BoardEnum.BOARD_LENGTH.value * row + col
 
-        piece = self.__board_array[board_index]
+        piece: int = self.__board_array[board_index]
         self.__board_array[board_index] = 0
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
@@ -125,7 +127,7 @@ class Board:
         :param end_square: board array index
         :return: deleted piece_square value
         """
-        piece = self.__board_array[end_square]
+        piece: int = self.__board_array[end_square]
         self.__board_array[end_square], self.__board_array[start_square] = 0, 0
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
@@ -148,7 +150,7 @@ class Board:
         :param col: int value of col index
         :return: bool value if piece_square should move or not
         """
-        board_index = BoardEnum.BOARD_LENGTH.value * row + col
+        board_index: int = BoardEnum.BOARD_LENGTH.value * row + col
 
         return ColorManager.get_piece_color(self.__board_array[board_index]) == self.__color_to_move
 

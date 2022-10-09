@@ -15,6 +15,8 @@ class FenFactory:
     """
     Class containing methods to manage fen creation.
     """
+    __slots__ = ()
+
     @staticmethod
     def convert_board_array_to_fen(board: 'Board') -> str:
         """

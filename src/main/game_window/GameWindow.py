@@ -25,7 +25,7 @@ class GameWindow(QWidget):
     """
     Covers play game window.
     """
-    __slots__ = array(["__ui", "__canvas", "__moving_piece", "__current_move", "__promotion_util"])
+    __slots__ = array(["__ui", "__canvas", "__moving_piece", "__current_move", "__promotion_util"], dtype=str)
 
     def __init__(self):
         super(GameWindow, self).__init__()
@@ -147,10 +147,6 @@ class GameWindow(QWidget):
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__canvas.get_board().set_opposite_move_color()
 
-       # if deleted_piece != 0 or self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
-        #    self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(True)
-        #else:
-         #   self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(False)
         self.update_move_counter(deleted_piece)
         self.update_board_data()
 

@@ -18,7 +18,7 @@ class Sidebar:
                        "__settings_menu", "__play_frame", "__play_horizontal_layout", "__play_menu", "__analysis_frame",
                        "__analyze_horizontal_layout", "__analysis_menu", "__profile_frame",
                        "__profile_horizontal_layout", "__profile_menu", "__players_frame",
-                       "__players_horizontal_layout", "__players_menu"])
+                       "__players_horizontal_layout", "__players_menu"], dtype=str)
 
     def __init__(self, game_window: QWidget):
         self.__side_bar = QtWidgets.QFrame(game_window)
