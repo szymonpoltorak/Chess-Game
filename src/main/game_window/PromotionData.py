@@ -21,7 +21,7 @@ class PromotionData:
         :param color: int value of color
         :param x: int x position
         :param y: int y position
-        :param square: int value of square
+        :param square: int value of end_square
         :return: None
         """
         self.__piece_color = color
@@ -53,7 +53,7 @@ class PromotionData:
 
     def get_pawn_square(self) -> int:
         """
-        Gives access to pawn square index
+        Gives access to pawn end_square index
         :return: int
         """
         return self.__square

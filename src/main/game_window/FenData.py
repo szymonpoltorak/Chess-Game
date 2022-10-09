@@ -98,30 +98,30 @@ class FenData:
 
     def set_en_passant_square(self, square: int) -> None:
         """
-        Method used to set en passant square
-        :param square: int value of square
+        Method used to set en passant end_square
+        :param square: int value of end_square
         :return: None
         """
         self.__en_passant_square = square
 
     def set_en_passant_piece_square(self, piece_square: int) -> None:
         """
-        Method used to set an en passant pieces quare value
-        :param piece_square: int piece square value
+        Method used to set an en passant target piece end_square value
+        :param piece_square: int piece end_square value
         :return: None
         """
         self.__en_passant_piece_square = piece_square
 
     def get_en_passant_square(self) -> int:
         """
-        Gives access to an en passant square value
+        Gives access to an en passant end_square value
         :return:
         """
         return self.__en_passant_square
 
     def get_en_passant_piece_square(self) -> int:
         """
-        Gives access to an en passant piece square value
+        Gives access to an en passant piece end_square value
         :return:
         """
         return self.__en_passant_piece_square

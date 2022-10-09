@@ -19,12 +19,12 @@ class Board:
     Class to hold and manage board representation.
     """
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
-                       "__fen_data", "__upper_player_color", "__down_player_color"])
+                       "__fen_data", "__engine_color", "__player_color"])
 
     def __init__(self):
-        self.__upper_player_color = PiecesEnum.BLACK.value
-        self.__down_player_color = PiecesEnum.WHITE.value
-        self.__board_array: ndarray[int] = BoardInitializer.init_starting_board(self.__upper_player_color, self.__down_player_color)
+        self.__engine_color = PiecesEnum.BLACK.value
+        self.__player_color = PiecesEnum.WHITE.value
+        self.__board_array: ndarray[int] = BoardInitializer.init_starting_board(self.__engine_color, self.__player_color)
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__fen_data = FenData()
         self.__color_to_move: int = PiecesEnum.WHITE.value
@@ -41,8 +41,8 @@ class Board:
         distance = move.get_start_square() - move.get_end_square()
         color = ColorManager.get_piece_color(piece)
         is_queen_side = distance > 0
-        rook_position = MoveValidator.get_rook_position(color, is_queen_side, self.__upper_player_color,
-                                                        self.__down_player_color)
+        rook_position = MoveValidator.get_rook_position(color, is_queen_side, self.__engine_color,
+                                                        self.__player_color)
 
         self.__board_array[move.get_start_square()] = 0
         self.__board_array[move.get_end_square()] = piece
@@ -120,6 +120,20 @@ class Board:
 
         return piece
 
+    def delete_pieces_on_squares(self, start_square: int, end_square: int) -> int:
+        """
+        Deletes pieces on squares in computer move
+        :param start_square: a starting square of a moving piece index
+        :param end_square: board array index
+        :return: deleted piece_square value
+        """
+        self.__board_array[start_square] = 0
+        piece = self.__board_array[end_square]
+        self.__board_array[end_square] = 0
+        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
+
+        return piece
+
     def add_piece_to_the_board(self, piece: int, square: int) -> None:
         """
         Adds piece_square to board array and updates fen string.
@@ -150,7 +164,7 @@ class Board:
         """
         return move in self.__legal_moves
 
-    def update_fen(self):
+    def update_fen(self) -> None:
         """
         Method used to update fen string with current board state
         :return: None
@@ -170,36 +184,9 @@ class Board:
         self.__fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
-    def make_move(self, move: Move, color: int) -> int:
-        """
-        Method used to make a given move. It means to update the board int array
-        :param move: Move instance - move we want to make
-        :param color: color of a piece
-        :return: int value of deleted piece
-        """
-        deleted_piece: int = self.__board_array[move.get_end_square()]
-
-        self.__board_array[move.get_start_square()] = 0
-        self.__board_array[move.get_end_square()] = color + move.get_moving_piece()
-
-        return deleted_piece
-
-    def un_make_move(self, move: Move, deleted_piece: int) -> None:
-        """
-        Removes given move with a value of deleted piece
-        :param move: move to be unmade
-        :param deleted_piece: deleted piece in move value
-        :return: None
-        """
-        end_square = move.get_end_square()
-
-        moved_piece = self.__board_array[end_square]
-        self.__board_array[end_square] = deleted_piece
-        self.__board_array[move.get_start_square()] = moved_piece
-
-    def switch_colors(self):
+    def switch_colors(self) -> None:
         self.set_opposite_color_sides()
-        self.__board_array = BoardInitializer.init_starting_board(self.__upper_player_color, self.__down_player_color)
+        self.__board_array = BoardInitializer.init_starting_board(self.__engine_color, self.__player_color)
         self.__fen_data.__init__()
         self.__color_to_move = PiecesEnum.WHITE.value
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
@@ -212,12 +199,12 @@ class Board:
         """
         return self.__fen_data
 
-    def set_opposite_color_sides(self):
-        self.__upper_player_color = ColorManager.get_opposite_piece_color(self.__upper_player_color)
-        self.__down_player_color = ColorManager.get_opposite_piece_color(self.__down_player_color)
+    def set_opposite_color_sides(self) -> None:
+        self.__engine_color = ColorManager.get_opposite_piece_color(self.__engine_color)
+        self.__player_color = ColorManager.get_opposite_piece_color(self.__player_color)
 
-    def get_upper_color(self):
-        return self.__upper_player_color
+    def get_engine_color(self) -> int:
+        return self.__engine_color
 
-    def get_down_color(self):
-        return self.__down_player_color
+    def get_player_color(self) -> int:
+        return self.__player_color

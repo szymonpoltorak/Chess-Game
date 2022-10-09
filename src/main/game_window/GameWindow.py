@@ -9,12 +9,14 @@ from PyQt5.QtWidgets import QWidget
 
 from game_window.Canvas import Canvas
 from game_window.ColorManager import ColorManager
+from game_window.engine.Engine import Engine
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
+from game_window.MoveUtil import MoveUtil
 from game_window.MoveValidator import MoveValidator
 from game_window.PromotionData import PromotionData
 
@@ -59,7 +61,7 @@ class GameWindow(QWidget):
         """
         return self.__ui
 
-    def __start_mouse_events(self, mouse_event: QMouseEvent):
+    def __start_mouse_events(self, mouse_event: QMouseEvent) -> tuple[int, int] or tuple[None, None]:
         """
         Prepares row and col indexes for mouse press and release events
         :param mouse_event: QMouseEvent
@@ -116,8 +118,7 @@ class GameWindow(QWidget):
         if self.__promotion_util.is_this_pawn_promoting():
             self.__promotion_util.check_user_choice(mouse_release_event, self.__canvas.get_rect_height(),
                                                     self.__canvas.get_board())
-            color = ColorManager.get_piece_color(self.__moving_piece)
-            self.update_board_data(color)
+            self.update_board_data()
             return
         row, col = self.__start_mouse_events(mouse_release_event)
 
@@ -150,16 +151,26 @@ class GameWindow(QWidget):
             self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(True)
         else:
             self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(False)
-        self.update_board_data(color)
+        self.update_board_data()
 
-    def update_board_data(self, color: int):
-        list_move = MoveGenerator.generate_legal_moves(ColorManager.get_opposite_piece_color(color),
-                                                       self.__canvas.get_board())
-
-        if not list_move:
-            QMessageBox.about(self, "GAME IS OVER", "CHECK MATE!")
-        self.__canvas.get_board().set_legal_moves(list_move)
+    def update_board_data(self) -> None:
         self.__canvas.get_board().update_fen()
+
+        print(self.__canvas.get_board().get_fen_string())
+        if self.__promotion_util.is_this_pawn_promoting():
+            return
+        computer_move = Engine.get_computer_move(self.__canvas.get_board())
+
+        if computer_move is None:
+            QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
+            return
+
+        self.play_proper_sound(MoveUtil.update_board_with_engine_move(self.__canvas.get_board(), computer_move))
+        player_moves = MoveGenerator.generate_legal_moves(self.__canvas.get_board().get_player_color(),
+                                                          self.__canvas.get_board())
+        self.__canvas.get_board().set_legal_moves(player_moves)
+        print(self.__canvas.get_board().get_fen_string())
+        self.__current_move = computer_move
         self.update()
 
     def handle_pawn_special_events(self, mouse_event: QMouseEvent, color: int, piece_index: int, deleted_piece: int) -> int:
@@ -173,7 +184,7 @@ class GameWindow(QWidget):
         """
         move_length = self.__current_move.get_end_square() - self.__current_move.get_start_square()
 
-        if MoveValidator.is_pawn_promoting(self.__current_move, color, self.__canvas.get_board().get_upper_color()):
+        if MoveValidator.is_pawn_promoting(self.__current_move, color, self.__canvas.get_board().get_engine_color()):
             self.__promotion_util.set_promotion_data(color, mouse_event.x(), mouse_event.y(),
                                                      piece_index)
         if MoveValidator.was_it_en_passant_move(self.__current_move, self.__canvas.get_board()):
@@ -221,12 +232,12 @@ class GameWindow(QWidget):
         else:
             playsound("src/resources/sounds/Capture.mp3")
 
-    def reset_game(self):
+    def reset_game(self) -> None:
         self.__canvas.get_board().__init__()
         self.__current_move.set_start_square(None, None)
         self.__current_move.set_end_square(None, None)
         self.update()
 
-    def switch_sides(self):
+    def switch_sides(self) -> None:
         self.__canvas.get_board().switch_colors()
         self.update()

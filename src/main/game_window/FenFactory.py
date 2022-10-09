@@ -55,8 +55,8 @@ class FenFactory:
     @staticmethod
     def convert_square_into_board_double_index(square: int) -> str:
         """
-        Method to convert square board index into chess board index
-        :param square: int value of square
+        Method to convert end_square board index into chess board index
+        :param square: int value of end_square
         :return: str
         """
         if square == -1:

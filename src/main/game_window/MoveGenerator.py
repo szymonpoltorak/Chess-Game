@@ -11,6 +11,7 @@ from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.Move import Move
+from game_window.MoveUtil import MoveUtil
 from game_window.MoveValidator import MoveValidator
 
 if TYPE_CHECKING:
@@ -21,7 +22,7 @@ class MoveGenerator:
     @staticmethod
     def calculate_distance_to_borders() -> ndarray[int]:
         """
-        Calculates array of distances of each square in every direction to board borders.
+        Calculates array of distances of each end_square in every direction to board borders.
         :return: ndarray of distances
         """
         distances = zeros((BoardEnum.BOARD_SIZE.value, BoardEnum.BOARD_LENGTH.value), dtype=int8)
@@ -57,7 +58,7 @@ class MoveGenerator:
 
         for move_to_verify in pseudo_legal_moves:
             is_it_valid_move = True
-            deleted_piece = board.make_move(move_to_verify, color_to_move)
+            deleted_piece = MoveUtil.make_move(move_to_verify, color_to_move, board.get_board_array())
             opponent_moves = MoveGenerator.generate_moves(ColorManager.get_opposite_piece_color(color_to_move), board)
             kings_square = CheckUtil.find_friendly_king_squares(board.get_board_array(), color_to_move)
 
@@ -71,7 +72,7 @@ class MoveGenerator:
                     break
             if is_it_valid_move:
                 legal_moves.append(move_to_verify)
-            board.un_make_move(move_to_verify, deleted_piece)
+            MoveUtil.un_make_move(move_to_verify, deleted_piece, board.get_board_array())
 
         return legal_moves
 
@@ -105,7 +106,7 @@ class MoveGenerator:
         """
         Static method used to generate moves for sliding pieces
         :param piece: int value of piece_square
-        :param start_square: int index of current square
+        :param start_square: int index of current end_square
         :param moves: list of moves
         :param color: int value of color
         :param board: Board instance
@@ -133,7 +134,7 @@ class MoveGenerator:
         :param piece: int value of piece_square
         :param color: int value of color to move
         :param board: board instance
-        :param start_square: int index of current square
+        :param start_square: int index of current end_square
         :return: None
         """
         if piece == PiecesEnum.KING.value:
@@ -169,7 +170,7 @@ class MoveGenerator:
         :param piece: int value of a piece_square
         :param color: int value of color to move
         :param board: Board instance
-        :param start_square: start square index
+        :param start_square: start end_square index
         :return: None
         """
         if not MoveValidator.is_anything_on_king_side(board, start_square) and board.get_fen_data().can_king_castle_king_side(color):
@@ -193,7 +194,7 @@ class MoveGenerator:
         :param piece: int value of a piece_square
         :param color: int value of color to move
         :param board: Board instance
-        :param start_square: start square index
+        :param start_square: start end_square index
         :return: None
         """
         MoveValidator.add_pawn_moves(start_square, piece, color, moves, board)

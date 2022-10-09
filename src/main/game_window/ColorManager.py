@@ -30,7 +30,7 @@ class ColorManager:
     @staticmethod
     def pick_proper_color(row: int, col: int) -> str:
         """
-        Static method chooses proper color for square on a chess board based on row and col index.
+        Static method chooses proper color for end_square on a chess board based on row and col index.
         :param row: current row on chess board
         :param col: current column on chess board
         :return: string value of a color
