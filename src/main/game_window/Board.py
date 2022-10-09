@@ -38,16 +38,17 @@ class Board:
         :param move: Move instance
         :return: None
         """
-        distance = move.get_start_square() - move.get_end_square()
+        start_square, end_square = move.get_start_square(), move.get_end_square()
+        distance = start_square - end_square
         color = ColorManager.get_piece_color(piece)
         is_queen_side = distance > 0
         rook_position = MoveValidator.get_rook_position(color, is_queen_side, self.__engine_color,
                                                         self.__player_color)
 
-        self.__board_array[move.get_start_square()] = 0
-        self.__board_array[move.get_end_square()] = piece
+        self.__board_array[start_square], self.__board_array[end_square] = 0, piece
         self.__board_array[rook_position] = 0
-        self.__board_array[move.get_end_square() + sign(distance)] = color | PiecesEnum.ROOK.value
+        self.__board_array[end_square + sign(distance)] = color | PiecesEnum.ROOK.value
+
         self.__fen_data.set_castling_king_side(False, color)
         self.__fen_data.set_castling_queen_side(False, color)
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
@@ -65,10 +66,7 @@ class Board:
         Method used to change the color of players pieces which is turn.
         :return: None
         """
-        if self.__color_to_move == PiecesEnum.BLACK.value:
-            self.__color_to_move = PiecesEnum.WHITE.value
-        else:
-            self.__color_to_move = PiecesEnum.BLACK.value
+        self.__color_to_move = PiecesEnum.WHITE.value if self.__color_to_move == PiecesEnum.BLACK.value else PiecesEnum.BLACK.value
 
     def get_legal_moves(self) -> list[Move]:
         """
@@ -127,9 +125,8 @@ class Board:
         :param end_square: board array index
         :return: deleted piece_square value
         """
-        self.__board_array[start_square] = 0
         piece = self.__board_array[end_square]
-        self.__board_array[end_square] = 0
+        self.__board_array[end_square], self.__board_array[start_square] = 0, 0
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
         return piece
@@ -152,9 +149,8 @@ class Board:
         :return: bool value if piece_square should move or not
         """
         board_index = BoardEnum.BOARD_LENGTH.value * row + col
-        color = ColorManager.get_piece_color(self.__board_array[board_index])
 
-        return color == self.__color_to_move
+        return ColorManager.get_piece_color(self.__board_array[board_index]) == self.__color_to_move
 
     def is_it_legal_move(self, move: Move) -> bool:
         """

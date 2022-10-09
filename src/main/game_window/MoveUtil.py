@@ -23,15 +23,16 @@ class MoveUtil:
         :param color: color of a piece
         :return: int value of deleted piece
         """
-        deleted_piece: int = board_array[move.get_end_square()]
+        end_square = move.get_end_square()
+        deleted_piece: int = board_array[end_square]
 
         board_array[move.get_start_square()] = 0
-        board_array[move.get_end_square()] = color + move.get_moving_piece()
+        board_array[end_square] = color + move.get_moving_piece()
 
         return deleted_piece
 
     @staticmethod
-    def un_make_move(move: Move, deleted_piece: int, board_array: ndarray[int]) -> None:
+    def un_make_move(move: Move, deleted_piece: int, board_array: ndarray[int]) -> None: #It may not work properly
         """
         Removes given move with a value of deleted piece
         :param board_array: array of ints
@@ -40,10 +41,7 @@ class MoveUtil:
         :return: None
         """
         end_square = move.get_end_square()
-
-        moved_piece = board_array[end_square]
-        board_array[end_square] = deleted_piece
-        board_array[move.get_start_square()] = moved_piece
+        board_array[end_square], board_array[move.get_start_square()] = deleted_piece, board_array[end_square]
 
     @staticmethod
     def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
@@ -65,6 +63,7 @@ class MoveUtil:
             board.castle_king(piece, computer_move)
         elif special_flag == SpecialFlags.EN_PASSANT.value:
             board.make_en_passant_capture(moving_piece)
+            deleted_piece = 1
         else:
             MoveUtil.make_engine_move(computer_move.get_end_square(), computer_move.get_moving_piece(), board)
         return deleted_piece
@@ -104,7 +103,3 @@ class MoveUtil:
         elif fen_data.get_en_passant_square() != -1:
             fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
             fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-
-    @staticmethod
-    def make_en_passant_move():
-        print()

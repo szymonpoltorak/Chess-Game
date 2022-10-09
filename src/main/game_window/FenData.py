@@ -24,10 +24,7 @@ class FenData:
         :param color: int value of color
         :return: bool
         """
-        if color == PiecesEnum.WHITE.value:
-            return self.__white_castle_king
-        else:
-            return self.__black_castle_king
+        return self.__white_castle_king if color == PiecesEnum.WHITE.value else self.__black_castle_king
 
     def can_king_castle_queen_side(self, color: int) -> bool:
         """
@@ -35,10 +32,7 @@ class FenData:
         :param color: int value of color
         :return: bool
         """
-        if color == PiecesEnum.WHITE.value:
-            return self.__white_castle_queen
-        else:
-            return self.__black_castle_queen
+        return self.__white_castle_queen if color == PiecesEnum.WHITE.value else self.__black_castle_queen
 
     def set_castling_king_side(self, can_castle: bool, color: int) -> None:
         """

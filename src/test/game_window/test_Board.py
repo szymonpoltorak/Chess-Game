@@ -1,6 +1,7 @@
 from game_window.Board import Board
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.Move import Move
+from game_window.MoveUtil import MoveUtil
 
 
 def test_should_this_piece_move_white_color_piece_should_move():
@@ -41,7 +42,7 @@ def test_make_move():
     move = Move(start_square, end_square, PiecesEnum.ROOK.value)
 
     # when
-    result = board.make_move(move, color)
+    result = MoveUtil.make_move(move, color, board.get_board_array())
 
     # then
     assert expected == result
@@ -57,7 +58,7 @@ def test_un_make_move():
     move = Move(start_square, end_square, PiecesEnum.ROOK.value)
 
     # when
-    board.un_make_move(move, deleted_piece)
+    MoveUtil.un_make_move(move, deleted_piece, board.get_board_array())
     result = board.get_board_array()[end_square]
 
     # then

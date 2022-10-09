@@ -1,4 +1,5 @@
 import random
+from functools import cache
 from typing import TYPE_CHECKING
 
 import numpy
@@ -15,6 +16,7 @@ if TYPE_CHECKING:
 
 class Engine:
     @staticmethod
+    @cache
     def search_positions(board: 'Board', depth: int, alpha: int, beta: int, maximizing_player: bool) -> int:
         if depth == 0:
             return Evaluator.evaluate_position(board)

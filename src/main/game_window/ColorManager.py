@@ -12,9 +12,7 @@ class ColorManager:
         """
         if piece == PiecesEnum.NONE.value:
             return PiecesEnum.NONE.value
-        elif piece - PiecesEnum.BLACK.value < 0:
-            return PiecesEnum.WHITE.value
-        return PiecesEnum.BLACK.value
+        return PiecesEnum.WHITE.value if piece - PiecesEnum.BLACK.value < 0 else PiecesEnum.BLACK.value
 
     @staticmethod
     def get_opposite_piece_color(color: int) -> int:
@@ -23,9 +21,7 @@ class ColorManager:
         :param color: int value of color
         :return: int value of opposite color
         """
-        if color == PiecesEnum.BLACK.value:
-            return PiecesEnum.WHITE.value
-        return PiecesEnum.BLACK.value
+        return PiecesEnum.WHITE.value if color == PiecesEnum.BLACK.value else PiecesEnum.BLACK.value
 
     @staticmethod
     def pick_proper_color(row: int, col: int) -> str:
@@ -36,11 +32,7 @@ class ColorManager:
         :return: string value of a color
         """
         is_light_color = (row + col) % 2 == 0
-
-        if is_light_color:
-            return BoardEnum.PRIMARY_BOARD_COLOR.value
-        else:
-            return BoardEnum.SECONDARY_BOARD_COLOR.value
+        return BoardEnum.PRIMARY_BOARD_COLOR.value if is_light_color else BoardEnum.SECONDARY_BOARD_COLOR.value
 
     @staticmethod
     def get_opposite_square_color(color: str) -> str:
@@ -49,7 +41,5 @@ class ColorManager:
         :param color: given color string of which we want to have opposite one
         :return: opposite color string
         """
-        if color == BoardEnum.PRIMARY_BOARD_COLOR.value:
-            return BoardEnum.SECONDARY_BOARD_COLOR.value
-        else:
-            return BoardEnum.PRIMARY_BOARD_COLOR.value
+        return BoardEnum.SECONDARY_BOARD_COLOR.value if color == BoardEnum.PRIMARY_BOARD_COLOR.value else \
+            BoardEnum.PRIMARY_BOARD_COLOR.value

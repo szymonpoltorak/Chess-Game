@@ -147,10 +147,11 @@ class GameWindow(QWidget):
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__canvas.get_board().set_opposite_move_color()
 
-        if deleted_piece != 0 or self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
-            self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(True)
-        else:
-            self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(False)
+       # if deleted_piece != 0 or self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
+        #    self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(True)
+        #else:
+         #   self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(False)
+        self.update_move_counter(deleted_piece)
         self.update_board_data()
 
     def update_board_data(self) -> None:
@@ -165,7 +166,9 @@ class GameWindow(QWidget):
             QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
             return
 
-        self.play_proper_sound(MoveUtil.update_board_with_engine_move(self.__canvas.get_board(), computer_move))
+        deleted_piece = MoveUtil.update_board_with_engine_move(self.__canvas.get_board(), computer_move)
+        self.play_proper_sound(deleted_piece)
+        self.update_move_counter(deleted_piece)
         player_moves = MoveGenerator.generate_legal_moves(self.__canvas.get_board().get_player_color(),
                                                           self.__canvas.get_board())
         self.__canvas.get_board().set_legal_moves(player_moves)
@@ -227,10 +230,7 @@ class GameWindow(QWidget):
         :param deleted_piece: int value of piece_square
         :return: None
         """
-        if deleted_piece == 0:
-            playsound("src/resources/sounds/Move.mp3")
-        else:
-            playsound("src/resources/sounds/Capture.mp3")
+        playsound("src/resources/sounds/Move.mp3") if deleted_piece == 0 else playsound("src/resources/sounds/Capture.mp3")
 
     def reset_game(self) -> None:
         self.__canvas.get_board().__init__()
@@ -241,3 +241,9 @@ class GameWindow(QWidget):
     def switch_sides(self) -> None:
         self.__canvas.get_board().switch_colors()
         self.update()
+
+    def update_move_counter(self, deleted_piece: int) -> None:
+        if deleted_piece != 0 or self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
+            self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(True)
+        else:
+            self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(False)
