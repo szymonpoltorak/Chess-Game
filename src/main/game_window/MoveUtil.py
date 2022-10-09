@@ -1,8 +1,10 @@
 from typing import TYPE_CHECKING
 
+from numpy import array
 from numpy import ndarray
 
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.Move import Move
 
 if TYPE_CHECKING:
@@ -42,10 +44,33 @@ class MoveUtil:
         board_array[move.get_start_square()] = moved_piece
 
     @staticmethod
-    def make_engine_move(board: 'Board', computer_move: Move):
+    def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
         deleted_piece = board.delete_pieces_on_squares(computer_move.get_start_square(), computer_move.get_end_square())
-        board.add_piece_to_the_board(PiecesEnum.BLACK.value + computer_move.get_moving_piece(), computer_move.get_end_square())
+        promotions = array([SpecialFlags.PROMOTE_TO_ROOK.value, SpecialFlags.PROMOTE_TO_QUEEN.value,
+                            SpecialFlags.PROMOTE_TO_BISHOP.value, SpecialFlags.PROMOTE_TO_KNIGHT.value])
+
+        if computer_move.get_special_flag_value() in promotions:
+            MoveUtil.make_engine_promotion_move(computer_move, board)
+        else:
+            MoveUtil.make_engine_move(computer_move.get_end_square(), computer_move.get_moving_piece(), board)
+        return deleted_piece
+
+    @staticmethod
+    def make_engine_promotion_move(computer_move: Move, board: 'Board') -> None:
+        end_square = computer_move.get_end_square()
+        color = board.get_upper_color()
+        promotion_dict = {
+            SpecialFlags.PROMOTE_TO_ROOK.value: color | PiecesEnum.ROOK.value,
+            SpecialFlags.PROMOTE_TO_QUEEN.value: color | PiecesEnum.QUEEN.value,
+            SpecialFlags.PROMOTE_TO_BISHOP.value: color | PiecesEnum.BISHOP.value,
+            SpecialFlags.PROMOTE_TO_KNIGHT.value: color | PiecesEnum.KNIGHT.value
+        }
+
+        promotion_piece = promotion_dict[computer_move.get_special_flag_value()]
+        MoveUtil.make_engine_move(end_square, promotion_piece, board)
+
+    @staticmethod
+    def make_engine_move(end_square: int, piece: int, board: 'Board') -> None:
+        board.add_piece_to_the_board(piece, end_square)
         board.set_opposite_move_color()
         board.update_fen()
-
-        return deleted_piece

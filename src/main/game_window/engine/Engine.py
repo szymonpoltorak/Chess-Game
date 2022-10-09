@@ -1,3 +1,4 @@
+import random
 from functools import cache
 from typing import TYPE_CHECKING
 
@@ -42,7 +43,7 @@ class Engine:
             moves = MoveGenerator.generate_legal_moves(PiecesEnum.BLACK.value, board)
 
             if not moves:
-                return Evaluator.evaluate_position()
+                return Evaluator.evaluate_position(board)
 
             for move in moves:
                 deleted_piece = MoveUtil.make_move(move, PiecesEnum.BLACK.value, board.get_board_array())
@@ -60,6 +61,7 @@ class Engine:
     @staticmethod
     def get_computer_move(board: 'Board'):
         moves = MoveGenerator.generate_legal_moves(board.get_upper_color(), board)
+        random.shuffle(moves)
         alpha = -numpy.inf
         beta = numpy.inf
         depth = 4

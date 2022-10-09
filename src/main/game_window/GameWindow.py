@@ -166,11 +166,12 @@ class GameWindow(QWidget):
             QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
             return
 
-        self.play_proper_sound(MoveUtil.make_engine_move(self.__canvas.get_board(), computer_move))
+        self.play_proper_sound(MoveUtil.update_board_with_engine_move(self.__canvas.get_board(), computer_move))
         player_moves = MoveGenerator.generate_legal_moves(self.__canvas.get_board().get_down_color(),
                                                           self.__canvas.get_board())
         self.__canvas.get_board().set_legal_moves(player_moves)
         print(self.__canvas.get_board().get_fen_string())
+        self.__current_move = computer_move
         self.update()
 
     def handle_pawn_special_events(self, mouse_event: QMouseEvent, color: int, piece_index: int, deleted_piece: int) -> int:
