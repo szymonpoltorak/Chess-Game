@@ -1,11 +1,11 @@
 import random
-from functools import cache
 from typing import TYPE_CHECKING
 
 import numpy
 
 from game_window.engine.Evaluator import Evaluator
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
 from game_window.MoveUtil import MoveUtil
 
@@ -15,12 +15,11 @@ if TYPE_CHECKING:
 
 class Engine:
     @staticmethod
-    @cache
-    def search_positions(board: 'Board', depth: int, alpha: int, beta: int, maximizing_player: bool):
+    def search_positions(board: 'Board', depth: int, alpha: int, beta: int, maximizing_player: bool) -> int:
         if depth == 0:
             return Evaluator.evaluate_position(board)
 
-        if maximizing_player:
+        if not maximizing_player:
             min_eval = numpy.inf
             moves = MoveGenerator.generate_legal_moves(PiecesEnum.WHITE.value, board)
 
@@ -38,7 +37,7 @@ class Engine:
                 if beta <= alpha:
                     break
             return min_eval
-        elif not maximizing_player:
+        elif maximizing_player:
             max_eval = -numpy.inf
             moves = MoveGenerator.generate_legal_moves(PiecesEnum.BLACK.value, board)
 
@@ -59,12 +58,12 @@ class Engine:
         raise ValueError("WRONG PARAMETERS!")
 
     @staticmethod
-    def get_computer_move(board: 'Board'):
-        moves = MoveGenerator.generate_legal_moves(board.get_upper_color(), board)
+    def get_computer_move(board: 'Board') -> Move:
+        moves = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
         random.shuffle(moves)
         alpha = -numpy.inf
         beta = numpy.inf
-        depth = 4
+        depth = 2
         best_eval = -numpy.inf
         best_move = None
 

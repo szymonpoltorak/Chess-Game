@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from numpy.random import randint
+
 if TYPE_CHECKING:
     from game_window.Board import Board
 
@@ -7,4 +9,5 @@ if TYPE_CHECKING:
 class Evaluator:
     @staticmethod
     def evaluate_position(board: 'Board'):
-        return 4
+        value = randint(0, 300)
+        return value

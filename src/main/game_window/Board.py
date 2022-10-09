@@ -19,12 +19,12 @@ class Board:
     Class to hold and manage board representation.
     """
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
-                       "__fen_data", "__upper_player_color", "__down_player_color"])
+                       "__fen_data", "__engine_color", "__player_color"])
 
     def __init__(self):
-        self.__upper_player_color = PiecesEnum.BLACK.value
-        self.__down_player_color = PiecesEnum.WHITE.value
-        self.__board_array: ndarray[int] = BoardInitializer.init_starting_board(self.__upper_player_color, self.__down_player_color)
+        self.__engine_color = PiecesEnum.BLACK.value
+        self.__player_color = PiecesEnum.WHITE.value
+        self.__board_array: ndarray[int] = BoardInitializer.init_starting_board(self.__engine_color, self.__player_color)
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__fen_data = FenData()
         self.__color_to_move: int = PiecesEnum.WHITE.value
@@ -41,8 +41,8 @@ class Board:
         distance = move.get_start_square() - move.get_end_square()
         color = ColorManager.get_piece_color(piece)
         is_queen_side = distance > 0
-        rook_position = MoveValidator.get_rook_position(color, is_queen_side, self.__upper_player_color,
-                                                        self.__down_player_color)
+        rook_position = MoveValidator.get_rook_position(color, is_queen_side, self.__engine_color,
+                                                        self.__player_color)
 
         self.__board_array[move.get_start_square()] = 0
         self.__board_array[move.get_end_square()] = piece
@@ -164,7 +164,7 @@ class Board:
         """
         return move in self.__legal_moves
 
-    def update_fen(self):
+    def update_fen(self) -> None:
         """
         Method used to update fen string with current board state
         :return: None
@@ -184,9 +184,9 @@ class Board:
         self.__fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
-    def switch_colors(self):
+    def switch_colors(self) -> None:
         self.set_opposite_color_sides()
-        self.__board_array = BoardInitializer.init_starting_board(self.__upper_player_color, self.__down_player_color)
+        self.__board_array = BoardInitializer.init_starting_board(self.__engine_color, self.__player_color)
         self.__fen_data.__init__()
         self.__color_to_move = PiecesEnum.WHITE.value
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
@@ -199,12 +199,12 @@ class Board:
         """
         return self.__fen_data
 
-    def set_opposite_color_sides(self):
-        self.__upper_player_color = ColorManager.get_opposite_piece_color(self.__upper_player_color)
-        self.__down_player_color = ColorManager.get_opposite_piece_color(self.__down_player_color)
+    def set_opposite_color_sides(self) -> None:
+        self.__engine_color = ColorManager.get_opposite_piece_color(self.__engine_color)
+        self.__player_color = ColorManager.get_opposite_piece_color(self.__player_color)
 
-    def get_upper_color(self):
-        return self.__upper_player_color
+    def get_engine_color(self) -> int:
+        return self.__engine_color
 
-    def get_down_color(self):
-        return self.__down_player_color
+    def get_player_color(self) -> int:
+        return self.__player_color

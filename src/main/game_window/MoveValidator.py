@@ -64,7 +64,7 @@ class MoveValidator:
 
     @staticmethod
     def is_board_inverted(board: 'Board'):
-        return board.get_upper_color() == PiecesEnum.WHITE.value
+        return board.get_engine_color() == PiecesEnum.WHITE.value
 
     @staticmethod
     def get_rook_position(color: int, is_queen_side: bool, upper_color: int, down_color: int) -> int:
@@ -94,8 +94,8 @@ class MoveValidator:
         :param board: Board instance
         :return: None
         """
-        upper_color = board.get_upper_color()
-        down_color = board.get_down_color()
+        upper_color = board.get_engine_color()
+        down_color = board.get_player_color()
 
         if color == upper_color and move.get_start_square() == MoveEnum.TOP_ROOK_QUEEN.value:
             board.get_fen_data().set_castling_queen_side(False, color)
@@ -163,7 +163,7 @@ class MoveValidator:
         direction = 1
         pawn_index_bounds_min = 48
         pawn_index_bounds_max = 55
-        upper_color = board.get_upper_color()
+        upper_color = board.get_engine_color()
         down_color = ColorManager.get_opposite_piece_color(upper_color)
 
         if color == down_color:
@@ -212,8 +212,8 @@ class MoveValidator:
         :param board: Board instance
         :return: None
         """
-        left_piece_square = start_square + MoveValidator.get_attack_direction(color, "LEFT", board.get_upper_color())
-        right_piece_square = start_square + MoveValidator.get_attack_direction(color, "RIGHT", board.get_upper_color())
+        left_piece_square = start_square + MoveValidator.get_attack_direction(color, "LEFT", board.get_engine_color())
+        right_piece_square = start_square + MoveValidator.get_attack_direction(color, "RIGHT", board.get_engine_color())
 
         if left_piece_square < 0 or left_piece_square > 63 or right_piece_square < 0 or right_piece_square > 63:
             return
@@ -259,7 +259,7 @@ class MoveValidator:
         :param board: Board instance
         :return: None
         """
-        upper_color = board.get_upper_color()
+        upper_color = board.get_engine_color()
         en_passant_square = board.get_fen_data().get_en_passant_square()
         en_passant_target_left = start_square + MoveValidator.get_attack_direction(color, "LEFT", upper_color)
         en_passant_target_right = start_square + MoveValidator.get_attack_direction(color, "RIGHT", upper_color)
