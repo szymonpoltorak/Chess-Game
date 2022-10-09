@@ -58,12 +58,11 @@ class MoveUtil:
     @staticmethod
     def make_engine_promotion_move(computer_move: Move, board: 'Board') -> None:
         end_square = computer_move.get_end_square()
-        color = board.get_upper_color()
         promotion_dict = {
-            SpecialFlags.PROMOTE_TO_ROOK.value: color | PiecesEnum.ROOK.value,
-            SpecialFlags.PROMOTE_TO_QUEEN.value: color | PiecesEnum.QUEEN.value,
-            SpecialFlags.PROMOTE_TO_BISHOP.value: color | PiecesEnum.BISHOP.value,
-            SpecialFlags.PROMOTE_TO_KNIGHT.value: color | PiecesEnum.KNIGHT.value
+            SpecialFlags.PROMOTE_TO_ROOK.value: PiecesEnum.ROOK.value,
+            SpecialFlags.PROMOTE_TO_QUEEN.value: PiecesEnum.QUEEN.value,
+            SpecialFlags.PROMOTE_TO_BISHOP.value: PiecesEnum.BISHOP.value,
+            SpecialFlags.PROMOTE_TO_KNIGHT.value: PiecesEnum.KNIGHT.value
         }
 
         promotion_piece = promotion_dict[computer_move.get_special_flag_value()]
@@ -71,6 +70,6 @@ class MoveUtil:
 
     @staticmethod
     def make_engine_move(end_square: int, piece: int, board: 'Board') -> None:
-        board.add_piece_to_the_board(piece, end_square)
+        board.add_piece_to_the_board(board.get_upper_color() + piece, end_square)
         board.set_opposite_move_color()
         board.update_fen()
