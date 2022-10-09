@@ -55,22 +55,22 @@ class MoveGenerator:
 
     @staticmethod
     def generate_legal_moves(color_to_move: int, board: 'Board') -> list[Move]:
-        pseudo_legal_moves = MoveGenerator.generate_moves(color_to_move, board)
-        legal_moves = []
+        pseudo_legal_moves: list[Move] = MoveGenerator.generate_moves(color_to_move, board)
+        legal_moves: list[Move] = []
 
         for move_to_verify in pseudo_legal_moves:
-            is_it_valid_move = True
-            deleted_piece = MoveUtil.make_move(move_to_verify, color_to_move, board.get_board_array())
-            opponent_moves = MoveGenerator.generate_moves(ColorManager.get_opposite_piece_color(color_to_move), board)
-            kings_square = CheckUtil.find_friendly_king_squares(board.get_board_array(), color_to_move)
+            is_it_valid_move: bool = True
+            deleted_piece: int = MoveUtil.make_move(move_to_verify, color_to_move, board.get_board_array())
+            opponent_moves: list[Move] = MoveGenerator.generate_moves(ColorManager.get_opposite_piece_color(color_to_move), board)
+            kings_square: int = CheckUtil.find_friendly_king_squares(board.get_board_array(), color_to_move)
 
             for move in opponent_moves:
                 if move_to_verify.get_special_flag_value() == SpecialFlags.CASTLING.value:
                     if move.get_end_square() in CheckUtil.get_castling_squares(move_to_verify):
-                        is_it_valid_move = False
+                        is_it_valid_move: bool = False
                         break
                 if move.get_end_square() == kings_square:
-                    is_it_valid_move = False
+                    is_it_valid_move: bool = False
                     break
             if is_it_valid_move:
                 legal_moves.append(move_to_verify)
@@ -86,11 +86,11 @@ class MoveGenerator:
         :param board: Board instance == representation of board
         :return: list of all legal moves
         """
-        moves = []
+        moves: list[Move] = []
 
         for square in range(BoardEnum.BOARD_SIZE.value):
-            piece_color = ColorManager.get_piece_color(board.get_board_array()[square])
-            piece = board.get_board_array()[square] - piece_color
+            piece_color: int = ColorManager.get_piece_color(board.get_board_array()[square])
+            piece: int = board.get_board_array()[square] - piece_color
 
             if color_to_move != piece_color:
                 continue
@@ -118,8 +118,8 @@ class MoveGenerator:
             for direction_step in range(board.get_distances()[start_square][direction]):
                 if not MoveValidator.is_it_sliding_piece(piece, MoveEnum.SLIDING_DIRECTIONS.value[direction]):
                     continue
-                move_target = start_square + MoveEnum.SLIDING_DIRECTIONS.value[direction] * (direction_step + 1)
-                piece_on_move_target = board.get_board_array()[move_target]
+                move_target: int = start_square + MoveEnum.SLIDING_DIRECTIONS.value[direction] * (direction_step + 1)
+                piece_on_move_target: int = board.get_board_array()[move_target]
 
                 if ColorManager.get_piece_color(piece_on_move_target) == color:
                     break
@@ -140,20 +140,20 @@ class MoveGenerator:
         :return: None
         """
         if piece == PiecesEnum.KING.value:
-            directions = MoveEnum.KING_DIRECTIONS.value
-            piece_range = MoveEnum.KING_RANGE.value
+            directions: tuple[int] = MoveEnum.KING_DIRECTIONS.value
+            piece_range: int = MoveEnum.KING_RANGE.value
         else:
-            directions = MoveEnum.KNIGHT_DIRECTIONS.value
-            piece_range = MoveEnum.MAX_KNIGHT_JUMP.value
+            directions: tuple[int] = MoveEnum.KNIGHT_DIRECTIONS.value
+            piece_range: int = MoveEnum.MAX_KNIGHT_JUMP.value
 
         for direction in range(MoveEnum.KK_DIRECTIONS_NUMBER.value):
-            move_target = start_square + directions[direction]
+            move_target: int = start_square + directions[direction]
 
             if move_target > BoardEnum.BOARD_SIZE.value - 1 or move_target < 0:
                 continue
             if not MoveValidator.is_attack_target_in_border_bounds(start_square, move_target, piece_range):
                 continue
-            piece_on_move_target = board.get_board_array()[move_target]
+            piece_on_move_target: int = board.get_board_array()[move_target]
 
             if ColorManager.get_piece_color(piece_on_move_target) == color:
                 continue
@@ -177,15 +177,15 @@ class MoveGenerator:
         """
         if not MoveValidator.is_anything_on_king_side(board, start_square) and board.get_fen_data().can_king_castle_king_side(color):
             if not MoveValidator.is_board_inverted(board):
-                move_target = start_square + MoveEnum.CASTLE_MOVE.value
+                move_target: int = start_square + MoveEnum.CASTLE_MOVE.value
             else:
-                move_target = start_square - MoveEnum.CASTLE_MOVE.value
+                move_target: int = start_square - MoveEnum.CASTLE_MOVE.value
             moves.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
         if not MoveValidator.is_anything_on_queen_side(board, start_square) and board.get_fen_data().can_king_castle_queen_side(color):
             if not MoveValidator.is_board_inverted(board):
-                move_target = start_square - MoveEnum.CASTLE_MOVE.value
+                move_target: int = start_square - MoveEnum.CASTLE_MOVE.value
             else:
-                move_target = start_square + MoveEnum.CASTLE_MOVE.value
+                move_target: int = start_square + MoveEnum.CASTLE_MOVE.value
             moves.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
 
     @staticmethod

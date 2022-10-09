@@ -70,16 +70,16 @@ class GameWindow(QWidget):
         if mouse_event.button() != Qt.LeftButton:
             return None, None
 
-        canvas_width = CanvasEnum.CANVAS_WIDTH.value
-        canvas_height = CanvasEnum.CANVAS_HEIGHT.value
-        current_position_x = mouse_event.x() - CanvasEnum.CANVAS_X.value
-        current_position_y = mouse_event.y() - CanvasEnum.CANVAS_Y.value
+        canvas_width: int = CanvasEnum.CANVAS_WIDTH.value
+        canvas_height: int = CanvasEnum.CANVAS_HEIGHT.value
+        current_position_x: int = mouse_event.x() - CanvasEnum.CANVAS_X.value
+        current_position_y: int = mouse_event.y() - CanvasEnum.CANVAS_Y.value
 
         if current_position_x < 0 or current_position_x > canvas_width or current_position_y < 0 or current_position_y > canvas_height:
             return None, None
 
-        col = (current_position_x / self.__canvas.get_rect_width()).__floor__()
-        row = (current_position_y / self.__canvas.get_rect_height()).__floor__()
+        col: int = (current_position_x / self.__canvas.get_rect_width()).__floor__()
+        row: int = (current_position_y / self.__canvas.get_rect_height()).__floor__()
 
         return row, col
 
@@ -100,8 +100,8 @@ class GameWindow(QWidget):
             self.__current_move.set_start_square(None, None)
             return
 
-        self.__moving_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
-        piece_value = self.__moving_piece - ColorManager.get_piece_color(self.__moving_piece)
+        self.__moving_piece: int = self.__canvas.get_board().delete_piece_from_board(row, col)
+        piece_value: int = self.__moving_piece - ColorManager.get_piece_color(self.__moving_piece)
 
         self.__current_move.set_start_square(row, col)
         self.__current_move.set_moving_piece(piece_value)
@@ -127,8 +127,10 @@ class GameWindow(QWidget):
             return
         self.__current_move.set_end_square(row, col)
 
-        if not self.__canvas.get_board().is_it_legal_move(self.__current_move) or self.__current_move.get_start_square() == self.__current_move.get_end_square():
-            self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, self.__current_move.get_start_square())
+        if not self.__canvas.get_board().is_it_legal_move(
+                self.__current_move) or self.__current_move.get_start_square() == self.__current_move.get_end_square():
+            self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece,
+                                                             self.__current_move.get_start_square())
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
             self.__canvas.copy_current_move(self.__current_move)
             self.__current_move.set_start_square(None, None)
@@ -136,12 +138,13 @@ class GameWindow(QWidget):
             self.update()
             return
         self.__canvas.get_board().get_fen_data().update_move_counter()
-        deleted_piece = self.__canvas.get_board().delete_piece_from_board(row, col)
-        final_piece_index = 8 * row + col
-        color = ColorManager.get_piece_color(self.__moving_piece)
+        deleted_piece: int = self.__canvas.get_board().delete_piece_from_board(row, col)
+        final_piece_index: int = 8 * row + col
+        color: int = ColorManager.get_piece_color(self.__moving_piece)
 
         self.handle_castling_event(final_piece_index, color)
-        deleted_piece = self.handle_pawn_special_events(mouse_release_event, color, final_piece_index, deleted_piece)
+        deleted_piece: int = self.handle_pawn_special_events(mouse_release_event, color, final_piece_index,
+                                                             deleted_piece)
 
         self.play_proper_sound(deleted_piece)
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
@@ -156,23 +159,24 @@ class GameWindow(QWidget):
         print(self.__canvas.get_board().get_fen_string())
         if self.__promotion_util.is_this_pawn_promoting():
             return
-        computer_move = Engine.get_computer_move(self.__canvas.get_board())
+        computer_move: Move = Engine.get_computer_move(self.__canvas.get_board())
 
         if computer_move is None:
             QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
             return
 
-        deleted_piece = MoveUtil.update_board_with_engine_move(self.__canvas.get_board(), computer_move)
+        deleted_piece: int = MoveUtil.update_board_with_engine_move(self.__canvas.get_board(), computer_move)
         self.play_proper_sound(deleted_piece)
         self.update_move_counter(deleted_piece)
-        player_moves = MoveGenerator.generate_legal_moves(self.__canvas.get_board().get_player_color(),
-                                                          self.__canvas.get_board())
+        player_moves: list[Move] = MoveGenerator.generate_legal_moves(self.__canvas.get_board().get_player_color(),
+                                                                      self.__canvas.get_board())
         self.__canvas.get_board().set_legal_moves(player_moves)
         print(self.__canvas.get_board().get_fen_string())
         self.__current_move = computer_move
         self.update()
 
-    def handle_pawn_special_events(self, mouse_event: QMouseEvent, color: int, piece_index: int, deleted_piece: int) -> int:
+    def handle_pawn_special_events(self, mouse_event: QMouseEvent, color: int, piece_index: int,
+                                   deleted_piece: int) -> int:
         """
         Method used to handle every pawn special events
         :param mouse_event: mouse release event
@@ -181,7 +185,7 @@ class GameWindow(QWidget):
         :param deleted_piece: value of deleted piece
         :return: int
         """
-        move_length = self.__current_move.get_end_square() - self.__current_move.get_start_square()
+        move_length: int = self.__current_move.get_end_square() - self.__current_move.get_start_square()
 
         if MoveValidator.is_pawn_promoting(self.__current_move, color, self.__canvas.get_board().get_engine_color()):
             self.__promotion_util.set_promotion_data(color, mouse_event.x(), mouse_event.y(),
@@ -226,7 +230,8 @@ class GameWindow(QWidget):
         :param deleted_piece: int value of piece_square
         :return: None
         """
-        playsound("src/resources/sounds/Move.mp3") if deleted_piece == 0 else playsound("src/resources/sounds/Capture.mp3")
+        playsound("src/resources/sounds/Move.mp3") if deleted_piece == 0 else playsound(
+            "src/resources/sounds/Capture.mp3")
 
     def reset_game(self) -> None:
         self.__canvas.get_board().__init__()

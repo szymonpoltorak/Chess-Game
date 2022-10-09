@@ -6,6 +6,7 @@ from numpy import ndarray
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.FenData import FenData
 from game_window.Move import Move
 from game_window.MoveValidator import MoveValidator
 
@@ -25,7 +26,7 @@ class MoveUtil:
         :param color: color of a piece
         :return: int value of deleted piece
         """
-        end_square = move.get_end_square()
+        end_square: int = move.get_end_square()
         deleted_piece: int = board_array[end_square]
 
         board_array[move.get_start_square()] = 0
@@ -42,16 +43,16 @@ class MoveUtil:
         :param deleted_piece: deleted piece in move value
         :return: None
         """
-        end_square = move.get_end_square()
+        end_square: int = move.get_end_square()
         board_array[end_square], board_array[move.get_start_square()] = deleted_piece, board_array[end_square]
 
     @staticmethod
     def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
-        deleted_piece = board.delete_pieces_on_squares(computer_move.get_start_square(), computer_move.get_end_square())
-        promotions = array([SpecialFlags.PROMOTE_TO_ROOK.value, SpecialFlags.PROMOTE_TO_QUEEN.value,
-                            SpecialFlags.PROMOTE_TO_BISHOP.value, SpecialFlags.PROMOTE_TO_KNIGHT.value])
-        special_flag = computer_move.get_special_flag_value()
-        moving_piece = computer_move.get_moving_piece()
+        deleted_piece: int = board.delete_pieces_on_squares(computer_move.get_start_square(), computer_move.get_end_square())
+        promotions: ndarray[int] = array([SpecialFlags.PROMOTE_TO_ROOK.value, SpecialFlags.PROMOTE_TO_QUEEN.value,
+                                          SpecialFlags.PROMOTE_TO_BISHOP.value, SpecialFlags.PROMOTE_TO_KNIGHT.value])
+        special_flag: int = computer_move.get_special_flag_value()
+        moving_piece: int = computer_move.get_moving_piece()
 
         if moving_piece == PiecesEnum.PAWN.value:
             MoveUtil.check_pawn_movement(board, computer_move)
@@ -61,11 +62,11 @@ class MoveUtil:
         elif special_flag in promotions:
             MoveUtil.make_engine_promotion_move(computer_move, board)
         elif special_flag == SpecialFlags.CASTLING.value:
-            piece = board.get_engine_color() | computer_move.get_moving_piece()
+            piece: int = board.get_engine_color() | computer_move.get_moving_piece()
             board.castle_king(piece, computer_move)
         elif special_flag == SpecialFlags.EN_PASSANT.value:
             board.make_en_passant_capture(moving_piece)
-            deleted_piece = 1
+            deleted_piece: int = 1
         else:
             MoveUtil.make_engine_move(computer_move.get_end_square(), computer_move.get_moving_piece(), board)
         return deleted_piece
@@ -78,7 +79,7 @@ class MoveUtil:
             SpecialFlags.PROMOTE_TO_BISHOP.value: PiecesEnum.BISHOP.value,
             SpecialFlags.PROMOTE_TO_KNIGHT.value: PiecesEnum.KNIGHT.value
         }
-        promotion_piece = promotion_dict[computer_move.get_special_flag_value()]
+        promotion_piece: int = promotion_dict[computer_move.get_special_flag_value()]
         MoveUtil.make_engine_move(computer_move.get_end_square(), promotion_piece, board)
 
     @staticmethod
@@ -93,8 +94,8 @@ class MoveUtil:
 
     @staticmethod
     def check_pawn_movement(board: 'Board', computer_move: 'Move'):
-        move_length = computer_move.get_end_square() - computer_move.get_start_square()
-        fen_data = board.get_fen_data()
+        move_length: int = computer_move.get_end_square() - computer_move.get_start_square()
+        fen_data: FenData = board.get_fen_data()
 
         if move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value:
             fen_data.set_en_passant_square(computer_move.get_end_square() - MoveEnum.PAWN_UP_SINGLE_MOVE.value)
