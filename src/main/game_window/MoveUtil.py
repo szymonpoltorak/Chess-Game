@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 from numpy import array
 from numpy import ndarray
 
+from game_window.engine.MadeMove import MadeMove
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
@@ -18,13 +19,14 @@ class MoveUtil:
     __slots__ = ()
 
     @staticmethod
-    def make_move(move: Move, color: int, board_array: ndarray[int]) -> int:
+    def make_move(move: Move, color: int, board_array: ndarray[int], fen_data: FenData = None) -> MadeMove:
         """
         Method used to make a given move. It means to update the board int array
+        :param fen_data: fen data for search algorithm
         :param board_array: array of ints
         :param move: Move instance - move we want to make
         :param color: color of a piece
-        :return: int value of deleted piece
+        :return:
         """
         end_square: int = move.get_end_square()
         deleted_piece: int = board_array[end_square]
@@ -32,19 +34,30 @@ class MoveUtil:
         board_array[move.get_start_square()] = 0
         board_array[end_square] = color + move.get_moving_piece()
 
-        return deleted_piece
+        #if fen_data is not None:
+        #    white_king, white_queen, black_king, black_queen, en_square, en_piece = fen_data.get_special_move_data()
+        #    return MadeMove(deleted_piece, white_king, white_queen, black_king, black_queen, en_square, en_piece)
+        return MadeMove(deleted_piece, None, None, None, None, None, None)
 
     @staticmethod
-    def un_make_move(move: Move, deleted_piece: int, board_array: ndarray[int]) -> None: #It may not work property
+    def un_make_move(move: Move, deleted_piece: int, board_array: ndarray[int], fen_data: FenData = None, prev_data: MadeMove = None) -> None:
         """
         Removes given move with a value of deleted piece
+        :param prev_data:
+        :param fen_data:
         :param board_array: array of ints
         :param move: move to be unmade
         :param deleted_piece: deleted piece in move value
         :return: None
         """
         end_square: int = move.get_end_square()
-        board_array[end_square], board_array[move.get_start_square()] = deleted_piece, board_array[end_square]
+
+        moved_piece = board_array[end_square]
+        board_array[end_square] = deleted_piece
+        board_array[move.get_start_square()] = moved_piece
+
+        #if fen_data is not None and prev_data is not None:
+        #    fen_data.update_fen_data(prev_data)
 
     @staticmethod
     def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:

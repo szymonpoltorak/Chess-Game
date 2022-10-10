@@ -1,4 +1,5 @@
 *.python  text diff=python
+*.py text diff=python
 
 *.css  	text diff=css
 *.html  text diff=html

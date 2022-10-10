@@ -80,10 +80,10 @@ class MoveValidator:
         :return: int value of rook position
         """
         move_dict = {
-            (is_queen_side, down_color): MoveEnum.BOTTOM_ROOK_QUEEN.value,
-            (is_queen_side, upper_color): MoveEnum.TOP_ROOK_QUEEN.value,
-            (not is_queen_side, down_color): MoveEnum.BOTTOM_ROOK_KING.value,
-            (not is_queen_side, upper_color): MoveEnum.TOP_ROOK_KING.value
+            (True, down_color): MoveEnum.BOTTOM_ROOK_QUEEN.value,
+            (True, upper_color): MoveEnum.TOP_ROOK_QUEEN.value,
+            (False, down_color): MoveEnum.BOTTOM_ROOK_KING.value,
+            (False, upper_color): MoveEnum.TOP_ROOK_KING.value
         }
         return move_dict[is_queen_side, color]
 

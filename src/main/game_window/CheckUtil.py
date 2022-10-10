@@ -11,12 +11,10 @@ class CheckUtil:
 
     @staticmethod
     def find_friendly_king_squares(board_array: ndarray[int], color_to_move: int) -> int:
-        index = list(filter(lambda i: board_array[i] == (color_to_move | PiecesEnum.KING.value),
-                            range(BoardEnum.BOARD_SIZE.value)))[0]
-
-        if index != 1:
-            raise ValueError("THERE IS NO FRIENDLY KING AT IS NOT POSSIBLE!")
-        return index
+        for index in range(BoardEnum.BOARD_SIZE.value):
+            if board_array[index] == color_to_move | PiecesEnum.KING.value:
+                return index
+        raise ValueError("THERE IS NO FRIENDLY KING AT IS NOT POSSIBLE!")
 
     @staticmethod
     def get_castling_squares(move: Move) -> ndarray[int]:
@@ -25,5 +23,5 @@ class CheckUtil:
         move_distance: int = end_square - start_square
 
         if move_distance > 0:
-            return array([end_square, start_square + 1, start_square + 2])
+            return array([start_square, start_square + 1, start_square + 2])
         return array([start_square, start_square - 1, start_square - 2])

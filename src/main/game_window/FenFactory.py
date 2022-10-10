@@ -64,8 +64,8 @@ class FenFactory:
         if square == -1:
             return " -"
 
-        col = square % BoardEnum.BOARD_LENGTH.value
-        row = BoardEnum.BOARD_LENGTH.value - int((square - col) / BoardEnum.BOARD_LENGTH.value)
+        col: int = square % BoardEnum.BOARD_LENGTH.value
+        row: int = BoardEnum.BOARD_LENGTH.value - int((square - col) / BoardEnum.BOARD_LENGTH.value)
         cols = array(["a", "b", "c", "d", "e", "f", "g", "h"])
 
         return f" {cols[col]}{row}"
