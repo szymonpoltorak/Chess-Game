@@ -10,3 +10,5 @@ class MadeMove:
     black_castle_queen: bool or None
     en_passant_square: int or None
     en_passant_piece_square: int or None
+    en_passant_piece_square: int or None
+    special_flag: int or None

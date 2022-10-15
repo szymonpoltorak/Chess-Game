@@ -4,7 +4,6 @@ import numpy
 
 from game_window.engine.Evaluator import Evaluator
 from game_window.engine.MadeMove import MadeMove
-from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
 from game_window.MoveUtil import MoveUtil
@@ -21,13 +20,14 @@ class Engine:
 
         if maximizing_player:
             min_eval: int = numpy.inf
-            moves: list[Move] = MoveGenerator.generate_legal_moves(PiecesEnum.WHITE.value, board)
+            moves: list[Move] = MoveGenerator.generate_legal_moves(board.get_player_color(), board)
 
             if not moves:
                 return numpy.inf
 
             for move in moves:
-                deleted_data: MadeMove = MoveUtil.make_move(move, PiecesEnum.WHITE.value, board.get_board_array())
+                deleted_data: MadeMove = MoveUtil.make_move(move, board.get_player_color(), board)
+                board.set_opposite_move_color()
                 movement_eval: int = Engine.search_positions(board, depth - 1, alpha, beta, False)
                 Engine.unmake_move_properly(deleted_data, move, board)
 
@@ -39,14 +39,14 @@ class Engine:
             return min_eval
         elif not maximizing_player:
             max_eval: int = -numpy.inf
-            moves: list[Move] = MoveGenerator.generate_legal_moves(PiecesEnum.BLACK.value, board)
+            moves: list[Move] = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
 
             if not moves:
                 return -numpy.inf
 
             for move in moves:
-                deleted_data: MadeMove = MoveUtil.make_move(move, PiecesEnum.BLACK.value, board.get_board_array(),
-                                                            fen_data=board.get_fen_data())
+                deleted_data: MadeMove = MoveUtil.make_move(move, board.get_engine_color(), board)
+                board.set_opposite_move_color()
                 movement_eval: int = Engine.search_positions(board, depth - 1, alpha, beta, True)
                 Engine.unmake_move_properly(deleted_data, move, board)
 
@@ -63,12 +63,12 @@ class Engine:
         may_none_elements = (deleted_data.en_passant_square, deleted_data.en_passant_piece_square,
                              deleted_data.black_castle_queen, deleted_data.black_castle_king,
                              deleted_data.white_castle_king, deleted_data.white_castle_queen)
+
         if deleted_data.deleted_piece is None:
             raise ValueError("DELETED PIECE CANNOT BE NULL!")
         if None not in may_none_elements:
-            MoveUtil.un_make_move(move, deleted_data.deleted_piece, board.get_board_array(),
-                                  fen_data=board.get_fen_data(), prev_data=deleted_data)
-        MoveUtil.un_make_move(move, deleted_data.deleted_piece, board.get_board_array())
+            MoveUtil.un_make_move(move, deleted_data.deleted_piece, board)
+        MoveUtil.un_make_move(move, deleted_data.deleted_piece, board)
 
     @staticmethod
     def get_computer_move(board: 'Board') -> Move:
@@ -80,11 +80,12 @@ class Engine:
         best_move: Move or None = None
 
         for move in moves:
-            deleted_data: MadeMove = MoveUtil.make_move(move, board.get_engine_color(), board.get_board_array())
+            deleted_data: MadeMove = MoveUtil.make_move(move, board.get_engine_color(), board)
             move_eval: int = Engine.search_positions(board, depth, alpha, beta, True)
             Engine.unmake_move_properly(deleted_data, move, board)
 
             if move_eval > best_eval:
                 best_move: Move or None = move
                 best_eval: int = move_eval
+        board.set_move_color(board.get_engine_color())
         return best_move

@@ -3,7 +3,7 @@ from numpy import array
 from game_window.enums.BoardEnum import BoardEnum
 
 
-class Move:
+class Move:  # TODO MAKE IT DATACLASS
     __slots__ = array(["__start_square", "__end_square", "__piece", "__special_flag"], dtype=str)
 
     def __init__(self, start_square: int or None, end_square: int or None, piece: int or None, special_flag: int = -1):
@@ -22,8 +22,7 @@ class Move:
         if row is None or col is None:
             self.__start_square = None
             return
-        start_square: int = BoardEnum.BOARD_LENGTH.value * row + col
-        self.__start_square = start_square
+        self.__start_square = BoardEnum.BOARD_LENGTH.value * row + col
 
     def set_end_square(self, row: int or None, col: int or None) -> None:
         """
@@ -35,8 +34,7 @@ class Move:
         if row is None or col is None:
             self.__end_square = None
             return
-        end_square: int = BoardEnum.BOARD_LENGTH.value * row + col
-        self.__end_square = end_square
+        self.__end_square = BoardEnum.BOARD_LENGTH.value * row + col
 
     def get_special_flag_value(self):
         """

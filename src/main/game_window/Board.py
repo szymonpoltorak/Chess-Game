@@ -190,6 +190,9 @@ class Board:
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
         self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
 
+    def set_move_color(self, color: int):
+        self.__color_to_move = color
+
     def get_fen_data(self) -> FenData:
         """
         Gives access to the fen data field.

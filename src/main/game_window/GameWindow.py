@@ -21,7 +21,7 @@ from game_window.MoveValidator import MoveValidator
 from game_window.PromotionData import PromotionData
 
 
-class GameWindow(QWidget):
+class GameWindow(QWidget): # TODO Fen does not update counter when computer moves
     """
     Covers play game window.
     """
@@ -30,13 +30,13 @@ class GameWindow(QWidget):
     def __init__(self):
         super(GameWindow, self).__init__()
 
-        self.__canvas = Canvas()
-        self.__moving_piece = None
-        self.__current_move = Move(None, None, None)
-        self.__promotion_util = PromotionData()
+        self.__canvas: Canvas = Canvas()
+        self.__moving_piece: int = -1
+        self.__current_move: Move = Move(None, None, None)
+        self.__promotion_util: PromotionData = PromotionData()
 
         with open("src/resources/styles/GameWindow.min.css", "r", encoding="utf-8") as style:
-            self.__ui = GameWindowUi(self)
+            self.__ui: GameWindowUi = GameWindowUi(self)
             self.setStyleSheet(style.read())
             self.__ui.get_new_game_button().clicked.connect(self.reset_game)
             self.__ui.get_switch_side_button().clicked.connect(self.switch_sides)
