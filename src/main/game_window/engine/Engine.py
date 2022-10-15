@@ -1,9 +1,11 @@
+from functools import cache
 from typing import TYPE_CHECKING
 
 import numpy
 
 from game_window.engine.Evaluator import Evaluator
-from game_window.engine.MadeMove import MadeMove
+from game_window.engine.MoveData import MoveData
+from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
 from game_window.MoveUtil import MoveUtil
@@ -14,6 +16,7 @@ if TYPE_CHECKING:
 
 class Engine:
     @staticmethod
+    @cache
     def search_positions(board: 'Board', depth: int, alpha: int, beta: int, maximizing_player: bool) -> int:
         if depth == 0:
             return Evaluator.evaluate_position(board)
@@ -26,10 +29,10 @@ class Engine:
                 return numpy.inf
 
             for move in moves:
-                deleted_data: MadeMove = MoveUtil.make_move(move, board.get_player_color(), board)
+                deleted_data: MoveData = MoveUtil.make_move(move, board.get_player_color(), board)
                 board.set_opposite_move_color()
                 movement_eval: int = Engine.search_positions(board, depth - 1, alpha, beta, False)
-                Engine.unmake_move_properly(deleted_data, move, board)
+                MoveUtil.un_make_move(move, deleted_data.deleted_piece, board, deleted_data)
 
                 min_eval: int = min(min_eval, movement_eval)
                 beta: int = min(beta, movement_eval)
@@ -45,10 +48,10 @@ class Engine:
                 return -numpy.inf
 
             for move in moves:
-                deleted_data: MadeMove = MoveUtil.make_move(move, board.get_engine_color(), board)
+                deleted_data: MoveData = MoveUtil.make_move(move, board.get_engine_color(), board)
                 board.set_opposite_move_color()
                 movement_eval: int = Engine.search_positions(board, depth - 1, alpha, beta, True)
-                Engine.unmake_move_properly(deleted_data, move, board)
+                MoveUtil.un_make_move(move, deleted_data.deleted_piece, board, deleted_data)
 
                 max_eval: int = max(max_eval, movement_eval)
                 alpha: int = max(alpha, movement_eval)
@@ -57,18 +60,6 @@ class Engine:
                     break
             return max_eval
         raise ValueError("WRONG PARAMETERS!")
-
-    @staticmethod
-    def unmake_move_properly(deleted_data: MadeMove, move: Move, board: 'Board'):
-        may_none_elements = (deleted_data.en_passant_square, deleted_data.en_passant_piece_square,
-                             deleted_data.black_castle_queen, deleted_data.black_castle_king,
-                             deleted_data.white_castle_king, deleted_data.white_castle_queen)
-
-        if deleted_data.deleted_piece is None:
-            raise ValueError("DELETED PIECE CANNOT BE NULL!")
-        if None not in may_none_elements:
-            MoveUtil.un_make_move(move, deleted_data.deleted_piece, board)
-        MoveUtil.un_make_move(move, deleted_data.deleted_piece, board)
 
     @staticmethod
     def get_computer_move(board: 'Board') -> Move:
@@ -80,9 +71,12 @@ class Engine:
         best_move: Move or None = None
 
         for move in moves:
-            deleted_data: MadeMove = MoveUtil.make_move(move, board.get_engine_color(), board)
+            if move.get_special_flag_value() == SpecialFlags.CASTLING.value:
+                best_move = move
+                break
+            deleted_data: MoveData = MoveUtil.make_move(move, board.get_engine_color(), board)
             move_eval: int = Engine.search_positions(board, depth, alpha, beta, True)
-            Engine.unmake_move_properly(deleted_data, move, board)
+            MoveUtil.un_make_move(move, deleted_data.deleted_piece, board, deleted_data)
 
             if move_eval > best_eval:
                 best_move: Move or None = move

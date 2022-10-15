@@ -65,7 +65,7 @@ class Evaluator:
     def evaluate_distance_to_enemy_king(board: 'Board'):
         our_color: int = board.get_color_to_move()
         board_array: ndarray[int] = board.get_board_array()
-        my_pieces_pos64 = filter(lambda index: ColorManager.get_piece_color(board_array[index] == our_color),
+        my_pieces_pos64 = filter(lambda index: ColorManager.get_piece_color(board_array[index]),
                                  range(BoardEnum.BOARD_SIZE.value))
         enemy_king_pos64 = CheckUtil.find_friendly_king_squares(board_array,
                                                                 ColorManager.get_opposite_piece_color(our_color))
@@ -103,10 +103,14 @@ class Evaluator:
         board_array: ndarray[int] = board.get_board_array()
 
         for center_square in range(26, 30):
+            if board_array[center_square] == PiecesEnum.NONE.value:
+                continue
             color: int = ColorManager.get_piece_color(board_array[center_square])
             evaluation += EvalEnum.CENTER.value if color == board.get_engine_color() else -EvalEnum.CENTER.value
 
         for center_square in range(34, 38):
+            if board_array[center_square] == PiecesEnum.NONE.value:
+                continue
             color: int = ColorManager.get_piece_color(board_array[center_square])
             evaluation += EvalEnum.CENTER.value if color == board.get_engine_color() else -EvalEnum.CENTER.value
         return evaluation if board.get_color_to_move() == board.get_engine_color() else -evaluation

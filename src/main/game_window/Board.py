@@ -4,6 +4,7 @@ from numpy import sign
 
 from game_window.BoardInitializer import BoardInitializer
 from game_window.ColorManager import ColorManager
+from game_window.engine.MoveData import MoveData
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
@@ -32,7 +33,7 @@ class Board:
         self.__distances_to_borders: ndarray[int] = MoveGenerator.calculate_distance_to_borders()
         self.__legal_moves: list[Move] = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
 
-    def castle_king(self, piece: int, move: Move) -> None:
+    def castle_king(self, piece: int, move: Move) -> int:
         """
         Method used to castle king it means prepare board for castling
         :param piece: int value of piece_square
@@ -47,13 +48,25 @@ class Board:
         rook_position: int = MoveValidator.get_rook_position(color, is_queen_side, self.__engine_color,
                                                              self.__player_color)
 
-        self.__board_array[start_square], self.__board_array[end_square] = 0, piece
-        self.__board_array[rook_position] = 0
+        self.__board_array[start_square] = PiecesEnum.NONE.value
+        self.__board_array[end_square] = piece
+        self.__board_array[rook_position] = PiecesEnum.NONE.value
         self.__board_array[end_square + sign(distance)] = color | PiecesEnum.ROOK.value
 
         self.__fen_data.set_castling_king_side(False, color)
         self.__fen_data.set_castling_queen_side(False, color)
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
+
+        return rook_position
+
+    def un_castle_king(self, prev_data: MoveData, move: Move, color: int) -> None:
+        start_square: int = move.get_start_square()
+        end_square: int = move.get_end_square()
+        distance: int = start_square - end_square
+
+        self.__board_array[prev_data.rook_position] = color | PiecesEnum.ROOK.value
+        self.__board_array[move.get_end_square()] = PiecesEnum.NONE.value
+        self.__board_array[end_square + sign(distance)] = PiecesEnum.NONE.value
+        self.__board_array[move.get_start_square()] = color | PiecesEnum.KING.value
 
     def set_legal_moves(self, legal_moves: list[Move]) -> None:
         """

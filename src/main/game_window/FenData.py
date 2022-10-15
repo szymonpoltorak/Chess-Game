@@ -1,5 +1,6 @@
 from numpy import array
 
+from game_window.engine.MoveData import MoveData
 from game_window.enums.PiecesEnum import PiecesEnum
 
 
@@ -120,17 +121,13 @@ class FenData:
         """
         return self.__en_passant_piece_square
 
-    def get_special_move_data(self):
+    def get_special_move_data(self) -> tuple:
         return self.__white_castle_king, self.__white_castle_queen, self.__black_castle_king, self.__black_castle_queen, self.__en_passant_square, self.__en_passant_piece_square
 
-    #def update_fen_data(self, prev_fen_data: MadeMove):
-    #    self.__white_castle_king = prev_fen_data.white_castle_king
-    #    self.__white_castle_queen = prev_fen_data.white_castle_queen
-    #    self.__black_castle_king = prev_fen_data.black_castle_king
-    #    self.__black_castle_queen = prev_fen_data.black_castle_queen
-    #    self.__en_passant_square = prev_fen_data.en_passant_square
-   #     self.__en_passant_piece_square = prev_fen_data.en_passant_piece_square
-
-    def __str__(self) -> str:
-        return f"W({self.__white_castle_king}+{self.__white_castle_queen})\n B({self.__black_castle_king}+{self.__black_castle_queen})\n {self.__en_passant_square}->{self.__en_passant_piece_square}\n"
-
+    def update_fen_data(self, prev_fen_data: MoveData):
+        self.__white_castle_king = prev_fen_data.white_castle_king
+        self.__white_castle_queen = prev_fen_data.white_castle_queen
+        self.__black_castle_king = prev_fen_data.black_castle_king
+        self.__black_castle_queen = prev_fen_data.black_castle_queen
+        self.__en_passant_square = prev_fen_data.en_passant_square
+        self.__en_passant_piece_square = prev_fen_data.en_passant_piece_square

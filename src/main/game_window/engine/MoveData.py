@@ -2,8 +2,8 @@ from dataclasses import dataclass
 
 
 @dataclass(slots=True)
-class MadeMove:
-    deleted_piece: int
+class MoveData:
+    deleted_piece: int or None
     white_castle_king: bool or None
     white_castle_queen: bool or None
     black_castle_king: bool or None
@@ -11,4 +11,4 @@ class MadeMove:
     en_passant_square: int or None
     en_passant_piece_square: int or None
     en_passant_piece_square: int or None
-    special_flag: int or None
+    rook_position: int or None

@@ -6,7 +6,7 @@ from numpy import zeros
 
 from game_window.CheckUtil import CheckUtil
 from game_window.ColorManager import ColorManager
-from game_window.engine.MadeMove import MadeMove
+from game_window.engine.MoveData import MoveData
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
@@ -61,7 +61,7 @@ class MoveGenerator:
 
         for move_to_verify in pseudo_legal_moves:
             is_it_valid_move: bool = True
-            deleted_data: MadeMove = MoveUtil.make_move(move_to_verify, color_to_move, board)
+            deleted_data: MoveData = MoveUtil.make_move(move_to_verify, color_to_move, board)
             opponent_moves: list[Move] = MoveGenerator.generate_moves(ColorManager.get_opposite_piece_color(color_to_move), board)
             kings_square: int = CheckUtil.find_friendly_king_squares(board.get_board_array(), color_to_move)
 

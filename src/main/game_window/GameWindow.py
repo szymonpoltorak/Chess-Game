@@ -98,6 +98,7 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
 
         if row is None or col is None or not self.__canvas.get_board().should_this_piece_move(row, col):
             self.__current_move.set_start_square(None, None)
+            self.__current_move.set_end_square(None, None)
             return
 
         self.__moving_piece: int = self.__canvas.get_board().delete_piece_from_board(row, col)
@@ -172,6 +173,7 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
                                                                       self.__canvas.get_board())
         self.__canvas.get_board().set_legal_moves(player_moves)
         print(self.__canvas.get_board().get_fen_string())
+        self.__canvas.get_board().update_fen()
         self.__current_move = computer_move
         self.update()
 
