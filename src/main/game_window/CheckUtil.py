@@ -14,7 +14,7 @@ class CheckUtil:
         for index in range(BoardEnum.BOARD_SIZE.value):
             if board_array[index] == color_to_move | PiecesEnum.KING.value:
                 return index
-        raise ValueError("THERE IS NO FRIENDLY KING AT IS NOT POSSIBLE!")
+        raise ValueError("THERE IS NO FRIENDLY KING AND IT IS NOT POSSIBLE!")
 
     @staticmethod
     def get_castling_squares(move: Move) -> ndarray[int]:

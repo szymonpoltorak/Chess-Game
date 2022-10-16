@@ -10,5 +10,3 @@ class MoveData:
     black_castle_queen: bool or None
     en_passant_square: int or None
     en_passant_piece_square: int or None
-    en_passant_piece_square: int or None
-    rook_position: int or None

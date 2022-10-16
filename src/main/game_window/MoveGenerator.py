@@ -75,7 +75,7 @@ class MoveGenerator:
                     break
             if is_it_valid_move:
                 legal_moves.append(move_to_verify)
-            MoveUtil.un_make_move(move_to_verify, deleted_data.deleted_piece, board)
+            MoveUtil.un_make_move(move_to_verify, deleted_data, board)
 
         return legal_moves
 
@@ -124,7 +124,7 @@ class MoveGenerator:
 
                 if ColorManager.get_piece_color(piece_on_move_target) == color:
                     break
-                moves.append(Move(start_square, move_target, piece))
+                moves.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
 
                 if ColorManager.get_piece_color(piece_on_move_target) == ColorManager.get_opposite_piece_color(color):
                     break
@@ -158,7 +158,7 @@ class MoveGenerator:
 
             if ColorManager.get_piece_color(piece_on_move_target) == color:
                 continue
-            moves.append(Move(start_square, move_target, piece))
+            moves.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
 
             if ColorManager.get_piece_color(piece_on_move_target) == ColorManager.get_opposite_piece_color(color):
                 continue

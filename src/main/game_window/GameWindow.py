@@ -32,7 +32,7 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
 
         self.__canvas: Canvas = Canvas()
         self.__moving_piece: int = -1
-        self.__current_move: Move = Move(None, None, None)
+        self.__current_move: Move = Move(None, None, None, -1)
         self.__promotion_util: PromotionData = PromotionData()
 
         with open("src/resources/styles/GameWindow.min.css", "r", encoding="utf-8") as style:

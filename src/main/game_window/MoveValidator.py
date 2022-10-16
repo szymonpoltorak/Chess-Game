@@ -23,10 +23,8 @@ class MoveValidator:
         :param start_square: int index of kings end_square
         :return: bool
         """
-        if MoveValidator.is_board_inverted(board):
-            step: int = -1
-        else:
-            step: int = 1
+        step = -1 if MoveValidator.is_board_inverted(board) else 1
+
         return MoveValidator.check_castling_squares(step, MoveEnum.KING_SIDE.value, start_square, board)
 
     @staticmethod
@@ -37,10 +35,8 @@ class MoveValidator:
         :param start_square: int index of kings end_square
         :return: bool
         """
-        if MoveValidator.is_board_inverted(board):
-            step: int = 1
-        else:
-            step: int = -1
+        step = -1 if MoveValidator.is_board_inverted(board) else 1
+
         return MoveValidator.check_castling_squares(step, MoveEnum.QUEEN_SIDE.value, start_square, board)
 
     @staticmethod
@@ -96,17 +92,18 @@ class MoveValidator:
         :param board: Board instance
         :return: None
         """
-        upper_color: int = board.get_engine_color()
-        down_color: int = board.get_player_color()
+        engine_color: int = board.get_engine_color()
+        player_color: int = board.get_player_color()
+        start_square: int = move.get_start_square()
         fen_data: FenData = board.get_fen_data()
 
-        if color == upper_color and move.get_start_square() == MoveEnum.TOP_ROOK_QUEEN.value:
+        if color == engine_color and start_square == MoveEnum.TOP_ROOK_QUEEN.value:
             fen_data.set_castling_queen_side(False, color)
-        elif color == upper_color and move.get_start_square() == MoveEnum.TOP_ROOK_KING.value:
+        elif color == engine_color and start_square == MoveEnum.TOP_ROOK_KING.value:
             fen_data.set_castling_king_side(False, color)
-        elif color == down_color and move.get_start_square() == MoveEnum.BOTTOM_ROOK_QUEEN.value:
+        elif color == player_color and start_square == MoveEnum.BOTTOM_ROOK_QUEEN.value:
             fen_data.set_castling_queen_side(False, color)
-        elif color == down_color and move.get_start_square() == MoveEnum.BOTTOM_ROOK_KING.value:
+        elif color == player_color and start_square == MoveEnum.BOTTOM_ROOK_KING.value:
             fen_data.set_castling_king_side(False, color)
 
     @staticmethod
@@ -187,7 +184,7 @@ class MoveValidator:
         if pawn_index_bounds_min <= start_square <= pawn_index_bounds_max and MoveValidator.no_piece_in_pawns_way(
                                                     double_move_target, start_square, board,
                                                     direction * MoveEnum.PAWN_UP_SINGLE_MOVE.value):
-            moves.append(Move(start_square, double_move_target, piece))
+            moves.append(Move(start_square, double_move_target, piece, SpecialFlags.NONE.value))
         if board.get_board_array()[move_target] == 0:
             MoveValidator.add_moves_and_promotions(start_square, move_target, piece, moves)
 
@@ -251,7 +248,7 @@ class MoveValidator:
             moves.append(Move(start_square, move_target, piece, SpecialFlags.PROMOTE_TO_BISHOP.value))
             moves.append(Move(start_square, move_target, piece, SpecialFlags.PROMOTE_TO_KNIGHT.value))
         else:
-            moves.append(Move(start_square, move_target, piece))
+            moves.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
 
     @staticmethod
     def check_en_passant_movement(start_square: int, piece: int, color: int, moves: list[Move], board: 'Board') -> None:

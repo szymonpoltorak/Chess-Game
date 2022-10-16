@@ -21,6 +21,7 @@ class MoveUtil:
 
     @staticmethod
     def make_move(move: Move, color: int, board: 'Board') -> MoveData:
+        # TODO PROMOTION MAY NOT WORK PROPERLY
         """
         Method used to make a given move. It means to update the board int array
         :param board: Board instance
@@ -28,92 +29,74 @@ class MoveUtil:
         :param color: color of a piece
         :return:
         """
-        board_array: ndarray[int] = board.get_board_array()
-        end_square: int = move.get_end_square()
         special_flag: int = move.get_special_flag_value()
         fen_data: FenData = board.get_fen_data()
+        moving_piece: int = move.get_moving_piece()
 
-        if move.get_moving_piece() == PiecesEnum.KING.value:
-            move_data = MoveUtil.move_and_copy_move_data(board, move, color)
-            board.get_fen_data().set_castling_king_side(False, board.get_engine_color())
-            board.get_fen_data().set_castling_queen_side(False, board.get_engine_color())
-
-            return move_data
-        elif move.get_moving_piece() == PiecesEnum.ROOK.value:
-            move_data = MoveUtil.move_and_copy_move_data(board, move, color)
+        if move.get_moving_piece() == PiecesEnum.ROOK.value:
+            move_data: MoveData = MoveUtil.move_and_copy_move_data(board, move, color)
             MoveValidator.disable_castling_on_side(board.get_engine_color(), move, board)
 
             return move_data
-
         elif special_flag == SpecialFlags.CASTLING.value:
+            deleted_piece: int = color | moving_piece
             white_king, white_queen, black_king, black_queen, en_square, en_piece = fen_data.get_special_move_data()
-            rook_position = board.castle_king(color | move.get_moving_piece(), move)
-            deleted_piece = PiecesEnum.NONE.value
+            board.castle_king(deleted_piece, move)
 
-            return MoveData(deleted_piece, white_king, white_queen, black_king, black_queen, en_square, en_piece,
-                            rook_position)
-        #elif MoveUtil.is_it_a_promotion(special_flag):
-        #    white_king, white_queen, black_king, black_queen, en_square, en_piece = fen_data.get_special_move_data()
-        #    deleted_piece: int = board_array[end_square]
-        #    board_array[move.get_start_square()] = 0
-        #    board_array[end_square] = color + move.get_moving_piece()
+            return MoveData(deleted_piece, white_king, white_queen, black_king, black_queen, en_square, en_piece)
+        elif moving_piece == PiecesEnum.KING.value:
+            move_data: MoveData = MoveUtil.move_and_copy_move_data(board, move, color)
+            fen_data.set_castling_king_side(False, board.get_engine_color())
+            fen_data.set_castling_queen_side(False, board.get_engine_color())
 
-        #    return MoveData(deleted_piece, white_king, white_queen, black_king, black_queen, en_square, en_piece, None)
+            return move_data
         #elif special_flag == SpecialFlags.EN_PASSANT.value:
         #    pass
         else:
-            deleted_piece: int = board_array[end_square]
-            board_array[move.get_start_square()] = 0
-            board_array[end_square] = color + move.get_moving_piece()
-
-            return MoveData(deleted_piece, None, None, None, None, None, None, None)
+            return MoveUtil.move_and_copy_move_data(board, move, color)
 
     @staticmethod
-    def un_make_move(move: Move, deleted_piece: int, board: 'Board', prev_data: MoveData = None) -> None:
+    def un_make_move(move: Move, deleted_data: MoveData, board: 'Board') -> None:
+        # TODO PROMOTION MAY NOT WORK PROPERLY
         """
         Removes given move with a value of deleted piece
-        :param prev_data:
+        :param deleted_data:
         :param board:
         :param move: move to be unmade
-        :param deleted_piece: deleted piece in move value
         :return: None
         """
         end_square: int = move.get_end_square()
         start_square: int = move.get_start_square()
         board_array: ndarray[int] = board.get_board_array()
-        special_flag = move.get_special_flag_value()
+        special_flag: int = move.get_special_flag_value()
         fen_data: FenData = board.get_fen_data()
+        deleted_piece = deleted_data.deleted_piece
         color: int = ColorManager.get_piece_color(deleted_piece)
 
-        if special_flag == SpecialFlags.CASTLING.value and prev_data is not None:
-            fen_data.update_fen_data(prev_data)
-            board.un_castle_king(prev_data, move, color)
-        #elif MoveUtil.is_it_a_promotion(special_flag) and prev_data is not None:
-        #    fen_data.update_fen_data(prev_data)
-        #    board_array[start_square] = color | move.get_moving_piece()
-        #    board_array[end_square] = deleted_piece
+        if special_flag == SpecialFlags.CASTLING.value:
+            board.un_castle_king(move, color)
+            fen_data.update_fen_data(deleted_data)
         else:
+            fen_data.update_fen_data(deleted_data)
             moved_piece: int = board_array[end_square]
             board_array[end_square] = deleted_piece
-            board_array[move.get_start_square()] = moved_piece
+            board_array[start_square] = moved_piece
 
     @staticmethod
     def move_and_copy_move_data(board: 'Board', move: Move, color: int):
-        board_array = board.get_board_array()
-        fen_data = board.get_fen_data()
+        board_array: ndarray[int] = board.get_board_array()
+        fen_data: FenData = board.get_fen_data()
         end_square: int = move.get_end_square()
-
         white_king, white_queen, black_king, black_queen, en_square, en_piece = fen_data.get_special_move_data()
+
         deleted_piece: int = board_array[end_square]
         board_array[move.get_start_square()] = 0
         board_array[end_square] = color + move.get_moving_piece()
 
-        return MoveData(deleted_piece, white_king, white_queen, black_king, black_queen, en_square, en_piece,
-                        None)
+        return MoveData(deleted_piece, white_king, white_queen, black_king, black_queen, en_square, en_piece)
 
     @staticmethod
     def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
-        # TODO update fen properly after move enpassant squares are not updated (check it out)
         deleted_piece: int = board.delete_pieces_on_squares(computer_move.get_start_square(),
                                                             computer_move.get_end_square())
         special_flag: int = computer_move.get_special_flag_value()
@@ -135,6 +118,7 @@ class MoveUtil:
         else:
             MoveUtil.make_engine_move(computer_move.get_end_square(), computer_move.get_moving_piece(), board)
         board.set_opposite_move_color()
+
         return deleted_piece
 
     @staticmethod
