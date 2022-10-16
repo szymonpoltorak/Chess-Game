@@ -156,6 +156,10 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
         self.update_board_data()
 
     def update_board_data(self) -> None:
+        """
+        Method used to update board data
+        :return: None
+        """
         self.__canvas.get_board().update_fen()
 
         print(self.__canvas.get_board().get_fen_string())

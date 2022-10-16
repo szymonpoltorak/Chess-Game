@@ -18,6 +18,11 @@ if TYPE_CHECKING:
 class Evaluator:
     @staticmethod
     def evaluate_position(board: 'Board') -> int:
+        """
+        Method used to return evaluation of current board state
+        :param board: Board instance
+        :return: int value of evaluation
+        """
         evaluation: int = 7 * Evaluator.sum_pieces_on_board(board)
         evaluation += 2.5 * Evaluator.evaluate_center_possession(board)
         evaluation += 4 * Evaluator.evaluate_light_pieces_walked(board)
@@ -27,6 +32,11 @@ class Evaluator:
 
     @staticmethod
     def sum_pieces_on_board(board: 'Board') -> int:
+        """
+        Method used to sum value of pieces on board and return this sum as evaluation
+        :param board: Board instance
+        :return: int value of evaluation
+        """
         evaluation: int = 0
         board_array: ndarray[int] = board.get_board_array()
 
@@ -39,7 +49,12 @@ class Evaluator:
         return Evaluator.return_proper_evaluation_signed_value(board, evaluation)
 
     @staticmethod
-    def evaluate_light_pieces_walked(board: 'Board'):
+    def evaluate_light_pieces_walked(board: 'Board') -> int:
+        """
+        Method used to evaluate if light pieces are walked from their starting position
+        :param board: Board instance
+        :return: int value of evaluation
+        """
         light_starting_positions: dict = {
             board.get_engine_color(): array([1, 2, 5, 6], dtype=int8),
             board.get_player_color(): array([56, 57, 61, 62], dtype=int8)
@@ -62,7 +77,12 @@ class Evaluator:
         return Evaluator.return_proper_evaluation_signed_value(board, evaluation)
 
     @staticmethod
-    def evaluate_distance_to_enemy_king(board: 'Board'):
+    def evaluate_distance_to_enemy_king(board: 'Board') -> int:
+        """
+        Method used to evaluate distance of pieces to the enemy king
+        :param board: Board instance
+        :return: int value of evaluation
+        """
         our_color: int = board.get_color_to_move()
         enemy_color: int = ColorManager.get_opposite_piece_color(our_color)
 
@@ -91,11 +111,22 @@ class Evaluator:
         return Evaluator.return_proper_evaluation_signed_value(board, score_accumulator)
 
     @staticmethod
-    def return_proper_evaluation_signed_value(board: 'Board', evaluation: int):
+    def return_proper_evaluation_signed_value(board: 'Board', evaluation: int) -> int:
+        """
+        Method used to return a proper mark of evaluation based on color to move
+        :param board: Board instance
+        :param evaluation: int value of evaluation
+        :return: int value with proper sign
+        """
         return evaluation if board.get_color_to_move() == board.get_engine_color() else -evaluation
 
     @staticmethod
     def get_piece_point_value(piece_value: int) -> int:
+        """
+        Method used to get proper eval value of a piece
+        :param piece_value: int value of piece
+        :return: int value of piece eval
+        """
         pieces_dict = {
             PiecesEnum.NONE.value: PiecesEnum.NONE.value,
             PiecesEnum.KNIGHT.value: EvalEnum.KNIGHT.value,
@@ -108,7 +139,12 @@ class Evaluator:
         return pieces_dict[piece_value]
 
     @staticmethod
-    def evaluate_center_possession(board: 'Board'):
+    def evaluate_center_possession(board: 'Board') -> int:
+        """
+        Method used to evaluate a center possession
+        :param board: Board instance
+        :return: int value of evaluation
+        """
         evaluation: int = 0
         board_array: ndarray[int] = board.get_board_array()
 

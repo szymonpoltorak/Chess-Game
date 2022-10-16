@@ -122,9 +122,18 @@ class FenData:
         return self.__en_passant_piece_square
 
     def get_special_move_data(self) -> tuple:
+        """
+        Method used to return a tuple of special fen data for making and unmaking moves
+        :return: tuple
+        """
         return self.__white_castle_king, self.__white_castle_queen, self.__black_castle_king, self.__black_castle_queen, self.__en_passant_square, self.__en_passant_piece_square
 
-    def update_fen_data(self, prev_fen_data: MoveData):
+    def update_fen_data(self, prev_fen_data: MoveData) -> None:
+        """
+        Updates fen_data with move_data values
+        :param prev_fen_data: MoveData instance
+        :return: None
+        """
         self.__white_castle_king = prev_fen_data.white_castle_king
         self.__white_castle_queen = prev_fen_data.white_castle_queen
         self.__black_castle_king = prev_fen_data.black_castle_king
