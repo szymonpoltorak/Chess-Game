@@ -64,21 +64,31 @@ class Evaluator:
     @staticmethod
     def evaluate_distance_to_enemy_king(board: 'Board'):
         our_color: int = board.get_color_to_move()
+        enemy_color: int = ColorManager.get_opposite_piece_color(our_color)
+
         board_array: ndarray[int] = board.get_board_array()
-        my_pieces_pos64 = filter(lambda index: ColorManager.get_piece_color(board_array[index]),
-                                 range(BoardEnum.BOARD_SIZE.value))
-        enemy_king_pos64 = CheckUtil.find_friendly_king_squares(board_array,
-                                                                ColorManager.get_opposite_piece_color(our_color))
 
-        pos64_to_posXY = lambda pos64: ((math.floor(pos64 / 8)), pos64 - 8 * (math.floor(pos64 / 8)))
-        distance = lambda pos_xy_a, pos_xy_b: math.sqrt((pos_xy_a[0] - pos_xy_b[0]) * (pos_xy_a[0] - pos_xy_b[0]) +
-                                                        (pos_xy_a[1] - pos_xy_b[1]) * (pos_xy_a[1] - pos_xy_b[1]))
+        enemy_king_pos = CheckUtil.find_friendly_king_squares(board_array, enemy_color)
+        enemy_king_x = math.floor(enemy_king_pos / 8)
+        enemy_king_y = enemy_king_pos - 8 * enemy_king_x
 
-        my_pieces_pos_xy = map(lambda p: pos64_to_posXY(p), my_pieces_pos64)
-        enemy_king_pos_xy = pos64_to_posXY(enemy_king_pos64)
-        evaluation = sum(map(lambda p: 8 * math.sqrt(2) - distance(p, enemy_king_pos_xy), my_pieces_pos_xy))
+        score_accumulator = 0
 
-        return Evaluator.return_proper_evaluation_signed_value(board, evaluation)
+        for pos in range(BoardEnum.BOARD_SIZE.value):
+            if ColorManager.get_piece_color(board_array[pos]) != our_color:
+                continue
+
+            my_piece_x = math.floor(pos / 8)
+            my_piece_y = my_piece_x - 8 * pos
+
+            x_diff = enemy_king_x - my_piece_x
+            y_diff = enemy_king_y - my_piece_y
+
+            distance = math.sqrt(x_diff * x_diff + y_diff * y_diff)
+            score = 8 * math.sqrt(2) - distance
+            score_accumulator += score
+
+        return Evaluator.return_proper_evaluation_signed_value(board, score_accumulator)
 
     @staticmethod
     def return_proper_evaluation_signed_value(board: 'Board', evaluation: int):

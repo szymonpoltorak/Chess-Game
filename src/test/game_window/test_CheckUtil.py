@@ -1,9 +1,11 @@
+import pytest
 from numpy import array
 from numpy import zeros
 
 from game_window.CheckUtil import CheckUtil
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.Move import Move
 
 
@@ -12,13 +14,12 @@ def test_find_friendly_king_squares_only_enemy_king():
     color_to_move = PiecesEnum.WHITE.value
     board_array = zeros(BoardEnum.BOARD_SIZE.value)
     board_array[30] = PiecesEnum.BLACK.value | PiecesEnum.KING.value
-    expected = -1
 
     # when
-    result = CheckUtil.find_friendly_king_squares(board_array, color_to_move)
+    with pytest.raises(ValueError):
+        result = CheckUtil.find_friendly_king_squares(board_array, color_to_move)
 
     # then
-    assert expected == result
 
 
 def test_find_friendly_king_squares_a_friendly_king():
@@ -41,7 +42,7 @@ def test_get_castling_squares_move_distance_greater_than_0():
     start_square = 4
     end_square = 6
     piece = PiecesEnum.KING.value
-    move = Move(start_square, end_square, piece)
+    move = Move(start_square, end_square, piece, SpecialFlags.CASTLING.value)
     expected = array([start_square, start_square + 1, start_square + 2])
 
     # when
@@ -56,7 +57,7 @@ def test_get_castling_squares_move_distance_less_than_0():
     start_square = 6
     end_square = 4
     piece = PiecesEnum.KING.value
-    move = Move(start_square, end_square, piece)
+    move = Move(start_square, end_square, piece, SpecialFlags.CASTLING.value)
     expected = array([start_square, start_square - 1, start_square - 2])
 
     # when

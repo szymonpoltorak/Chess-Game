@@ -6,7 +6,7 @@ from game_window.enums.BoardEnum import BoardEnum
 class Move:
     __slots__ = array(["__start_square", "__end_square", "__piece", "__special_flag"], dtype=str)
 
-    def __init__(self, start_square: int or None, end_square: int or None, piece: int or None, special_flag: int):
+    def __init__(self, start_square: int or None, end_square: int or None, piece: int or None, special_flag: int) -> object:
         self.__start_square: int = start_square
         self.__end_square: int = end_square
         self.__piece: int = piece

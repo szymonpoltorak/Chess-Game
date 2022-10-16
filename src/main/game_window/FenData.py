@@ -16,7 +16,7 @@ class FenData:
         self.__black_castle_queen = True
         self.__en_passant_square = -1
         self.__en_passant_piece_square = -1
-        self.__move_counter = 1
+        self.__move_counter = 0
         self.__no_sack_and_pawn_count = 0
 
     def can_king_castle_king_side(self, color: int) -> bool:

@@ -151,7 +151,8 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__canvas.get_board().set_opposite_move_color()
 
-        self.update_move_counter(deleted_piece)
+        MoveUtil.update_no_sack_and_pawn_counter(self.__canvas.get_board().get_fen_data(), deleted_piece,
+                                                 self.__current_move.get_moving_piece())
         self.update_board_data()
 
     def update_board_data(self) -> None:
@@ -168,12 +169,11 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
 
         deleted_piece: int = MoveUtil.update_board_with_engine_move(self.__canvas.get_board(), computer_move)
         self.play_proper_sound(deleted_piece)
-        self.update_move_counter(deleted_piece)
         player_moves: list[Move] = MoveGenerator.generate_legal_moves(self.__canvas.get_board().get_player_color(),
                                                                       self.__canvas.get_board())
         self.__canvas.get_board().set_legal_moves(player_moves)
-        print(self.__canvas.get_board().get_fen_string())
         self.__canvas.get_board().update_fen()
+        print(self.__canvas.get_board().get_fen_string())
         self.__current_move = computer_move
         self.update()
 
@@ -236,17 +236,19 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
             "src/resources/sounds/Capture.mp3")
 
     def reset_game(self) -> None:
+        """
+        Method used to reset the game state to the standard one
+        :return: None
+        """
         self.__canvas.get_board().__init__()
         self.__current_move.set_start_square(None, None)
         self.__current_move.set_end_square(None, None)
         self.update()
 
     def switch_sides(self) -> None:
+        """
+        Method used to switch sides of player and engine (colors)
+        :return: None
+        """
         self.__canvas.get_board().switch_colors()
         self.update()
-
-    def update_move_counter(self, deleted_piece: int) -> None:
-        if deleted_piece != 0 or self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
-            self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(True)
-        else:
-            self.__canvas.get_board().get_fen_data().update_no_sack_and_pawn_count(False)

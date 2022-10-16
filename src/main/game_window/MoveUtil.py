@@ -102,8 +102,11 @@ class MoveUtil:
         special_flag: int = computer_move.get_special_flag_value()
         moving_piece: int = computer_move.get_moving_piece()
 
+        print(f"Deleted : {deleted_piece}\nMoving : {moving_piece}\n")
+
         if moving_piece == PiecesEnum.PAWN.value:
             MoveUtil.check_pawn_movement(board, computer_move)
+
         if moving_piece == PiecesEnum.ROOK.value:
             MoveValidator.disable_castling_on_side(board.get_engine_color(), computer_move, board)
             MoveUtil.make_engine_move(computer_move.get_end_square(), moving_piece, board)
@@ -118,6 +121,10 @@ class MoveUtil:
         else:
             MoveUtil.make_engine_move(computer_move.get_end_square(), computer_move.get_moving_piece(), board)
         board.set_opposite_move_color()
+        board.get_fen_data().update_move_counter()
+
+        print(f"Deleted : {deleted_piece}\nMoving : {moving_piece}\n")
+        MoveUtil.update_no_sack_and_pawn_counter(board.get_fen_data(), deleted_piece, moving_piece)
 
         return deleted_piece
 
@@ -159,3 +166,14 @@ class MoveUtil:
         elif fen_data.get_en_passant_square() != -1:
             fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
             fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+
+    @staticmethod
+    def update_no_sack_and_pawn_counter(fen_data: FenData, deleted_piece: int, moving_piece: int) -> None:
+        if deleted_piece != 0 or moving_piece == PiecesEnum.PAWN.value:
+            print("HELLO!")
+            fen_data.update_no_sack_and_pawn_count(True)
+        elif deleted_piece == 0 or moving_piece != PiecesEnum.PAWN.value:
+            print("WTF")
+            fen_data.update_no_sack_and_pawn_count(False)
+        else:
+            raise ValueError("NOT POSSIBLE CONDITION OCCURRED! WRONG PARAMETERS")
