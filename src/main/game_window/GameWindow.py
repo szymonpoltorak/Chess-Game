@@ -79,7 +79,8 @@ class GameWindow(QWidget):
         current_position_x: int = mouse_event.x() - CanvasEnum.CANVAS_X.value
         current_position_y: int = mouse_event.y() - CanvasEnum.CANVAS_Y.value
 
-        if current_position_x < 0 or current_position_x > canvas_width or current_position_y < 0 or current_position_y > canvas_height:
+        if current_position_x < 0 or current_position_x > canvas_width or current_position_y < 0 \
+                or current_position_y > canvas_height:
             return None, None
 
         col: int = (current_position_x / self.__canvas.get_rect_width()).__floor__()
@@ -135,7 +136,7 @@ class GameWindow(QWidget):
         if not self.__board.is_it_legal_move(
                 self.__current_move) or self.__current_move.get_start_square() == self.__current_move.get_end_square():
             self.__board.add_piece_to_the_board(self.__moving_piece,
-                                                             self.__current_move.get_start_square())
+                                                self.__current_move.get_start_square())
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
             self.__canvas.copy_current_move(self.__current_move)
             self.__current_move.set_start_square(None, None)
@@ -201,13 +202,15 @@ class GameWindow(QWidget):
         if MoveValidator.was_it_en_passant_move(self.__current_move, self.__board):
             self.__board.make_en_passant_capture(self.__moving_piece)
             deleted_piece = 1
-        elif move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
+        elif move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value \
+                and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
             self.__board.get_fen_data().set_en_passant_square(self.__current_move.get_end_square() -
-                                                                           MoveEnum.PAWN_UP_SINGLE_MOVE.value)
+                                                              MoveEnum.PAWN_UP_SINGLE_MOVE.value)
             self.__board.get_fen_data().set_en_passant_piece_square(self.__current_move.get_end_square())
-        elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
+        elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value \
+                and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
             self.__board.get_fen_data().set_en_passant_square(self.__current_move.get_end_square() -
-                                                                           MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
+                                                              MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
             self.__board.get_fen_data().set_en_passant_piece_square(self.__current_move.get_end_square())
         elif self.__board.get_fen_data().get_en_passant_square() != -1:
             self.__board.get_fen_data().set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
