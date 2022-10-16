@@ -102,8 +102,6 @@ class MoveUtil:
         special_flag: int = computer_move.get_special_flag_value()
         moving_piece: int = computer_move.get_moving_piece()
 
-        print(f"Deleted : {deleted_piece}\nMoving : {moving_piece}\n")
-
         if moving_piece == PiecesEnum.PAWN.value:
             MoveUtil.check_pawn_movement(board, computer_move)
 
@@ -123,7 +121,6 @@ class MoveUtil:
         board.set_opposite_move_color()
         board.get_fen_data().update_move_counter()
 
-        print(f"Deleted : {deleted_piece}\nMoving : {moving_piece}\n")
         MoveUtil.update_no_sack_and_pawn_counter(board.get_fen_data(), deleted_piece, moving_piece)
 
         return deleted_piece
@@ -170,10 +167,8 @@ class MoveUtil:
     @staticmethod
     def update_no_sack_and_pawn_counter(fen_data: FenData, deleted_piece: int, moving_piece: int) -> None:
         if deleted_piece != 0 or moving_piece == PiecesEnum.PAWN.value:
-            print("HELLO!")
             fen_data.update_no_sack_and_pawn_count(True)
         elif deleted_piece == 0 or moving_piece != PiecesEnum.PAWN.value:
-            print("WTF")
             fen_data.update_no_sack_and_pawn_count(False)
         else:
             raise ValueError("NOT POSSIBLE CONDITION OCCURRED! WRONG PARAMETERS")

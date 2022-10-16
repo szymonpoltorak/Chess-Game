@@ -11,6 +11,7 @@ from game_window.FenData import FenData
 from game_window.FenFactory import FenFactory
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
+from game_window.MoveList import MoveList
 from game_window.MoveValidator import MoveValidator
 
 
@@ -30,7 +31,7 @@ class Board:
         self.__fen_data: FenData = FenData()
         self.__color_to_move: int = PiecesEnum.WHITE.value
         self.__distances_to_borders: ndarray[int] = MoveGenerator.calculate_distance_to_borders()
-        self.__legal_moves: list[Move] = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
+        self.__legal_moves: MoveList = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
 
     def castle_king(self, piece: int, move: Move) -> None:
         """
@@ -68,10 +69,10 @@ class Board:
         self.__board_array[end_square + sign(distance)] = PiecesEnum.NONE.value
         self.__board_array[move.get_start_square()] = color | PiecesEnum.KING.value
 
-    def set_legal_moves(self, legal_moves: list[Move]) -> None:
+    def set_legal_moves(self, legal_moves: MoveList) -> None:
         """
-        Method used to set legal moves list
-        :param legal_moves: list of legal moves
+        Method used to set legal moves_list list
+        :param legal_moves: list of legal moves_list
         :return: None
         """
         self.__legal_moves = legal_moves
@@ -83,10 +84,10 @@ class Board:
         """
         self.__color_to_move = PiecesEnum.WHITE.value if self.__color_to_move == PiecesEnum.BLACK.value else PiecesEnum.BLACK.value
 
-    def get_legal_moves(self) -> list[Move]:
+    def get_legal_moves(self) -> MoveList:
         """
-        Gives access to legal moves list.
-        :return: list of moves
+        Gives access to legal moves_list list.
+        :return: list of moves_list
         """
         return self.__legal_moves
 
@@ -173,7 +174,7 @@ class Board:
         :param move: current move player wants to play
         :return: bool value whether move is legal or not
         """
-        return move in self.__legal_moves
+        return move in self.__legal_moves.moves
 
     def update_fen(self) -> None:
         """

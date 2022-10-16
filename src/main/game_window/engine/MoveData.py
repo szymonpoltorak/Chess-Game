@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass(slots=True)
+@dataclass(slots=True, order=True, eq=True, unsafe_hash=True)
 class MoveData:
     deleted_piece: int or None
     white_castle_king: bool or None

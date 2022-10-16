@@ -6,6 +6,7 @@ from game_window.engine.Evaluator import Evaluator
 from game_window.engine.MoveData import MoveData
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
+from game_window.MoveList import MoveList
 from game_window.MoveUtil import MoveUtil
 
 if TYPE_CHECKING:
@@ -20,12 +21,15 @@ class Engine:
 
         if maximizing_player:
             min_eval: int = numpy.inf
-            moves: list[Move] = MoveGenerator.generate_legal_moves(board.get_player_color(), board)
+            moves_list: MoveList = MoveGenerator.generate_legal_moves(board.get_player_color(), board)
 
-            if not moves:
+            if not moves_list:
                 return numpy.inf
 
-            for move in moves:
+            for move in moves_list.moves:
+                if move is None:
+                    break
+
                 deleted_data: MoveData = MoveUtil.make_move(move, board.get_player_color(), board)
                 board.set_opposite_move_color()
                 movement_eval: int = Engine.search_positions(board, depth - 1, alpha, beta, False)
@@ -39,12 +43,15 @@ class Engine:
             return min_eval
         elif not maximizing_player:
             max_eval: int = -numpy.inf
-            moves: list[Move] = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
+            moves_list: MoveList = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
 
-            if not moves:
+            if not moves_list:
                 return -numpy.inf
 
-            for move in moves:
+            for move in moves_list.moves:
+                if move is None:
+                    break
+
                 deleted_data: MoveData = MoveUtil.make_move(move, board.get_engine_color(), board)
                 board.set_opposite_move_color()
                 movement_eval: int = Engine.search_positions(board, depth - 1, alpha, beta, True)
@@ -60,14 +67,17 @@ class Engine:
 
     @staticmethod
     def get_computer_move(board: 'Board') -> Move:
-        moves: list[Move] = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
+        moves_list: MoveList = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
         alpha: int = -numpy.inf
         beta: int = numpy.inf
         depth: int = 2
         best_eval: int = -numpy.inf
         best_move: Move or None = None
 
-        for move in moves:
+        for move in moves_list.moves:
+            if move is None:
+                break
+
             deleted_data: MoveData = MoveUtil.make_move(move, board.get_engine_color(), board)
             board.set_opposite_move_color()
             move_eval: int = Engine.search_positions(board, depth, alpha, beta, True)

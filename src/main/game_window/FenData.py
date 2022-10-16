@@ -63,7 +63,7 @@ class FenData:
 
     def get_no_sack_and_pawn_count(self) -> int:
         """
-        Gives access to counter of how many moves have passed since last pawn move or any sack
+        Gives access to counter of how many moves_list have passed since last pawn move or any sack
         :return: int value of counter
         """
         return self.__no_sack_and_pawn_count
@@ -123,7 +123,7 @@ class FenData:
 
     def get_special_move_data(self) -> tuple:
         """
-        Method used to return a tuple of special fen data for making and unmaking moves
+        Method used to return a tuple of special fen data for making and unmaking moves_list
         :return: tuple
         """
         return self.__white_castle_king, self.__white_castle_queen, self.__black_castle_king, self.__black_castle_queen, self.__en_passant_square, self.__en_passant_piece_square

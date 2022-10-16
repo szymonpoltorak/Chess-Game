@@ -7,6 +7,7 @@ from PyQt5.QtGui import QPaintEvent
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QWidget
 
+from game_window.Board import Board
 from game_window.Canvas import Canvas
 from game_window.ColorManager import ColorManager
 from game_window.engine.Engine import Engine
@@ -16,20 +17,23 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.GameWindowUi import GameWindowUi
 from game_window.Move import Move
 from game_window.MoveGenerator import MoveGenerator
+from game_window.MoveList import MoveList
 from game_window.MoveUtil import MoveUtil
 from game_window.MoveValidator import MoveValidator
 from game_window.PromotionData import PromotionData
 
 
-class GameWindow(QWidget): # TODO Fen does not update counter when computer moves
+class GameWindow(QWidget):
     """
     Covers play game window.
     """
-    __slots__ = array(["__ui", "__canvas", "__moving_piece", "__current_move", "__promotion_util"], dtype=str)
+    __slots__ = array(["__ui", "__canvas", "__moving_piece", "__current_move", "__promotion_util", "__board"],
+                      dtype=str)
 
     def __init__(self):
         super(GameWindow, self).__init__()
 
+        self.__board = Board()
         self.__canvas: Canvas = Canvas()
         self.__moving_piece: int = -1
         self.__current_move: Move = Move(None, None, None, -1)
@@ -48,7 +52,7 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
         :return: None
         """
         self.__canvas.begin(self)
-        self.__canvas.draw_chess_board(self.__current_move)
+        self.__canvas.draw_chess_board(self.__current_move, self.__board)
 
         if self.__promotion_util.is_this_pawn_promoting():
             self.__canvas.paint_promotion_window(self.__promotion_util, self.__current_move.get_end_square())
@@ -89,19 +93,19 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
         :param mouse_press_event: event of mouse pressed on QWidget
         :return: 
         """
-        if not self.__canvas.get_board().get_legal_moves():
+        if not self.__board.get_legal_moves():
             return
 
         if self.__promotion_util.is_this_pawn_promoting():
             return
         row, col = self.__start_mouse_events(mouse_press_event)
 
-        if row is None or col is None or not self.__canvas.get_board().should_this_piece_move(row, col):
+        if row is None or col is None or not self.__board.should_this_piece_move(row, col):
             self.__current_move.set_start_square(None, None)
             self.__current_move.set_end_square(None, None)
             return
 
-        self.__moving_piece: int = self.__canvas.get_board().delete_piece_from_board(row, col)
+        self.__moving_piece: int = self.__board.delete_piece_from_board(row, col)
         piece_value: int = self.__moving_piece - ColorManager.get_piece_color(self.__moving_piece)
 
         self.__current_move.set_start_square(row, col)
@@ -118,7 +122,7 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
         """
         if self.__promotion_util.is_this_pawn_promoting():
             self.__promotion_util.check_user_choice(mouse_release_event, self.__canvas.get_rect_height(),
-                                                    self.__canvas.get_board())
+                                                    self.__board)
             self.update_board_data()
             return
         row, col = self.__start_mouse_events(mouse_release_event)
@@ -128,9 +132,9 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
             return
         self.__current_move.set_end_square(row, col)
 
-        if not self.__canvas.get_board().is_it_legal_move(
+        if not self.__board.is_it_legal_move(
                 self.__current_move) or self.__current_move.get_start_square() == self.__current_move.get_end_square():
-            self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece,
+            self.__board.add_piece_to_the_board(self.__moving_piece,
                                                              self.__current_move.get_start_square())
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
             self.__canvas.copy_current_move(self.__current_move)
@@ -138,8 +142,8 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
             self.__current_move.set_end_square(None, None)
             self.update()
             return
-        self.__canvas.get_board().get_fen_data().update_move_counter()
-        deleted_piece: int = self.__canvas.get_board().delete_piece_from_board(row, col)
+        self.__board.get_fen_data().update_move_counter()
+        deleted_piece: int = self.__board.delete_piece_from_board(row, col)
         final_piece_index: int = 8 * row + col
         color: int = ColorManager.get_piece_color(self.__moving_piece)
 
@@ -149,9 +153,9 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
 
         self.play_proper_sound(deleted_piece)
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
-        self.__canvas.get_board().set_opposite_move_color()
+        self.__board.set_opposite_move_color()
 
-        MoveUtil.update_no_sack_and_pawn_counter(self.__canvas.get_board().get_fen_data(), deleted_piece,
+        MoveUtil.update_no_sack_and_pawn_counter(self.__board.get_fen_data(), deleted_piece,
                                                  self.__current_move.get_moving_piece())
         self.update_board_data()
 
@@ -160,24 +164,22 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
         Method used to update board data
         :return: None
         """
-        self.__canvas.get_board().update_fen()
+        self.__board.update_fen()
 
-        print(self.__canvas.get_board().get_fen_string())
         if self.__promotion_util.is_this_pawn_promoting():
             return
-        computer_move: Move = Engine.get_computer_move(self.__canvas.get_board())
+        computer_move: Move = Engine.get_computer_move(self.__board)
 
         if computer_move is None:
             QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
             return
 
-        deleted_piece: int = MoveUtil.update_board_with_engine_move(self.__canvas.get_board(), computer_move)
+        deleted_piece: int = MoveUtil.update_board_with_engine_move(self.__board, computer_move)
         self.play_proper_sound(deleted_piece)
-        player_moves: list[Move] = MoveGenerator.generate_legal_moves(self.__canvas.get_board().get_player_color(),
-                                                                      self.__canvas.get_board())
-        self.__canvas.get_board().set_legal_moves(player_moves)
-        self.__canvas.get_board().update_fen()
-        print(self.__canvas.get_board().get_fen_string())
+        player_moves: MoveList = MoveGenerator.generate_legal_moves(self.__board.get_player_color(), self.__board)
+        self.__board.set_legal_moves(player_moves)
+        self.__board.update_fen()
+        print(self.__board.get_fen_string())
         self.__current_move = computer_move
         self.update()
 
@@ -193,23 +195,23 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
         """
         move_length: int = self.__current_move.get_end_square() - self.__current_move.get_start_square()
 
-        if MoveValidator.is_pawn_promoting(self.__current_move, color, self.__canvas.get_board().get_engine_color()):
+        if MoveValidator.is_pawn_promoting(self.__current_move, color, self.__board.get_engine_color()):
             self.__promotion_util.set_promotion_data(color, mouse_event.x(), mouse_event.y(),
                                                      piece_index)
-        if MoveValidator.was_it_en_passant_move(self.__current_move, self.__canvas.get_board()):
-            self.__canvas.get_board().make_en_passant_capture(self.__moving_piece)
+        if MoveValidator.was_it_en_passant_move(self.__current_move, self.__board):
+            self.__board.make_en_passant_capture(self.__moving_piece)
             deleted_piece = 1
         elif move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
-            self.__canvas.get_board().get_fen_data().set_en_passant_square(self.__current_move.get_end_square() -
+            self.__board.get_fen_data().set_en_passant_square(self.__current_move.get_end_square() -
                                                                            MoveEnum.PAWN_UP_SINGLE_MOVE.value)
-            self.__canvas.get_board().get_fen_data().set_en_passant_piece_square(self.__current_move.get_end_square())
+            self.__board.get_fen_data().set_en_passant_piece_square(self.__current_move.get_end_square())
         elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
-            self.__canvas.get_board().get_fen_data().set_en_passant_square(self.__current_move.get_end_square() -
+            self.__board.get_fen_data().set_en_passant_square(self.__current_move.get_end_square() -
                                                                            MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
-            self.__canvas.get_board().get_fen_data().set_en_passant_piece_square(self.__current_move.get_end_square())
-        elif self.__canvas.get_board().get_fen_data().get_en_passant_square() != -1:
-            self.__canvas.get_board().get_fen_data().set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-            self.__canvas.get_board().get_fen_data().set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+            self.__board.get_fen_data().set_en_passant_piece_square(self.__current_move.get_end_square())
+        elif self.__board.get_fen_data().get_en_passant_square() != -1:
+            self.__board.get_fen_data().set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+            self.__board.get_fen_data().set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
         return deleted_piece
 
     def handle_castling_event(self, final_piece_index: int, color: int) -> None:
@@ -220,15 +222,15 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
         :return: None
         """
         if self.__current_move.get_moving_piece() == PiecesEnum.ROOK.value:
-            MoveValidator.disable_castling_on_side(color, self.__current_move, self.__canvas.get_board())
+            MoveValidator.disable_castling_on_side(color, self.__current_move, self.__board)
         if MoveValidator.is_it_castling(self.__current_move):
-            self.__canvas.get_board().castle_king(self.__moving_piece, self.__current_move)
+            self.__board.castle_king(self.__moving_piece, self.__current_move)
         elif self.__current_move.get_moving_piece() == PiecesEnum.KING.value:
-            self.__canvas.get_board().get_fen_data().set_castling_king_side(False, color)
-            self.__canvas.get_board().get_fen_data().set_castling_queen_side(False, color)
-            self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)
+            self.__board.get_fen_data().set_castling_king_side(False, color)
+            self.__board.get_fen_data().set_castling_queen_side(False, color)
+            self.__board.add_piece_to_the_board(self.__moving_piece, final_piece_index)
         else:
-            self.__canvas.get_board().add_piece_to_the_board(self.__moving_piece, final_piece_index)
+            self.__board.add_piece_to_the_board(self.__moving_piece, final_piece_index)
 
     def play_proper_sound(self, deleted_piece: int) -> None:
         """
@@ -244,7 +246,7 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
         Method used to reset the game state to the standard one
         :return: None
         """
-        self.__canvas.get_board().__init__()
+        self.__board.__init__()
         self.__current_move.set_start_square(None, None)
         self.__current_move.set_end_square(None, None)
         self.update()
@@ -254,5 +256,5 @@ class GameWindow(QWidget): # TODO Fen does not update counter when computer move
         Method used to switch sides of player and engine (colors)
         :return: None
         """
-        self.__canvas.get_board().switch_colors()
+        self.__board.switch_colors()
         self.update()
