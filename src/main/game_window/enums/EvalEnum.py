@@ -2,11 +2,11 @@ from enum import Enum
 
 
 class EvalEnum(Enum):
-    QUEEN: int = 90
+    QUEEN: int = 70
     BISHOP: int = 30
-    KNIGHT: int = 30
-    PAWN: int = 13
-    ROOK: int = 50
-    KING: int = 25
-    CENTER: int = 9
-    WALKED: int = 10
+    KNIGHT: int = 25
+    PAWN: int = 10
+    ROOK: int = 40
+    KING: int = 15
+    CENTER: int = 4
+    WALKED: int = 3

@@ -1,5 +1,6 @@
 from numpy import array
 from playsound import playsound
+from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
 from PyQt5.QtGui import QMouseEvent
@@ -11,6 +12,7 @@ from game_window.Board import Board
 from game_window.Canvas import Canvas
 from game_window.ColorManager import ColorManager
 from game_window.engine.Engine import Engine
+from game_window.engine.Evaluator import Evaluator
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
@@ -30,6 +32,8 @@ class GameWindow(QWidget):
     __slots__ = array(["__ui", "__canvas", "__moving_piece", "__current_move", "__promotion_util", "__board"],
                       dtype=str)
 
+    keyPressed = QtCore.pyqtSignal(int)
+
     def __init__(self):
         super(GameWindow, self).__init__()
 
@@ -44,6 +48,12 @@ class GameWindow(QWidget):
             self.setStyleSheet(style.read())
             self.__ui.get_new_game_button().clicked.connect(self.reset_game)
             self.__ui.get_switch_side_button().clicked.connect(self.switch_sides)
+
+    def keyPressEvent(self, event):
+        super(GameWindow, self).keyPressEvent(event)
+        self.keyPressed.emit(event)
+        Evaluator.debug_evaluate_position(self.__board, 8)
+        Evaluator.debug_evaluate_position(self.__board, 16)
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """
@@ -177,8 +187,13 @@ class GameWindow(QWidget):
 
         deleted_piece: int = MoveUtil.update_board_with_engine_move(self.__board, computer_move)
         self.play_proper_sound(deleted_piece)
-        player_moves: MoveList = MoveGenerator.generate_legal_moves(self.__board.get_player_color(), self.__board)
+        #data = self.__board.get_fen_data()
+        #print(f"BlackKing : {data.can_king_castle_king_side(16)}\nBlackQueen : {data.can_king_castle_queen_side(16)}")
+        #print(f"WhiteKing : {data.can_king_castle_king_side(8)}\nWhiteQueen : {data.can_king_castle_queen_side(8)}")
+        player_moves: MoveList = MoveGenerator.generate_legal_moves(self.__board.get_color_to_move(), self.__board)
         self.__board.set_legal_moves(player_moves)
+        #print(f"BlackKing : {data.can_king_castle_king_side(16)}\nBlackQueen : {data.can_king_castle_queen_side(16)}")
+        #print(f"WhiteKing : {data.can_king_castle_king_side(8)}\nWhiteQueen : {data.can_king_castle_queen_side(8)}")
         self.__board.update_fen()
         print(self.__board.get_fen_string())
         self.__current_move = computer_move

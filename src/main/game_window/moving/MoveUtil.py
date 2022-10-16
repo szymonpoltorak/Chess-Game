@@ -120,6 +120,10 @@ class MoveUtil:
             MoveUtil.make_engine_move(computer_move.get_end_square(), computer_move.get_moving_piece(), board)
         board.set_opposite_move_color()
         board.get_fen_data().update_move_counter()
+        data = board.get_fen_data()
+
+        print(f"BlackKing : {data.can_king_castle_king_side(16)}\nBlackQueen : {data.can_king_castle_queen_side(16)}")
+        print(f"WhiteKing : {data.can_king_castle_king_side(8)}\nWhiteQueen : {data.can_king_castle_queen_side(8)}")
 
         MoveUtil.update_no_sack_and_pawn_counter(board.get_fen_data(), deleted_piece, moving_piece)
 

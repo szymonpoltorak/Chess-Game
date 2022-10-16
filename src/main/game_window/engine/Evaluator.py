@@ -17,19 +17,31 @@ if TYPE_CHECKING:
 
 class Evaluator:
     @staticmethod
-    def evaluate_position(board: 'Board', favor_color: int) -> int:
-        """
-        Method used to return evaluation of current board state
-        :param favor_color:
-        :param board: Board instance
-        :return: int value of evaluation
-        """
-        evaluation: int = 10 * Evaluator.sum_pieces_on_board(board, favor_color)
-        evaluation += 2.5 * Evaluator.evaluate_center_possession(board, favor_color)
-        evaluation += 4 * Evaluator.evaluate_light_pieces_walked(board, favor_color)
-        evaluation += Evaluator.evaluate_distance_to_enemy_king(board, favor_color)
+    def debug_evaluate_position(board: 'Board', favor_color: int) -> int:
+        print("For BLACK:") if favor_color == 16 else print("For WHITE:")
 
-        return evaluation
+        material_eval = Evaluator.sum_pieces_on_board(board, favor_color)
+        center_possession_eval = Evaluator.evaluate_center_possession(board, favor_color)
+        light_dev_eval = Evaluator.evaluate_light_pieces_walked(board, favor_color)
+        king_pressure = Evaluator.evaluate_king_pressure(board, favor_color)
+
+        print(f"\tmaterialEval = {material_eval}\n\tcenterPossessionEval = {center_possession_eval}\n\tlightDevEval = {light_dev_eval}\n\tkingPressure = {king_pressure}")
+
+        total_eval = material_eval + center_possession_eval + light_dev_eval + king_pressure
+        print(f"\tTotal = {total_eval}\n")
+
+        return total_eval
+
+    @staticmethod
+    def evaluate_position(board: 'Board', favor_color: int) -> int:
+        material_eval = Evaluator.sum_pieces_on_board(board, favor_color)
+        center_possession_eval = Evaluator.evaluate_center_possession(board, favor_color)
+        light_dev_eval = Evaluator.evaluate_light_pieces_walked(board, favor_color)
+        king_pressure = Evaluator.evaluate_king_pressure(board, favor_color)
+
+        total_eval = material_eval + center_possession_eval + light_dev_eval + king_pressure
+
+        return total_eval
 
     @staticmethod
     def sum_pieces_on_board(board: 'Board', favor_color: int) -> int:
@@ -43,12 +55,13 @@ class Evaluator:
         board_array: ndarray[int] = board.get_board_array()
 
         for square in board_array:
-            pieces_color: int = ColorManager.get_piece_color(board_array[square])
-            piece_value: int = board_array[square] - pieces_color
+            if square == 0:
+                continue
+
+            pieces_color: int = ColorManager.get_piece_color(square)
+            piece_value: int = square - pieces_color
             points: int = Evaluator.get_piece_point_value(piece_value)
             evaluation += points if pieces_color == favor_color else -points
-
-        #return Evaluator.return_proper_evaluation_signed_value(board, evaluation, favor_color)
         return evaluation
 
     @staticmethod
@@ -59,35 +72,51 @@ class Evaluator:
         :param board: Board instance
         :return: int value of evaluation
         """
+        pieces = array([PiecesEnum.KNIGHT.value, PiecesEnum.BISHOP.value, PiecesEnum.BISHOP.value, PiecesEnum.KNIGHT.value])
         engine_color: int = board.get_engine_color()
         player_color: int = board.get_player_color()
-
-        light_starting_positions: dict = {
-            engine_color: array([1, 2, 5, 6], dtype=int8),
-            player_color: array([56, 57, 61, 62], dtype=int8)
-        }
-        light_pieces: ndarray[int] = array([PiecesEnum.KNIGHT.value, PiecesEnum.BISHOP.value])
         board_array: ndarray[int] = board.get_board_array()
-        evaluation: int = 0
 
-        for position in light_starting_positions[engine_color]:
-            piece_color: int = ColorManager.get_piece_color(board_array[position])
-            piece_value: int = board_array[position] - piece_color
+        light_pieces_positions: dict = {
+            engine_color: array([1, 2, 5, 6], dtype=int8),
+            player_color: array([57, 58, 61, 62], dtype=int8),
+        }
 
-            if piece_value not in light_pieces and piece_color == board.get_engine_color():
-                evaluation += EvalEnum.WALKED.value if piece_color == favor_color else -EvalEnum.WALKED.value
+        favorable_accumulator = 0
 
-        for position in light_starting_positions[player_color]:
-            piece_color: int = ColorManager.get_piece_color(board_array[position])
-            piece_value: int = board_array[position] - piece_color
+        for i in range(0, 4):
+            position = light_pieces_positions[favor_color][i]
 
-            if piece_value not in light_pieces and piece_color == board.get_player_color():
-                evaluation += EvalEnum.WALKED.value if piece_color == favor_color else -EvalEnum.WALKED.value
-        #return Evaluator.return_proper_evaluation_signed_value(board, evaluation, favor_color)
-        return evaluation
+            if board_array[position] == favor_color | pieces[i]:
+                favorable_accumulator -= EvalEnum.WALKED.value
+            else:
+                favorable_accumulator += EvalEnum.WALKED.value
+
+        enemy_color = ColorManager.get_opposite_piece_color(favor_color)
+        unfavorable_accumulator = 0
+
+        for i in range(0, 4):
+            position = light_pieces_positions[enemy_color][i]
+
+            if board_array[position] == enemy_color | pieces[i]:
+                unfavorable_accumulator -= EvalEnum.WALKED.value
+            else:
+                unfavorable_accumulator += EvalEnum.WALKED.value
+
+        return favorable_accumulator - unfavorable_accumulator
 
     @staticmethod
-    def evaluate_distance_to_enemy_king(board: 'Board', favor_color: int) -> int:
+    def evaluate_king_pressure(board: 'Board', favor_color: int) -> int:
+        pressure_on_enemy_king = Evaluator.evaluate_king_pressure_only_for_color(board, favor_color)
+        pressure_on_my_king = Evaluator.evaluate_king_pressure_only_for_color(board,
+                                                                              ColorManager.get_opposite_piece_color(
+                                                                                  favor_color))
+        net_pressure = pressure_on_enemy_king - pressure_on_my_king
+
+        return int(net_pressure)
+
+    @staticmethod
+    def evaluate_king_pressure_only_for_color(board: 'Board', favor_color: int) -> int:
         """
         Method used to evaluate distance of pieces to the enemy king
         :param favor_color:
@@ -107,9 +136,8 @@ class Evaluator:
         for pos in range(BoardEnum.BOARD_SIZE.value):
             if ColorManager.get_piece_color(board_array[pos]) != favor_color:
                 continue
-
             my_piece_x = math.floor(pos / 8)
-            my_piece_y = my_piece_x - 8 * pos
+            my_piece_y = pos - 8 * my_piece_x
 
             x_diff = enemy_king_x - my_piece_x
             y_diff = enemy_king_y - my_piece_y
@@ -117,7 +145,6 @@ class Evaluator:
             distance = math.sqrt(x_diff * x_diff + y_diff * y_diff)
             score = 8 * math.sqrt(2) - distance
             score_accumulator += score
-        #return Evaluator.return_proper_evaluation_signed_value(board, score_accumulator, favor_color)
         return score_accumulator
 
     @staticmethod
@@ -139,7 +166,6 @@ class Evaluator:
         :return: int value of piece eval
         """
         pieces_dict = {
-            PiecesEnum.NONE.value: PiecesEnum.NONE.value,
             PiecesEnum.KNIGHT.value: EvalEnum.KNIGHT.value,
             PiecesEnum.BISHOP.value: EvalEnum.BISHOP.value,
             PiecesEnum.ROOK.value: EvalEnum.ROOK.value,

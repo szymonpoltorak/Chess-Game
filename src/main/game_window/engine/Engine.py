@@ -53,7 +53,6 @@ class Engine:
                 break
 
             deleted_data: MoveData = MoveUtil.make_move(move, board.get_engine_color(), board)
-            #move_eval: int = Engine.negamax_search(board, depth, -inf, inf, board.get_engine_color())
             evaluation: int = -Engine.negamax_search(board, depth, inf, -inf, board.get_player_color())
             MoveUtil.un_make_move(move, deleted_data, board)
 
