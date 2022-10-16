@@ -9,10 +9,10 @@ from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.FenData import FenData
 from game_window.FenFactory import FenFactory
-from game_window.Move import Move
-from game_window.MoveGenerator import MoveGenerator
-from game_window.MoveList import MoveList
-from game_window.MoveValidator import MoveValidator
+from game_window.moving.Move import Move
+from game_window.moving.MoveGenerator import MoveGenerator
+from game_window.moving.MoveList import MoveList
+from game_window.moving.MoveValidator import MoveValidator
 
 
 class Board:

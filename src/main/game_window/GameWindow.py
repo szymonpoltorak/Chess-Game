@@ -15,11 +15,11 @@ from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.GameWindowUi import GameWindowUi
-from game_window.Move import Move
-from game_window.MoveGenerator import MoveGenerator
-from game_window.MoveList import MoveList
-from game_window.MoveUtil import MoveUtil
-from game_window.MoveValidator import MoveValidator
+from game_window.moving.Move import Move
+from game_window.moving.MoveGenerator import MoveGenerator
+from game_window.moving.MoveList import MoveList
+from game_window.moving.MoveUtil import MoveUtil
+from game_window.moving.MoveValidator import MoveValidator
 from game_window.PromotionData import PromotionData
 
 

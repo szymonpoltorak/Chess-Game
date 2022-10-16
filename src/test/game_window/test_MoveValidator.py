@@ -1,7 +1,7 @@
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.Move import Move
-from game_window.MoveValidator import MoveValidator
+from game_window.moving.Move import Move
+from game_window.moving.MoveValidator import MoveValidator
 
 
 def test_is_sliding_piece_it_is():

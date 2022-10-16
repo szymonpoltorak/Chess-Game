@@ -4,13 +4,13 @@ from numpy import array
 from numpy import ndarray
 
 from game_window.ColorManager import ColorManager
-from game_window.engine.MoveData import MoveData
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.FenData import FenData
-from game_window.Move import Move
-from game_window.MoveValidator import MoveValidator
+from game_window.moving.Move import Move
+from game_window.moving.MoveData import MoveData
+from game_window.moving.MoveValidator import MoveValidator
 
 if TYPE_CHECKING:
     from game_window.Board import Board

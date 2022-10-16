@@ -3,7 +3,7 @@ from numpy import ndarray
 
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.Move import Move
+from game_window.moving.Move import Move
 
 
 class CheckUtil:

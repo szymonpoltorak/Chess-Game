@@ -7,15 +7,15 @@ from numpy import zeros
 
 from game_window.CheckUtil import CheckUtil
 from game_window.ColorManager import ColorManager
-from game_window.engine.MoveData import MoveData
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.Move import Move
-from game_window.MoveList import MoveList
-from game_window.MoveUtil import MoveUtil
-from game_window.MoveValidator import MoveValidator
+from game_window.moving.Move import Move
+from game_window.moving.MoveData import MoveData
+from game_window.moving.MoveList import MoveList
+from game_window.moving.MoveUtil import MoveUtil
+from game_window.moving.MoveValidator import MoveValidator
 
 if TYPE_CHECKING:
     from game_window.Board import Board

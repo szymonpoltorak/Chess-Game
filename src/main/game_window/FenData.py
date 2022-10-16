@@ -1,7 +1,7 @@
 from numpy import array
 
-from game_window.engine.MoveData import MoveData
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.moving.MoveData import MoveData
 
 
 class FenData:

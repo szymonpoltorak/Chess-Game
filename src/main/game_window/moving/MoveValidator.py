@@ -6,8 +6,8 @@ from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.FenData import FenData
-from game_window.Move import Move
-from game_window.MoveList import MoveList
+from game_window.moving.Move import Move
+from game_window.moving.MoveList import MoveList
 
 if TYPE_CHECKING:
     from game_window.Board import Board
