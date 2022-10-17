@@ -5,7 +5,6 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.FenData import FenData
 from game_window.moving.Move import Move
 from game_window.moving.MoveList import MoveList
 
@@ -83,29 +82,6 @@ class MoveValidator:
             (False, upper_color): MoveEnum.TOP_ROOK_KING.value
         }
         return move_dict[is_queen_side, color]
-
-    @staticmethod
-    def disable_castling_on_side(color: int, move: Move, board: 'Board') -> None:
-        """
-        Disable castling for king on given side
-        :param color: int value of color
-        :param move: Move instance
-        :param board: Board instance
-        :return: None
-        """
-        engine_color: int = board.get_engine_color()
-        player_color: int = board.get_player_color()
-        start_square: int = move.get_start_square()
-        fen_data: FenData = board.get_fen_data()
-
-        if color == engine_color and start_square == MoveEnum.TOP_ROOK_QUEEN.value:
-            fen_data.set_castling_queen_side(False, color)
-        elif color == engine_color and start_square == MoveEnum.TOP_ROOK_KING.value:
-            fen_data.set_castling_king_side(False, color)
-        elif color == player_color and start_square == MoveEnum.BOTTOM_ROOK_QUEEN.value:
-            fen_data.set_castling_queen_side(False, color)
-        elif color == player_color and start_square == MoveEnum.BOTTOM_ROOK_KING.value:
-            fen_data.set_castling_king_side(False, color)
 
     @staticmethod
     def is_attack_target_in_border_bounds(start_square: int, move_target: int, attack_range: int) -> bool:
@@ -216,8 +192,9 @@ class MoveValidator:
         :param board: Board instance
         :return: None
         """
-        left_piece_square: int = start_square + MoveValidator.get_attack_direction(color, "LEFT", board.get_engine_color())
-        right_piece_square: int = start_square + MoveValidator.get_attack_direction(color, "RIGHT", board.get_engine_color())
+        engine_color: int = board.get_engine_color()
+        left_piece_square: int = start_square + MoveValidator.get_attack_direction(color, "LEFT", engine_color)
+        right_piece_square: int = start_square + MoveValidator.get_attack_direction(color, "RIGHT", engine_color)
 
         if left_piece_square < 0 or left_piece_square > 63 or right_piece_square < 0 or right_piece_square > 63:
             return

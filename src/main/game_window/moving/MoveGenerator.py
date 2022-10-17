@@ -11,6 +11,7 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.FenData import FenData
 from game_window.moving.Move import Move
 from game_window.moving.MoveData import MoveData
 from game_window.moving.MoveList import MoveList
@@ -58,6 +59,7 @@ class MoveGenerator:
 
     @staticmethod
     def generate_legal_moves(color_to_move: int, board: 'Board') -> MoveList:
+        # TODO when rook is being captured for example by knight it does not disappear and does not disable castling
         pseudo_legal_moves: MoveList = MoveGenerator.generate_moves(color_to_move, board)
         legal_moves: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object), 0)
 
@@ -185,14 +187,17 @@ class MoveGenerator:
         :param start_square: start end_square index
         :return: None
         """
-        if not MoveValidator.is_anything_on_king_side(board, start_square) and board.get_fen_data().can_king_castle_king_side(color):
+        fen_data: FenData = board.get_fen_data()
+
+        if not MoveValidator.is_anything_on_king_side(board, start_square) and fen_data.can_king_castle_king_side(color):
             if not MoveValidator.is_board_inverted(board):
                 move_target: int = start_square + MoveEnum.CASTLE_MOVE.value
             else:
                 move_target: int = start_square - MoveEnum.CASTLE_MOVE.value
             moves_list.moves[moves_list.free_index] = Move(start_square, move_target, piece, SpecialFlags.CASTLING.value)
             moves_list.free_index += 1
-        if not MoveValidator.is_anything_on_queen_side(board, start_square) and board.get_fen_data().can_king_castle_queen_side(color):
+            
+        if not MoveValidator.is_anything_on_queen_side(board, start_square) and fen_data.can_king_castle_queen_side(color):
             if not MoveValidator.is_board_inverted(board):
                 move_target: int = start_square - MoveEnum.CASTLE_MOVE.value
             else:

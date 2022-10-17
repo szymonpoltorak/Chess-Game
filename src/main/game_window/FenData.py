@@ -1,15 +1,14 @@
 from numpy import array
 
-from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.moving.MoveData import MoveData
 
 
 class FenData:
     __slots__ = array(["__white_castle_king", "__white_castle_queen", "__black_castle_king", "__black_castle_queen",
                        "__en_passant_square", "__en_passant_piece_square", "__move_counter",
-                       "__no_sack_and_pawn_count"], dtype=str)
+                       "__no_sack_and_pawn_count", "__player_color"], dtype=str)
 
-    def __init__(self):
+    def __init__(self, player_color: int):
         self.__white_castle_king = True
         self.__white_castle_queen = True
         self.__black_castle_king = True
@@ -18,6 +17,7 @@ class FenData:
         self.__en_passant_piece_square = -1
         self.__move_counter = 0
         self.__no_sack_and_pawn_count = 0
+        self.__player_color = player_color
 
     def can_king_castle_king_side(self, color: int) -> bool:
         """
@@ -25,7 +25,7 @@ class FenData:
         :param color: int value of color
         :return: bool
         """
-        return self.__white_castle_king if color == PiecesEnum.WHITE.value else self.__black_castle_king
+        return self.__white_castle_king if color == self.__player_color else self.__black_castle_king
 
     def can_king_castle_queen_side(self, color: int) -> bool:
         """
@@ -33,7 +33,7 @@ class FenData:
         :param color: int value of color
         :return: bool
         """
-        return self.__white_castle_queen if color == PiecesEnum.WHITE.value else self.__black_castle_queen
+        return self.__white_castle_queen if color == self.__player_color else self.__black_castle_queen
 
     def set_castling_king_side(self, can_castle: bool, color: int) -> None:
         """
@@ -42,7 +42,7 @@ class FenData:
         :param color: int value of color
         :return: None
         """
-        if color == PiecesEnum.WHITE.value:
+        if color == self.__player_color:
             self.__white_castle_king = can_castle
         else:
             self.__black_castle_king = can_castle
@@ -86,7 +86,7 @@ class FenData:
         :param color: int value of color
         :return: None
         """
-        if color == PiecesEnum.WHITE.value:
+        if color == self.__player_color:
             self.__white_castle_queen = can_castle
         else:
             self.__black_castle_queen = can_castle

@@ -28,7 +28,7 @@ class Board:
         self.__board_array: ndarray[int] = BoardInitializer.init_starting_board(self.__engine_color,
                                                                                 self.__player_color)
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
-        self.__fen_data: FenData = FenData()
+        self.__fen_data: FenData = FenData(self.__player_color)
         self.__color_to_move: int = PiecesEnum.WHITE.value
         self.__distances_to_borders: ndarray[int] = MoveGenerator.calculate_distance_to_borders()
         self.__legal_moves: MoveList = MoveGenerator.generate_legal_moves(self.__color_to_move, self)

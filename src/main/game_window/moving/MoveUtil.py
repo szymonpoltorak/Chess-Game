@@ -10,7 +10,6 @@ from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.FenData import FenData
 from game_window.moving.Move import Move
 from game_window.moving.MoveData import MoveData
-from game_window.moving.MoveValidator import MoveValidator
 
 if TYPE_CHECKING:
     from game_window.Board import Board
@@ -32,10 +31,13 @@ class MoveUtil:
         special_flag: int = move.get_special_flag_value()
         fen_data: FenData = board.get_fen_data()
         moving_piece: int = move.get_moving_piece()
+        end_square: int = move.get_end_square()
 
+        if board.get_board_array()[end_square] == color | PiecesEnum.ROOK.value:
+            MoveUtil.disable_castling_on_side(color, end_square, board)
         if move.get_moving_piece() == PiecesEnum.ROOK.value:
             move_data: MoveData = MoveUtil.move_and_copy_move_data(board, move, color)
-            MoveValidator.disable_castling_on_side(board.get_engine_color(), move, board)
+            MoveUtil.disable_castling_on_side(board.get_engine_color(), move.get_start_square(), board)
 
             return move_data
         elif special_flag == SpecialFlags.CASTLING.value:
@@ -50,8 +52,6 @@ class MoveUtil:
             fen_data.set_castling_queen_side(False, board.get_engine_color())
 
             return move_data
-        #elif special_flag == SpecialFlags.EN_PASSANT.value:
-        #    pass
         else:
             return MoveUtil.move_and_copy_move_data(board, move, color)
 
@@ -97,22 +97,27 @@ class MoveUtil:
 
     @staticmethod
     def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
-        deleted_piece: int = board.delete_pieces_on_squares(computer_move.get_start_square(),
-                                                            computer_move.get_end_square())
+        start_square: int = computer_move.get_start_square()
+        deleted_piece: int = board.delete_pieces_on_squares(start_square, computer_move.get_end_square())
         special_flag: int = computer_move.get_special_flag_value()
         moving_piece: int = computer_move.get_moving_piece()
+
+        MoveUtil.disable_castling_if_deleted_rook(deleted_piece, board.get_player_color(), start_square, board)
 
         if moving_piece == PiecesEnum.PAWN.value:
             MoveUtil.check_pawn_movement(board, computer_move)
 
         if moving_piece == PiecesEnum.ROOK.value:
-            MoveValidator.disable_castling_on_side(board.get_engine_color(), computer_move, board)
+            MoveUtil.disable_castling_on_side(board.get_engine_color(), start_square, board)
             MoveUtil.make_engine_move(computer_move.get_end_square(), moving_piece, board)
+
         elif MoveUtil.is_it_a_promotion(special_flag):
             MoveUtil.make_engine_promotion_move(computer_move, board)
+
         elif special_flag == SpecialFlags.CASTLING.value:
-            piece: int = board.get_engine_color() | computer_move.get_moving_piece()
+            piece: int = board.get_engine_color() | moving_piece
             board.castle_king(piece, computer_move)
+
         elif special_flag == SpecialFlags.EN_PASSANT.value:
             board.make_en_passant_capture(moving_piece)
             deleted_piece: int = 1
@@ -120,10 +125,6 @@ class MoveUtil:
             MoveUtil.make_engine_move(computer_move.get_end_square(), computer_move.get_moving_piece(), board)
         board.set_opposite_move_color()
         board.get_fen_data().update_move_counter()
-        data = board.get_fen_data()
-
-        print(f"BlackKing : {data.can_king_castle_king_side(16)}\nBlackQueen : {data.can_king_castle_queen_side(16)}")
-        print(f"WhiteKing : {data.can_king_castle_king_side(8)}\nWhiteQueen : {data.can_king_castle_queen_side(8)}")
 
         MoveUtil.update_no_sack_and_pawn_counter(board.get_fen_data(), deleted_piece, moving_piece)
 
@@ -176,3 +177,24 @@ class MoveUtil:
             fen_data.update_no_sack_and_pawn_count(False)
         else:
             raise ValueError("NOT POSSIBLE CONDITION OCCURRED! WRONG PARAMETERS")
+
+    @staticmethod
+    def disable_castling_on_side(color: int, target_square: int, board: 'Board') -> None:
+        """
+        Disable castling for king on given side
+        :param target_square:
+        :param color: int value of color
+        :param board: Board instance
+        :return: None
+        """
+        fen_data: FenData = board.get_fen_data()
+
+        if target_square in (MoveEnum.TOP_ROOK_QUEEN.value, MoveEnum.BOTTOM_ROOK_QUEEN.value):
+            fen_data.set_castling_queen_side(False, color)
+        elif target_square in (MoveEnum.TOP_ROOK_KING.value, MoveEnum.BOTTOM_ROOK_KING.value):
+            fen_data.set_castling_king_side(False, color)
+
+    @staticmethod
+    def disable_castling_if_deleted_rook(deleted_piece: int, color: int, square: int, board: 'Board') -> None:
+        if deleted_piece == ColorManager.get_opposite_piece_color(color) | PiecesEnum.ROOK.value:
+            MoveUtil.disable_castling_on_side(ColorManager.get_opposite_piece_color(color), square, board)

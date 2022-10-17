@@ -16,6 +16,7 @@ from game_window.engine.Evaluator import Evaluator
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.FenData import FenData
 from game_window.GameWindowUi import GameWindowUi
 from game_window.moving.Move import Move
 from game_window.moving.MoveGenerator import MoveGenerator
@@ -104,12 +105,10 @@ class GameWindow(QWidget):
         :param mouse_press_event: event of mouse pressed on QWidget
         :return: 
         """
-        if not self.__board.get_legal_moves():
-            return
-
-        if self.__promotion_util.is_this_pawn_promoting():
-            return
         row, col = self.__start_mouse_events(mouse_press_event)
+
+        if not self.__board.get_legal_moves() or self.__promotion_util.is_this_pawn_promoting():
+            return
 
         if row is None or col is None or not self.__board.should_this_piece_move(row, col):
             self.__current_move.set_start_square(None, None)
@@ -125,49 +124,35 @@ class GameWindow(QWidget):
         self.setCursor(QCursor(Qt.PointingHandCursor))
         self.update()
 
-    def mouseReleaseEvent(self, mouse_release_event: QMouseEvent) -> None:
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         """
         Override method which is triggered when mouse button is released.
-        :param mouse_release_event: event of mouse released on QWidget
+        :param event: event of mouse released on QWidget
         :return: None
         """
-        if self.__promotion_util.is_this_pawn_promoting():
-            self.__promotion_util.check_user_choice(mouse_release_event, self.__canvas.get_rect_height(),
-                                                    self.__board)
-            self.update_board_data()
-            return
-        row, col = self.__start_mouse_events(mouse_release_event)
+        row, col = self.__start_mouse_events(event)
+        start_square: int = self.__current_move.get_start_square()
+        end_square: int = self.__current_move.get_end_square()
+        fen_data: FenData = self.__board.get_fen_data()
 
-        if self.__current_move.get_start_square() is None or row is None or col is None:
-            self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
+        if not self.check_quit_release_event_functions(start_square, row, col, end_square, event):
             return
-        self.__current_move.set_end_square(row, col)
 
-        if not self.__board.is_it_legal_move(
-                self.__current_move) or self.__current_move.get_start_square() == self.__current_move.get_end_square():
-            self.__board.add_piece_to_the_board(self.__moving_piece,
-                                                self.__current_move.get_start_square())
-            self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
-            self.__canvas.copy_current_move(self.__current_move)
-            self.__current_move.set_start_square(None, None)
-            self.__current_move.set_end_square(None, None)
-            self.update()
-            return
-        self.__board.get_fen_data().update_move_counter()
+        fen_data.update_move_counter()
         deleted_piece: int = self.__board.delete_piece_from_board(row, col)
         final_piece_index: int = 8 * row + col
         color: int = ColorManager.get_piece_color(self.__moving_piece)
 
+        MoveUtil.disable_castling_if_deleted_rook(deleted_piece, color, end_square, self.__board)
+
         self.handle_castling_event(final_piece_index, color)
-        deleted_piece: int = self.handle_pawn_special_events(mouse_release_event, color, final_piece_index,
-                                                             deleted_piece)
+        deleted_piece: int = self.handle_pawn_special_events(event, color, final_piece_index, deleted_piece)
 
         self.play_proper_sound(deleted_piece)
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__board.set_opposite_move_color()
 
-        MoveUtil.update_no_sack_and_pawn_counter(self.__board.get_fen_data(), deleted_piece,
-                                                 self.__current_move.get_moving_piece())
+        MoveUtil.update_no_sack_and_pawn_counter(fen_data, deleted_piece, self.__current_move.get_moving_piece())
         self.update_board_data()
 
     def update_board_data(self) -> None:
@@ -176,6 +161,7 @@ class GameWindow(QWidget):
         :return: None
         """
         self.__board.update_fen()
+        data = self.__board.get_fen_data()
 
         if self.__promotion_util.is_this_pawn_promoting():
             return
@@ -184,18 +170,16 @@ class GameWindow(QWidget):
         if computer_move is None:
             QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
             return
-
         deleted_piece: int = MoveUtil.update_board_with_engine_move(self.__board, computer_move)
+
         self.play_proper_sound(deleted_piece)
-        #data = self.__board.get_fen_data()
-        #print(f"BlackKing : {data.can_king_castle_king_side(16)}\nBlackQueen : {data.can_king_castle_queen_side(16)}")
-        #print(f"WhiteKing : {data.can_king_castle_king_side(8)}\nWhiteQueen : {data.can_king_castle_queen_side(8)}")
+        print(f"BlackKing : {data.can_king_castle_king_side(16)}\nBlackQueen : {data.can_king_castle_queen_side(16)}")
+        print(f"WhiteKing : {data.can_king_castle_king_side(8)}\nWhiteQueen : {data.can_king_castle_queen_side(8)}")
         player_moves: MoveList = MoveGenerator.generate_legal_moves(self.__board.get_color_to_move(), self.__board)
         self.__board.set_legal_moves(player_moves)
-        #print(f"BlackKing : {data.can_king_castle_king_side(16)}\nBlackQueen : {data.can_king_castle_queen_side(16)}")
-        #print(f"WhiteKing : {data.can_king_castle_king_side(8)}\nWhiteQueen : {data.can_king_castle_queen_side(8)}")
+        print()
         self.__board.update_fen()
-        print(self.__board.get_fen_string())
+
         self.__current_move = computer_move
         self.update()
 
@@ -209,27 +193,29 @@ class GameWindow(QWidget):
         :param deleted_piece: value of deleted piece
         :return: int
         """
-        move_length: int = self.__current_move.get_end_square() - self.__current_move.get_start_square()
+        end_square: int = self.__current_move.get_end_square()
+        move_length: int = end_square - self.__current_move.get_start_square()
+        fen_data: FenData = self.__board.get_fen_data()
+        moving_piece: int = self.__current_move.get_moving_piece()
 
         if MoveValidator.is_pawn_promoting(self.__current_move, color, self.__board.get_engine_color()):
-            self.__promotion_util.set_promotion_data(color, mouse_event.x(), mouse_event.y(),
-                                                     piece_index)
+            self.__promotion_util.set_promotion_data(color, mouse_event.x(), mouse_event.y(), piece_index)
+
         if MoveValidator.was_it_en_passant_move(self.__current_move, self.__board):
             self.__board.make_en_passant_capture(self.__moving_piece)
             deleted_piece = 1
-        elif move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value \
-                and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
-            self.__board.get_fen_data().set_en_passant_square(self.__current_move.get_end_square() -
-                                                              MoveEnum.PAWN_UP_SINGLE_MOVE.value)
-            self.__board.get_fen_data().set_en_passant_piece_square(self.__current_move.get_end_square())
-        elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value \
-                and self.__current_move.get_moving_piece() == PiecesEnum.PAWN.value:
-            self.__board.get_fen_data().set_en_passant_square(self.__current_move.get_end_square() -
-                                                              MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
-            self.__board.get_fen_data().set_en_passant_piece_square(self.__current_move.get_end_square())
-        elif self.__board.get_fen_data().get_en_passant_square() != -1:
-            self.__board.get_fen_data().set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-            self.__board.get_fen_data().set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+
+        elif move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value and moving_piece == PiecesEnum.PAWN.value:
+            fen_data.set_en_passant_square(end_square - MoveEnum.PAWN_UP_SINGLE_MOVE.value)
+            fen_data.set_en_passant_piece_square(end_square)
+
+        elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value and moving_piece == PiecesEnum.PAWN.value:
+            fen_data.set_en_passant_square(end_square - MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
+            fen_data.set_en_passant_piece_square(end_square)
+
+        elif fen_data.get_en_passant_square() != -1:
+            fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+            fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
         return deleted_piece
 
     def handle_castling_event(self, final_piece_index: int, color: int) -> None:
@@ -240,15 +226,38 @@ class GameWindow(QWidget):
         :return: None
         """
         if self.__current_move.get_moving_piece() == PiecesEnum.ROOK.value:
-            MoveValidator.disable_castling_on_side(color, self.__current_move, self.__board)
+            MoveUtil.disable_castling_on_side(color, self.__current_move.get_start_square(), self.__board)
+
         if MoveValidator.is_it_castling(self.__current_move):
             self.__board.castle_king(self.__moving_piece, self.__current_move)
+
         elif self.__current_move.get_moving_piece() == PiecesEnum.KING.value:
             self.__board.get_fen_data().set_castling_king_side(False, color)
             self.__board.get_fen_data().set_castling_queen_side(False, color)
             self.__board.add_piece_to_the_board(self.__moving_piece, final_piece_index)
         else:
             self.__board.add_piece_to_the_board(self.__moving_piece, final_piece_index)
+
+    def check_quit_release_event_functions(self, start_square: int, row: int, col: int, end_square: int, event) -> bool:
+        if self.__promotion_util.is_this_pawn_promoting():
+            self.__promotion_util.check_user_choice(event, self.__canvas.get_rect_height(), self.__board)
+            self.update_board_data()
+            return False
+
+        if start_square is None or row is None or col is None:
+            self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
+            return False
+        self.__current_move.set_end_square(row, col)
+
+        if not self.__board.is_it_legal_move(self.__current_move) or start_square == end_square:
+            self.__board.add_piece_to_the_board(self.__moving_piece, start_square)
+            self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
+            self.__canvas.copy_current_move(self.__current_move)
+            self.__current_move.set_start_square(None, None)
+            self.__current_move.set_end_square(None, None)
+            self.update()
+            return False
+        return True
 
     def play_proper_sound(self, deleted_piece: int) -> None:
         """

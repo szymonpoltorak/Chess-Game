@@ -19,12 +19,10 @@ class Engine:
     def negamax_search(board: 'Board', depth: int, alpha: int, beta: int, color: int) -> int:
         if depth == 0:
             return Evaluator.evaluate_position(board, color)
-
         moves_list: MoveList = MoveGenerator.generate_legal_moves(color, board)
 
         if moves_list.moves[0] is None:
             return inf if color == board.get_engine_color() else -inf
-
         evaluation: int = -inf
 
         for move in moves_list.moves:
@@ -59,6 +57,6 @@ class Engine:
             if evaluation > best_eval:
                 best_move: Move or None = move
                 best_eval: int = evaluation
-        board.set_move_color(board.get_engine_color())
+        #board.set_move_color(board.get_engine_color())
 
         return best_move
