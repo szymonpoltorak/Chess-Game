@@ -59,7 +59,12 @@ class MoveGenerator:
 
     @staticmethod
     def generate_legal_moves(color_to_move: int, board: 'Board') -> MoveList:
-        # TODO when rook is being captured for example by knight it does not disappear and does not disable castling
+        """
+        Method used to generate legal moves for current position for given player
+        :param color_to_move: player color int
+        :param board: Board instance
+        :return: MoveList
+        """
         pseudo_legal_moves: MoveList = MoveGenerator.generate_moves(color_to_move, board)
         legal_moves: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object), 0)
 
@@ -171,8 +176,6 @@ class MoveGenerator:
             moves_list.moves[moves_list.free_index] = Move(start_square, move_target, piece, SpecialFlags.NONE.value)
             moves_list.free_index += 1
 
-            if ColorManager.get_piece_color(piece_on_move_target) == ColorManager.get_opposite_piece_color(color):
-                continue
         if piece == PiecesEnum.KING.value:
             MoveGenerator.generate_castling_moves(moves_list, piece, color, board, start_square)
 

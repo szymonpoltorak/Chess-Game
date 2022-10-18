@@ -20,7 +20,7 @@ class Evaluator:
     def debug_evaluate_position(board: 'Board', favor_color: int) -> int:
         print("For BLACK:") if favor_color == 16 else print("For WHITE:")
 
-        material_eval = Evaluator.sum_pieces_on_board(board, favor_color)
+        material_eval = 2 * Evaluator.sum_pieces_on_board(board, favor_color)
         center_possession_eval = Evaluator.evaluate_center_possession(board, favor_color)
         light_dev_eval = Evaluator.evaluate_light_pieces_walked(board, favor_color)
         king_pressure = Evaluator.evaluate_king_pressure(board, favor_color)
@@ -30,18 +30,24 @@ class Evaluator:
         total_eval = material_eval + center_possession_eval + light_dev_eval + king_pressure
         print(f"\tTotal = {total_eval}\n")
 
-        return total_eval
+        return total_eval if favor_color == board.get_engine_color() else -total_eval
 
     @staticmethod
     def evaluate_position(board: 'Board', favor_color: int) -> int:
-        material_eval = Evaluator.sum_pieces_on_board(board, favor_color)
+        """
+        Method used to return an evaluation of starting position
+        :param board: Board instance
+        :param favor_color: int value of color in favor of which we evaluate position
+        :return: int evaluation
+        """
+        material_eval = 2 * Evaluator.sum_pieces_on_board(board, favor_color)
         center_possession_eval = Evaluator.evaluate_center_possession(board, favor_color)
         light_dev_eval = Evaluator.evaluate_light_pieces_walked(board, favor_color)
         king_pressure = Evaluator.evaluate_king_pressure(board, favor_color)
 
         total_eval = material_eval + center_possession_eval + light_dev_eval + king_pressure
 
-        return total_eval
+        return total_eval if favor_color == board.get_engine_color() else -total_eval
 
     @staticmethod
     def sum_pieces_on_board(board: 'Board', favor_color: int) -> int:
@@ -81,7 +87,6 @@ class Evaluator:
             engine_color: array([1, 2, 5, 6], dtype=int8),
             player_color: array([57, 58, 61, 62], dtype=int8),
         }
-
         favorable_accumulator = 0
 
         for i in range(0, 4):
@@ -107,6 +112,12 @@ class Evaluator:
 
     @staticmethod
     def evaluate_king_pressure(board: 'Board', favor_color: int) -> int:
+        """
+        Method used to evaluate pressure on king.
+        :param board: Board instance
+        :param favor_color: int value of color in favor of which we evaluate position
+        :return: int evaluation
+        """
         pressure_on_enemy_king = Evaluator.evaluate_king_pressure_only_for_color(board, favor_color)
         pressure_on_my_king = Evaluator.evaluate_king_pressure_only_for_color(board,
                                                                               ColorManager.get_opposite_piece_color(
@@ -124,13 +135,11 @@ class Evaluator:
         :return: int value of evaluation
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
-
         board_array: ndarray[int] = board.get_board_array()
 
         enemy_king_pos = CheckUtil.find_friendly_king_squares(board_array, enemy_color)
         enemy_king_x = math.floor(enemy_king_pos / 8)
         enemy_king_y = enemy_king_pos - 8 * enemy_king_x
-
         score_accumulator = 0
 
         for pos in range(BoardEnum.BOARD_SIZE.value):

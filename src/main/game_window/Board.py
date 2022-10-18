@@ -57,6 +57,12 @@ class Board:
         self.__fen_data.set_castling_queen_side(False, color)
 
     def un_castle_king(self, move: Move, color: int) -> None:
+        """
+        Method used to un castle king of given color
+        :param move: Move which king made
+        :param color: color value of a king
+        :return: None
+        """
         start_square: int = move.get_start_square()
         end_square: int = move.get_end_square()
         distance: int = start_square - end_square
@@ -197,15 +203,16 @@ class Board:
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
     def switch_colors(self) -> None:
+        """
+        Method used to switch sides of board
+        :return: None
+        """
         self.set_opposite_color_sides()
         self.__board_array = BoardInitializer.init_starting_board(self.__engine_color, self.__player_color)
-        self.__fen_data.__init__()
+        self.__fen_data.__init__(self.__player_color)
         self.__color_to_move = PiecesEnum.WHITE.value
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
         self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
-
-    def set_move_color(self, color: int):
-        self.__color_to_move = color
 
     def get_fen_data(self) -> FenData:
         """
@@ -215,11 +222,38 @@ class Board:
         return self.__fen_data
 
     def set_opposite_color_sides(self) -> None:
+        """
+        Method used in board inversion to set opposite colors
+        :return: None
+        """
         self.__engine_color = ColorManager.get_opposite_piece_color(self.__engine_color)
         self.__player_color = ColorManager.get_opposite_piece_color(self.__player_color)
 
     def get_engine_color(self) -> int:
+        """
+        Method used to get access to engine color
+        :return: int value of engine color
+        """
         return self.__engine_color
 
     def get_player_color(self) -> int:
+        """
+        Method used to get access to player color
+        :return: int value of player color
+        """
         return self.__player_color
+
+    def __eq__(self, other):
+        if not isinstance(other, Board):
+            return False
+        if self.__board_array != other.get_board_array() or self.__player_color != other.get_player_color():
+            return False
+        if self.__engine_color != other.get_engine_color() or self.__fen_string != other.get_fen_string():
+            return False
+        if self.__fen_data != other.get_fen_data() or self.__legal_moves != other.get_legal_moves():
+            return False
+        return self.__distances_to_borders == other.get_distances() and self.__color_to_move == other.get_color_to_move()
+
+    def __hash__(self):
+        return hash((self.__color_to_move, self.__player_color, self.__engine_color, self.__distances_to_borders.tobytes(),
+                     self.__board_array.tobytes(), self.__fen_string, self.__fen_data))

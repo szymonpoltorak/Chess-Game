@@ -60,8 +60,8 @@ class MoveUtil:
         # TODO PROMOTION MAY NOT WORK PROPERLY
         """
         Removes given move with a value of deleted piece
-        :param deleted_data:
-        :param board:
+        :param deleted_data: MoveData instance
+        :param board: Board instance
         :param move: move to be unmade
         :return: None
         """
@@ -83,7 +83,14 @@ class MoveUtil:
             board_array[start_square] = moved_piece
 
     @staticmethod
-    def move_and_copy_move_data(board: 'Board', move: Move, color: int):
+    def move_and_copy_move_data(board: 'Board', move: Move, color: int) -> MoveData:
+        """
+        Method used to copy move data and making a move
+        :param board: Board instance
+        :param move: Move instance
+        :param color: int value of color
+        :return: MoveData instance
+        """
         board_array: ndarray[int] = board.get_board_array()
         fen_data: FenData = board.get_fen_data()
         end_square: int = move.get_end_square()
@@ -97,6 +104,12 @@ class MoveUtil:
 
     @staticmethod
     def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
+        """
+        Updates board with a computer move
+        :param board: Board instance
+        :param computer_move: Move instance
+        :return: int value of deleted piece by computer
+        """
         start_square: int = computer_move.get_start_square()
         deleted_piece: int = board.delete_pieces_on_squares(start_square, computer_move.get_end_square())
         special_flag: int = computer_move.get_special_flag_value()
@@ -131,13 +144,24 @@ class MoveUtil:
         return deleted_piece
 
     @staticmethod
-    def is_it_a_promotion(special_flag: int):
+    def is_it_a_promotion(special_flag: int) -> bool:
+        """
+        Checks if it is a promotion
+        :param special_flag: int value of a special flag
+        :return: bool
+        """
         promotions: ndarray[int] = array([SpecialFlags.PROMOTE_TO_ROOK.value, SpecialFlags.PROMOTE_TO_QUEEN.value,
                                           SpecialFlags.PROMOTE_TO_BISHOP.value, SpecialFlags.PROMOTE_TO_KNIGHT.value])
         return special_flag in promotions
 
     @staticmethod
     def make_engine_promotion_move(computer_move: Move, board: 'Board') -> None:
+        """
+        Method used to make a promotion move for a computer
+        :param computer_move: computer Move instance
+        :param board: Board instance
+        :return: None
+        """
         promotion_dict = {
             SpecialFlags.PROMOTE_TO_ROOK.value: PiecesEnum.ROOK.value,
             SpecialFlags.PROMOTE_TO_QUEEN.value: PiecesEnum.QUEEN.value,
@@ -149,13 +173,26 @@ class MoveUtil:
 
     @staticmethod
     def make_engine_move(end_square: int, piece: int, board: 'Board') -> None:
+        """
+        Method used to make an engine move
+        :param end_square: int value of end square
+        :param piece: int value of piece
+        :param board: Board instance
+        :return: None
+        """
         if piece == PiecesEnum.KING.value:
             board.get_fen_data().set_castling_king_side(False, board.get_engine_color())
             board.get_fen_data().set_castling_queen_side(False, board.get_engine_color())
         board.add_piece_to_the_board(board.get_engine_color() + piece, end_square)
 
     @staticmethod
-    def check_pawn_movement(board: 'Board', computer_move: 'Move'):
+    def check_pawn_movement(board: 'Board', computer_move: 'Move') -> None:
+        """
+        Method used to check pawns movement special situations
+        :param board: Board instance
+        :param computer_move: Move instance of computer move
+        :return: None
+        """
         move_length: int = computer_move.get_end_square() - computer_move.get_start_square()
         fen_data: FenData = board.get_fen_data()
 
@@ -171,6 +208,13 @@ class MoveUtil:
 
     @staticmethod
     def update_no_sack_and_pawn_counter(fen_data: FenData, deleted_piece: int, moving_piece: int) -> None:
+        """
+        Method used to update no sack and pawn move counter
+        :param fen_data: FenData instance
+        :param deleted_piece: int value of a piece
+        :param moving_piece: int value of a moving piece
+        :return: None
+        """
         if deleted_piece != 0 or moving_piece == PiecesEnum.PAWN.value:
             fen_data.update_no_sack_and_pawn_count(True)
         elif deleted_piece == 0 or moving_piece != PiecesEnum.PAWN.value:
@@ -196,5 +240,13 @@ class MoveUtil:
 
     @staticmethod
     def disable_castling_if_deleted_rook(deleted_piece: int, color: int, square: int, board: 'Board') -> None:
+        """
+        Method used to disable castling if rook was captured
+        :param deleted_piece: int value of deleted piece
+        :param color: int value of friendly color
+        :param square: int index of rook square
+        :param board: Board instance
+        :return: None
+        """
         if deleted_piece == ColorManager.get_opposite_piece_color(color) | PiecesEnum.ROOK.value:
             MoveUtil.disable_castling_on_side(ColorManager.get_opposite_piece_color(color), square, board)

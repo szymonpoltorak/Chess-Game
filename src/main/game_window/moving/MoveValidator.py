@@ -5,6 +5,7 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.FenData import FenData
 from game_window.moving.Move import Move
 from game_window.moving.MoveList import MoveList
 
@@ -40,7 +41,15 @@ class MoveValidator:
         return MoveValidator.check_castling_squares(step, MoveEnum.QUEEN_SIDE.value, start_square, board)
 
     @staticmethod
-    def check_castling_squares(step: int, side_value: int, start_square: int, board: 'Board'):
+    def check_castling_squares(step: int, side_value: int, start_square: int, board: 'Board') -> bool:
+        """
+        Checks if there is something on castling squares.
+        :param step: step of direction
+        :param side_value: value of King or Queen side
+        :param start_square: start square of move
+        :param board: Board instance
+        :return: bool
+        """
         for i in range(1, side_value + 1):
             index: int = start_square + step * i
 
@@ -264,9 +273,14 @@ class MoveValidator:
         :param board: Board instance
         :return: bool
         """
-        if move.get_moving_piece() != PiecesEnum.PAWN.value or board.get_fen_data().get_en_passant_square() == -1 or board.get_fen_data().get_en_passant_piece_square() == -1:
+        fen_data: FenData = board.get_fen_data()
+
+        if move.get_moving_piece() != PiecesEnum.PAWN.value or fen_data.get_en_passant_square() == -1:
             return False
-        return move.get_end_square() == board.get_fen_data().get_en_passant_square()
+        if fen_data.get_en_passant_piece_square() == -1:
+            return False
+        
+        return move.get_end_square() == fen_data.get_en_passant_square()
 
     @staticmethod
     def get_attack_direction(color: int, direction: str, upper_color: int) -> int:
@@ -300,6 +314,6 @@ class MoveValidator:
             return False
         if upper_color and 0 <= move.get_end_square() <= 7:
             return True
-        
         opposite_color: int = ColorManager.get_opposite_piece_color(upper_color)
+
         return color == opposite_color and 57 <= move.get_end_square() <= 63

@@ -140,3 +140,21 @@ class FenData:
         self.__black_castle_queen = prev_fen_data.black_castle_queen
         self.__en_passant_square = prev_fen_data.en_passant_square
         self.__en_passant_piece_square = prev_fen_data.en_passant_piece_square
+
+    def __eq__(self, other):
+        if not isinstance(other, FenData):
+            return False
+        if self.__player_color != other.__player_color or self.__en_passant_square != other.__en_passant_square:
+            return False
+        if self.__en_passant_piece_square != other.__en_passant_piece_square or self.__move_counter != other.__move_counter:
+            return False
+        if self.__no_sack_and_pawn_count != other.__no_sack_and_pawn_count or self.__white_castle_queen != other.__white_castle_queen:
+            return False
+        if self.__white_castle_king != other.__white_castle_king or self.__black_castle_queen != other.__black_castle_queen:
+            return False
+        return self.__black_castle_king == other.__black_castle_king
+
+    def __hash__(self):
+        return hash((self.__black_castle_king, self.__black_castle_queen, self.__white_castle_queen, self.__white_castle_king,
+                     self.__move_counter, self.__no_sack_and_pawn_count, self.__en_passant_piece_square,
+                     self.__en_passant_square, self.__player_color))

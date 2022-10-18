@@ -11,6 +11,12 @@ class CheckUtil:
 
     @staticmethod
     def find_friendly_king_squares(board_array: ndarray[int], color_to_move: int) -> int:
+        """
+        Finds a friendly king on given board array
+        :param board_array: ndarray of board 1D
+        :param color_to_move:
+        :return: int value of index
+        """
         for index in range(BoardEnum.BOARD_SIZE.value):
             if board_array[index] == color_to_move | PiecesEnum.KING.value:
                 return index
@@ -18,6 +24,11 @@ class CheckUtil:
 
     @staticmethod
     def get_castling_squares(move: Move) -> ndarray[int]:
+        """
+        Method used to get castling squares depending on given move
+        :param move: Move instance
+        :return: ndarray of ints 1D
+        """
         end_square: int = move.get_end_square()
         start_square: int = move.get_end_square()
         move_distance: int = end_square - start_square
