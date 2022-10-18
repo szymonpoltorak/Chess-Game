@@ -35,7 +35,7 @@ class MoveValidator:
         :param start_square: int index of kings end_square
         :return: bool
         """
-        step = -1 if MoveValidator.is_board_inverted(board) else 1
+        step = 1 if MoveValidator.is_board_inverted(board) else -1
 
         return MoveValidator.check_castling_squares(step, MoveEnum.QUEEN_SIDE.value, start_square, board)
 

@@ -57,6 +57,4 @@ class Engine:
             if evaluation > best_eval:
                 best_move: Move or None = move
                 best_eval: int = evaluation
-        #board.set_move_color(board.get_engine_color())
-
         return best_move

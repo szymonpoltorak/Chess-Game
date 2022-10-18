@@ -202,8 +202,7 @@ class MoveGenerator:
                 move_target: int = start_square - MoveEnum.CASTLE_MOVE.value
             else:
                 move_target: int = start_square + MoveEnum.CASTLE_MOVE.value
-            moves_list.moves[moves_list.free_index] = Move(start_square, move_target, piece,
-                                                           SpecialFlags.CASTLING.value)
+            moves_list.moves[moves_list.free_index] = Move(start_square, move_target, piece, SpecialFlags.CASTLING.value)
             moves_list.free_index += 1
 
     @staticmethod
