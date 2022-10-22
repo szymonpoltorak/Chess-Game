@@ -170,8 +170,7 @@ class MoveValidator:
         if pawn_index_bounds_min <= start_square <= pawn_index_bounds_max and MoveValidator.no_piece_in_pawns_way(
                                                     double_move_target, start_square, board,
                                                     direction * MoveEnum.PAWN_UP_SINGLE_MOVE.value):
-            moves_list.moves[moves_list.free_index] = Move(start_square, double_move_target, piece, SpecialFlags.NONE.value)
-            moves_list.free_index += 1
+            moves_list.append(Move(start_square, double_move_target, piece, SpecialFlags.NONE.value))
         if board.get_board_array()[move_target] == 0:
             MoveValidator.add_moves_and_promotions(start_square, move_target, piece, moves_list)
 
@@ -232,11 +231,9 @@ class MoveValidator:
         """
         if 56 <= move_target <= 63 or 0 <= move_target <= 7:
             for flag in range(SpecialFlags.PROMOTE_TO_QUEEN.value, SpecialFlags.PROMOTE_TO_BISHOP.value + 1):
-                moves_list.moves[moves_list.free_index] = Move(start_square, move_target, piece, flag)
-                moves_list.free_index += 1
+                moves_list.append(Move(start_square, move_target, piece, flag))
         else:
-            moves_list.moves[moves_list.free_index] = Move(start_square, move_target, piece, SpecialFlags.NONE.value)
-            moves_list.free_index += 1
+            moves_list.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
 
     @staticmethod
     def check_en_passant_movement(start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
@@ -257,13 +254,9 @@ class MoveValidator:
         if en_passant_square == -1:
             return
         if en_passant_square == en_passant_target_left:
-            moves_list.moves[moves_list.free_index] = Move(start_square, en_passant_target_left, piece,
-                                                           SpecialFlags.EN_PASSANT.value)
-            moves_list.free_index += 1
+            moves_list.append(Move(start_square, en_passant_target_left, piece, SpecialFlags.EN_PASSANT.value))
         elif en_passant_square == en_passant_target_right:
-            moves_list.moves[moves_list.free_index] = Move(start_square, en_passant_target_right, piece,
-                                                           SpecialFlags.EN_PASSANT.value)
-            moves_list.free_index += 1
+            moves_list.append(Move(start_square, en_passant_target_right, piece, SpecialFlags.EN_PASSANT.value))
 
     @staticmethod
     def was_it_en_passant_move(move: Move, board: 'Board') -> bool:

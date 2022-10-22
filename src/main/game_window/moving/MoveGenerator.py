@@ -43,20 +43,21 @@ class MoveGenerator:
             kings_square: int = CheckUtil.find_friendly_king_squares(board.get_board_array(), color_to_move)
 
             for move in opponent_moves.moves:
+                special_flag: int = move_to_verify.get_special_flag_value()
+
                 if move is None:
                     break
-                if move_to_verify.get_special_flag_value() == SpecialFlags.CASTLING.value:
-                    if move.get_end_square() in CheckUtil.get_castling_squares(move_to_verify):
-                        is_it_valid_move: bool = False
-                        break
-                if move.get_end_square() == kings_square:
+                end_square: int = move.get_end_square()
+
+                if special_flag == SpecialFlags.CASTLING.value and end_square in CheckUtil.get_castling_squares(move_to_verify):
+                    is_it_valid_move: bool = False
+                    break
+                if end_square == kings_square:
                     is_it_valid_move: bool = False
                     break
             if is_it_valid_move:
-                legal_moves.moves[legal_moves.free_index] = move_to_verify
-                legal_moves.free_index += 1
+                legal_moves.append(move_to_verify)
             MoveUtil.un_make_move(move_to_verify, deleted_data, board)
-
         return legal_moves
 
     @staticmethod
@@ -106,8 +107,7 @@ class MoveGenerator:
 
                 if ColorManager.get_piece_color(piece_on_move_target) == color:
                     break
-                moves_list.moves[moves_list.free_index] = Move(start_square, move_target, piece, SpecialFlags.NONE.value)
-                moves_list.free_index += 1
+                moves_list.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
 
                 if ColorManager.get_piece_color(piece_on_move_target) == ColorManager.get_opposite_piece_color(color):
                     break
@@ -142,8 +142,7 @@ class MoveGenerator:
 
             if ColorManager.get_piece_color(piece_on_move_target) == color:
                 continue
-            moves_list.moves[moves_list.free_index] = Move(start_square, move_target, piece, SpecialFlags.NONE.value)
-            moves_list.free_index += 1
+            moves_list.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
 
         if piece == PiecesEnum.KING.value:
             MoveGenerator.generate_castling_moves(moves_list, piece, color, board, start_square)
@@ -167,16 +166,14 @@ class MoveGenerator:
                 move_target: int = start_square + MoveEnum.CASTLE_MOVE.value
             else:
                 move_target: int = start_square - MoveEnum.CASTLE_MOVE.value
-            moves_list.moves[moves_list.free_index] = Move(start_square, move_target, piece, SpecialFlags.CASTLING.value)
-            moves_list.free_index += 1
+            moves_list.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
             
         if not MoveValidator.is_anything_on_queen_side(board, start_square) and fen_data.can_king_castle_queen_side(color):
             if not MoveValidator.is_board_inverted(board):
                 move_target: int = start_square - MoveEnum.CASTLE_MOVE.value
             else:
                 move_target: int = start_square + MoveEnum.CASTLE_MOVE.value
-            moves_list.moves[moves_list.free_index] = Move(start_square, move_target, piece, SpecialFlags.CASTLING.value)
-            moves_list.free_index += 1
+            moves_list.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
 
     @staticmethod
     @jit(forceobj=True)
