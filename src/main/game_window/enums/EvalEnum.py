@@ -8,5 +8,6 @@ class EvalEnum(Enum):
     PAWN: int = 10
     ROOK: int = 40
     KING: int = 15
-    CENTER: int = 4
+    MAIN_CENTER: int = 4
+    SIDE_CENTER: int = 2
     WALKED: int = 3

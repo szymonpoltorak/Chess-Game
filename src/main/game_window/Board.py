@@ -12,6 +12,7 @@ from game_window.FenFactory import FenFactory
 from game_window.moving.Move import Move
 from game_window.moving.MoveGenerator import MoveGenerator
 from game_window.moving.MoveList import MoveList
+from game_window.moving.MoveUtil import MoveUtil
 from game_window.moving.MoveValidator import MoveValidator
 
 
@@ -30,7 +31,7 @@ class Board:
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__fen_data: FenData = FenData(self.__player_color)
         self.__color_to_move: int = PiecesEnum.WHITE.value
-        self.__distances_to_borders: ndarray[int] = MoveGenerator.calculate_distance_to_borders()
+        self.__distances_to_borders: ndarray[int] = MoveUtil.calculate_distance_to_borders()
         self.__legal_moves: MoveList = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
 
     def castle_king(self, piece: int, move: Move) -> None:

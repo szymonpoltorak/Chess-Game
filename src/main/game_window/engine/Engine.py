@@ -23,7 +23,7 @@ class Engine:
         :param depth: how deep computer should look through
         :param alpha: int value of alpha
         :param beta: int value of beta
-        :param color: int value of color which turn is now searched
+        :param color: int value of color which turn is now searched for
         :return: int value of best move evaluation
         """
         if depth == 0:
@@ -31,7 +31,7 @@ class Engine:
         moves_list: MoveList = MoveGenerator.generate_legal_moves(color, board)
 
         if moves_list.moves[0] is None:
-            return inf if color == board.get_engine_color() else -inf
+            return -inf if color == board.get_engine_color() else inf
         evaluation: int = -inf
 
         for move in moves_list.moves:
@@ -69,10 +69,11 @@ class Engine:
             deleted_data: MoveData = MoveUtil.make_move(move, board.get_engine_color(), board)
             evaluation: int = -Engine.negamax_search(board, depth, alpha, beta, board.get_player_color())
             MoveUtil.un_make_move(move, deleted_data, board)
+            print(f"BestEval : {best_eval}\nEvaluation : {evaluation}\n")
 
             if evaluation > best_eval:
-                print(f"Best Eval : {best_eval}\nBest Move : {best_move}\n")
                 best_move: Move or None = move
                 best_eval: int = evaluation
-                print(f"Best Eval : {best_eval}\nBest Move : {best_move}\n")
+        print(f"Best Eval : {best_eval}\n-----------------------------------------------------------------")
+
         return best_move

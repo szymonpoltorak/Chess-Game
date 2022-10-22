@@ -18,6 +18,7 @@ from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.FenData import FenData
 from game_window.GameWindowUi import GameWindowUi
+from game_window.moving.EngineMover import EngineMover
 from game_window.moving.Move import Move
 from game_window.moving.MoveGenerator import MoveGenerator
 from game_window.moving.MoveList import MoveList
@@ -161,7 +162,6 @@ class GameWindow(QWidget):
         :return: None
         """
         self.__board.update_fen()
-        data = self.__board.get_fen_data()
 
         if self.__promotion_util.is_this_pawn_promoting():
             return
@@ -170,14 +170,11 @@ class GameWindow(QWidget):
         if computer_move is None:
             QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
             return
-        deleted_piece: int = MoveUtil.update_board_with_engine_move(self.__board, computer_move)
+        deleted_piece: int = EngineMover.update_board_with_engine_move(self.__board, computer_move)
 
         self.play_proper_sound(deleted_piece)
-        print(f"BlackKing : {data.can_king_castle_king_side(16)}\nBlackQueen : {data.can_king_castle_queen_side(16)}")
-        print(f"WhiteKing : {data.can_king_castle_king_side(8)}\nWhiteQueen : {data.can_king_castle_queen_side(8)}")
         player_moves: MoveList = MoveGenerator.generate_legal_moves(self.__board.get_color_to_move(), self.__board)
         self.__board.set_legal_moves(player_moves)
-        print()
         self.__board.update_fen()
 
         self.__current_move = computer_move

@@ -1,9 +1,12 @@
 from typing import TYPE_CHECKING
 
 from numpy import array
+from numpy import int8
 from numpy import ndarray
+from numpy import zeros
 
 from game_window.ColorManager import ColorManager
+from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
@@ -103,47 +106,6 @@ class MoveUtil:
         return MoveData(deleted_piece, white_king, white_queen, black_king, black_queen, en_square, en_piece)
 
     @staticmethod
-    def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
-        """
-        Updates board with a computer move
-        :param board: Board instance
-        :param computer_move: Move instance
-        :return: int value of deleted piece by computer
-        """
-        start_square: int = computer_move.get_start_square()
-        deleted_piece: int = board.delete_pieces_on_squares(start_square, computer_move.get_end_square())
-        special_flag: int = computer_move.get_special_flag_value()
-        moving_piece: int = computer_move.get_moving_piece()
-
-        MoveUtil.disable_castling_if_deleted_rook(deleted_piece, board.get_player_color(), start_square, board)
-
-        if moving_piece == PiecesEnum.PAWN.value:
-            MoveUtil.check_pawn_movement(board, computer_move)
-
-        if moving_piece == PiecesEnum.ROOK.value:
-            MoveUtil.disable_castling_on_side(board.get_engine_color(), start_square, board)
-            MoveUtil.make_engine_move(computer_move.get_end_square(), moving_piece, board)
-
-        elif MoveUtil.is_it_a_promotion(special_flag):
-            MoveUtil.make_engine_promotion_move(computer_move, board)
-
-        elif special_flag == SpecialFlags.CASTLING.value:
-            piece: int = board.get_engine_color() | moving_piece
-            board.castle_king(piece, computer_move)
-
-        elif special_flag == SpecialFlags.EN_PASSANT.value:
-            board.make_en_passant_capture(moving_piece)
-            deleted_piece: int = 1
-        else:
-            MoveUtil.make_engine_move(computer_move.get_end_square(), computer_move.get_moving_piece(), board)
-        board.set_opposite_move_color()
-        board.get_fen_data().update_move_counter()
-
-        MoveUtil.update_no_sack_and_pawn_counter(board.get_fen_data(), deleted_piece, moving_piece)
-
-        return deleted_piece
-
-    @staticmethod
     def is_it_a_promotion(special_flag: int) -> bool:
         """
         Checks if it is a promotion
@@ -153,58 +115,6 @@ class MoveUtil:
         promotions: ndarray[int] = array([SpecialFlags.PROMOTE_TO_ROOK.value, SpecialFlags.PROMOTE_TO_QUEEN.value,
                                           SpecialFlags.PROMOTE_TO_BISHOP.value, SpecialFlags.PROMOTE_TO_KNIGHT.value])
         return special_flag in promotions
-
-    @staticmethod
-    def make_engine_promotion_move(computer_move: Move, board: 'Board') -> None:
-        """
-        Method used to make a promotion move for a computer
-        :param computer_move: computer Move instance
-        :param board: Board instance
-        :return: None
-        """
-        promotion_dict = {
-            SpecialFlags.PROMOTE_TO_ROOK.value: PiecesEnum.ROOK.value,
-            SpecialFlags.PROMOTE_TO_QUEEN.value: PiecesEnum.QUEEN.value,
-            SpecialFlags.PROMOTE_TO_BISHOP.value: PiecesEnum.BISHOP.value,
-            SpecialFlags.PROMOTE_TO_KNIGHT.value: PiecesEnum.KNIGHT.value
-        }
-        promotion_piece: int = promotion_dict[computer_move.get_special_flag_value()]
-        MoveUtil.make_engine_move(computer_move.get_end_square(), promotion_piece, board)
-
-    @staticmethod
-    def make_engine_move(end_square: int, piece: int, board: 'Board') -> None:
-        """
-        Method used to make an engine move
-        :param end_square: int value of end square
-        :param piece: int value of piece
-        :param board: Board instance
-        :return: None
-        """
-        if piece == PiecesEnum.KING.value:
-            board.get_fen_data().set_castling_king_side(False, board.get_engine_color())
-            board.get_fen_data().set_castling_queen_side(False, board.get_engine_color())
-        board.add_piece_to_the_board(board.get_engine_color() + piece, end_square)
-
-    @staticmethod
-    def check_pawn_movement(board: 'Board', computer_move: 'Move') -> None:
-        """
-        Method used to check pawns movement special situations
-        :param board: Board instance
-        :param computer_move: Move instance of computer move
-        :return: None
-        """
-        move_length: int = computer_move.get_end_square() - computer_move.get_start_square()
-        fen_data: FenData = board.get_fen_data()
-
-        if move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value:
-            fen_data.set_en_passant_square(computer_move.get_end_square() - MoveEnum.PAWN_UP_SINGLE_MOVE.value)
-            fen_data.set_en_passant_piece_square(computer_move.get_end_square())
-        elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value:
-            fen_data.set_en_passant_square(computer_move.get_end_square() - MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
-            fen_data.set_en_passant_piece_square(computer_move.get_end_square())
-        elif fen_data.get_en_passant_square() != -1:
-            fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-            fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
 
     @staticmethod
     def update_no_sack_and_pawn_counter(fen_data: FenData, deleted_piece: int, moving_piece: int) -> None:
@@ -250,3 +160,95 @@ class MoveUtil:
         """
         if deleted_piece == ColorManager.get_opposite_piece_color(color) | PiecesEnum.ROOK.value:
             MoveUtil.disable_castling_on_side(ColorManager.get_opposite_piece_color(color), square, board)
+
+    @staticmethod
+    def calculate_distance_to_borders() -> ndarray[int]:
+        """
+        Calculates array of distances of each end_square in every direction to board borders.
+        :return: ndarray of distances
+        """
+        distances = zeros((BoardEnum.BOARD_SIZE.value, BoardEnum.BOARD_LENGTH.value), dtype=int8)
+
+        for row in range(BoardEnum.BOARD_LENGTH.value):
+            for col in range(BoardEnum.BOARD_LENGTH.value):
+                squares_to_top = row
+                squares_to_bottom = 7 - row
+                square_to_left = col
+                squares_to_right = 7 - col
+                squares_to_top_left = min(squares_to_top, square_to_left)
+                squares_to_top_right = min(squares_to_top, squares_to_right)
+                squares_to_bottom_right = min(squares_to_bottom, squares_to_right)
+                squares_to_bottom_left = min(squares_to_bottom, square_to_left)
+                square_index = 8 * row + col
+
+                distances[square_index] = [
+                    squares_to_top_left,
+                    squares_to_top,
+                    squares_to_top_right,
+                    square_to_left,
+                    squares_to_right,
+                    squares_to_bottom_left,
+                    squares_to_bottom,
+                    squares_to_bottom_right
+                ]
+        return distances
+
+    @staticmethod
+    def is_it_free_vertical_line(board: 'Board', square: int) -> bool:
+        """
+        Method used to check lanes if there is any piece on the way of rook in vertical orientation
+        :param board:
+        :param square:
+        :return:
+        """
+        top_direction = 1
+        bottom_direction: int = 6
+        board_array: ndarray[int] = board.get_board_array()
+        distances: ndarray = board.get_distances()
+
+        distance_to_top: int = distances[square][top_direction]
+        top_step: int = 8
+        top_border: int = distance_to_top * top_step + top_step
+
+        distance_to_bottom: int = distances[square][bottom_direction]
+        down_step: int = -8
+        bottom_border: int = distance_to_bottom * down_step + down_step
+
+        for index in range(square, top_border, top_step):
+            if board_array[index] != PiecesEnum.NONE.value:
+                return False
+
+        for index in range(square, bottom_border, down_step):
+            if board_array[index] != PiecesEnum.NONE.value:
+                return False
+        return True
+
+    @staticmethod
+    def is_it_free_horizontal_line(board: 'Board', square: int) -> bool:
+        """
+        Method used to check lanes if there is any piece on the way of rook in horizontal orientation
+        :param board:
+        :param square:
+        :return:
+        """
+        left_direction = 3
+        right_direction: int = 4
+        board_array: ndarray[int] = board.get_board_array()
+        distances: ndarray = board.get_distances()
+
+        distance_to_left: int = distances[square][left_direction]
+        left_step: int = -1
+        left_border: int = distance_to_left * left_step + left_step
+
+        distance_to_right: int = distances[square][right_direction]
+        right_step: int = 1
+        right_border: int = distance_to_right * right_step + right_step
+
+        for index in range(square, left_border, left_step):
+            if board_array[index] != PiecesEnum.NONE.value:
+                return False
+
+        for index in range(square, right_border, right_step):
+            if board_array[index] != PiecesEnum.NONE.value:
+                return False
+        return True

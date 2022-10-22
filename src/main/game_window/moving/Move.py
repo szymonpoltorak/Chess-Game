@@ -81,4 +81,5 @@ class Move:
         return self.__piece == other.get_moving_piece()
 
     def __str__(self):
-        return f"StartSquare: {self.__start_square}\nEndSquare: {self.__end_square}\nPiece: {self.__piece}"
+        return f"\tStartSquare : {self.__start_square}\n\tEndSquare : {self.__end_square}\n\tPiece : {self.__piece}\n" \
+               f"\tFLag : {self.__special_flag}\n"
