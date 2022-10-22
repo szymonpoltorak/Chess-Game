@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from numba import jit
 from numpy import inf
 
 from game_window.ColorManager import ColorManager
@@ -16,6 +17,7 @@ if TYPE_CHECKING:
 
 class Engine:
     @staticmethod
+    @jit(forceobj=True)
     def negamax_search(board: 'Board', depth: int, alpha: int, beta: int, color: int) -> int:
         """
         Method used to evaluate positions and find possibly best move for engine
@@ -49,6 +51,7 @@ class Engine:
         return evaluation
 
     @staticmethod
+    @jit(forceobj=True)
     def get_computer_move(board: 'Board') -> Move:
         """
         Method used to return best computer move possible

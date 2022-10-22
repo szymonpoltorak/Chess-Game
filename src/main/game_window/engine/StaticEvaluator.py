@@ -1,6 +1,7 @@
 import math
 from typing import TYPE_CHECKING
 
+from numba import jit
 from numpy import array
 from numpy import int8
 from numpy import ndarray
@@ -20,6 +21,7 @@ if TYPE_CHECKING:
 
 class StaticEvaluator:
     @staticmethod
+    @jit(forceobj=True)
     def evaluate_static_position(board: 'Board', favor_color: int) -> int:
         """
         Method used to return an evaluation of starting position
@@ -39,6 +41,7 @@ class StaticEvaluator:
         return static_eval
 
     @staticmethod
+    @jit(forceobj=True)
     def sum_pieces_on_board(board: 'Board', favor_color: int) -> int:
         """
         Method used to sum value of pieces on board and return this sum as evaluation
@@ -52,14 +55,15 @@ class StaticEvaluator:
         for square in board_array:
             if square == 0:
                 continue
-
             pieces_color: int = ColorManager.get_piece_color(square)
             piece_value: int = square - pieces_color
             points: int = StaticEvaluator.get_piece_point_value(piece_value)
+
             evaluation += points if pieces_color == favor_color else -points
         return evaluation
 
     @staticmethod
+    @jit(forceobj=True)
     def evaluate_light_pieces_walked(board: 'Board', favor_color: int) -> int:
         """
         Method used to evaluate if light pieces are walked from their starting position
@@ -116,6 +120,7 @@ class StaticEvaluator:
         return int(pressure)
 
     @staticmethod
+    @jit(forceobj=True)
     def evaluate_king_pressure_only_for_color(board: 'Board', favor_color: int) -> int:
         """
         Method used to evaluate distance of pieces to the enemy king
@@ -163,6 +168,7 @@ class StaticEvaluator:
         return pieces_dict[piece_value]
 
     @staticmethod
+    @jit(forceobj=True)
     def evaluate_center_possession(board: 'Board', favor_color: int) -> int:
         """
         Method used to evaluate a center possession
@@ -182,13 +188,14 @@ class StaticEvaluator:
 
             if center_square in BoardEnum.CENTER_SIDE_SQUARES.value:
                 evaluation += EvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.SIDE_CENTER.value,
-                                                                              piece_color)
+                                                                             piece_color)
             if center_square in BoardEnum.CENTER_MAIN_SQUARES.value:
                 evaluation += EvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.MAIN_CENTER.value,
-                                                                              piece_color)
+                                                                             piece_color)
         return EvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
 
     @staticmethod
+    @jit(forceobj=True)
     def evaluate_bishops(board: 'Board', favor_color: int) -> int:
         """
         Method used to evaluate if player has a pair of bishops.
@@ -218,6 +225,7 @@ class StaticEvaluator:
         return EvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
 
     @staticmethod
+    @jit(forceobj=True)
     def evaluate_free_lines_for_rooks(board: 'Board', favor_color: int):
         """
         Methods used to evaluate free lines for rooks
@@ -236,7 +244,8 @@ class StaticEvaluator:
                                                                                  MoveEnum.TOP_DIR.value):
                 evaluation += EvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.FREE_LINE.value,
                                                                              piece_color)
-            if piece_value == PiecesEnum.ROOK.value and MoveUtil.is_it_free_line(board, square, MoveEnum.LEFT_STEP.value,
+            if piece_value == PiecesEnum.ROOK.value and MoveUtil.is_it_free_line(board, square,
+                                                                                 MoveEnum.LEFT_STEP.value,
                                                                                  MoveEnum.LEFT_DIR.value):
                 evaluation += EvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.FREE_LINE.value,
                                                                              piece_color)

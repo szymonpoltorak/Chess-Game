@@ -1,3 +1,4 @@
+from numba import jit
 from numpy import array
 from PyQt5.QtCore import QRect
 from PyQt5.QtCore import Qt
@@ -32,6 +33,7 @@ class Canvas(QPainter):
         self.__freeze_start = -1
         self.__freeze_end = -1
 
+    @jit(forceobj=True)
     def draw_chess_board(self, move: Move, board: Board) -> None:
         """
         Method draws a whole chess board on canvas.
@@ -183,6 +185,7 @@ class Canvas(QPainter):
 
             return current_x
 
+    @jit(forceobj=True)
     def paint_possible_moves_for_frozen_piece(self, board: Board) -> None:
         """
         Method to paint possible moves_list for not moven piece_square on board

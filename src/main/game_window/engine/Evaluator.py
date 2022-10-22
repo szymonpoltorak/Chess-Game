@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from numba import jit
+
 from game_window.engine.StaticEvaluator import StaticEvaluator
 
 if TYPE_CHECKING:
@@ -24,9 +26,10 @@ class Evaluator:
         total_eval = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines
         print(f"\tTotal = {total_eval}\n")
 
-        return total_eval if favor_color == board.get_engine_color() else -total_eval
+        return total_eval
 
     @staticmethod
+    @jit(forceobj=True)
     def evaluate_position(board: 'Board', favor_color: int) -> int:
         """
         Method used to return an evaluation of starting position

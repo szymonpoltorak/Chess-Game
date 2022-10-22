@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from numba import jit
 from numpy import array
 from numpy import int8
 from numpy import ndarray
@@ -22,6 +23,7 @@ class MoveUtil:
     __slots__ = ()
 
     @staticmethod
+    @jit(forceobj=True)
     def make_move(move: Move, color: int, board: 'Board') -> MoveData:
         # TODO PROMOTION MAY NOT WORK PROPERLY
         """
@@ -59,6 +61,7 @@ class MoveUtil:
             return MoveUtil.move_and_copy_move_data(board, move, color)
 
     @staticmethod
+    @jit(forceobj=True)
     def un_make_move(move: Move, deleted_data: MoveData, board: 'Board') -> None:
         # TODO PROMOTION MAY NOT WORK PROPERLY
         """
@@ -162,6 +165,7 @@ class MoveUtil:
             MoveUtil.disable_castling_on_side(ColorManager.get_opposite_piece_color(color), square, board)
 
     @staticmethod
+    @jit(forceobj=True)
     def calculate_distance_to_borders() -> ndarray[int]:
         """
         Calculates array of distances of each end_square in every direction to board borders.

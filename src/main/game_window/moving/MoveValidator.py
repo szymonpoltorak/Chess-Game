@@ -176,7 +176,7 @@ class MoveValidator:
             MoveValidator.add_moves_and_promotions(start_square, move_target, piece, moves_list)
 
     @staticmethod
-    def no_piece_in_pawns_way(double_move_target: int, start_square: int, board, step: int) -> bool:
+    def no_piece_in_pawns_way(double_move_target: int, start_square: int, board: 'Board', step: int) -> bool:
         """
         Static method used to check if there is any piece_square on pawns way
         :param double_move_target: int target end_square of pawns double move

@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from numba import jit
 from numpy import full
 
 from game_window.CheckUtil import CheckUtil
@@ -59,6 +60,7 @@ class MoveGenerator:
         return legal_moves
 
     @staticmethod
+    @jit(forceobj=True)
     def generate_moves(color_to_move: int, board: 'Board') -> MoveList:
         """
         Static method used  to generate legal moves_list for pieces of given color
@@ -84,6 +86,7 @@ class MoveGenerator:
         return moves_list
 
     @staticmethod
+    @jit(forceobj=True)
     def generate_sliding_piece_move(piece: int, start_square: int, moves_list: MoveList, color: int, board: 'Board') -> None:
         """
         Static method used to generate moves_list for sliding pieces
@@ -110,6 +113,7 @@ class MoveGenerator:
                     break
 
     @staticmethod
+    @jit(forceobj=True)
     def generate_moves_for_knight_and_king(moves_list: MoveList, piece: int, color: int, board: 'Board', start_square: int) -> None:
         """
         Static method used to generate moves_list for knights and kings
@@ -145,6 +149,7 @@ class MoveGenerator:
             MoveGenerator.generate_castling_moves(moves_list, piece, color, board, start_square)
 
     @staticmethod
+    @jit(forceobj=True)
     def generate_castling_moves(moves_list: MoveList, piece: int, color: int, board: 'Board', start_square: int) -> None:
         """
         Static method to generate castling moves_list
@@ -174,6 +179,7 @@ class MoveGenerator:
             moves_list.free_index += 1
 
     @staticmethod
+    @jit(forceobj=True)
     def generate_pawn_moves(moves_list: MoveList, piece: int, color: int, board: 'Board', start_square: int) -> None:
         """
         Static method to generate moves_list for pawns
