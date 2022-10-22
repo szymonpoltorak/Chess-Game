@@ -13,7 +13,7 @@ class Evaluator:
     def debug_evaluate_position(board: 'Board', favor_color: int) -> int:
         print("For BLACK:") if favor_color == 16 else print("For WHITE:")
 
-        material_eval = StaticEvaluator.sum_pieces_on_board(board, favor_color)
+        material_eval = StaticEvaluator.evaluate_pieces_on_board(board, favor_color)
         center_possession_eval = StaticEvaluator.evaluate_center_possession(board, favor_color)
         light_dev_eval = StaticEvaluator.evaluate_light_pieces_walked(board, favor_color)
         king_pressure = StaticEvaluator.evaluate_king_pressure(board, favor_color)

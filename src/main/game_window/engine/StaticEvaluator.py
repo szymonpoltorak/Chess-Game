@@ -29,7 +29,7 @@ class StaticEvaluator:
         :param favor_color: int value of color in favor of which we evaluate position
         :return: int evaluation
         """
-        material_eval = StaticEvaluator.sum_pieces_on_board(board, favor_color)
+        material_eval = StaticEvaluator.evaluate_pieces_on_board(board, favor_color)
         center_possession_eval = StaticEvaluator.evaluate_center_possession(board, favor_color)
         light_dev_eval = StaticEvaluator.evaluate_light_pieces_walked(board, favor_color)
         king_pressure = StaticEvaluator.evaluate_king_pressure(board, favor_color)
@@ -42,7 +42,7 @@ class StaticEvaluator:
 
     @staticmethod
     @jit(forceobj=True)
-    def sum_pieces_on_board(board: 'Board', favor_color: int) -> int:
+    def evaluate_pieces_on_board(board: 'Board', favor_color: int) -> int:
         """
         Method used to sum value of pieces on board and return this sum as evaluation
         :param favor_color:
@@ -57,7 +57,7 @@ class StaticEvaluator:
                 continue
             pieces_color: int = ColorManager.get_piece_color(square)
             piece_value: int = square - pieces_color
-            points: int = StaticEvaluator.get_piece_point_value(piece_value)
+            points: int = EvalUtil.get_piece_point_value(piece_value)
 
             evaluation += points if pieces_color == favor_color else -points
         return evaluation
@@ -71,36 +71,38 @@ class StaticEvaluator:
         :param board: Board instance
         :return: int value of evaluation
         """
-        pieces = array(
-            [PiecesEnum.KNIGHT.value, PiecesEnum.BISHOP.value, PiecesEnum.BISHOP.value, PiecesEnum.KNIGHT.value])
-        engine_color: int = board.get_engine_color()
-        player_color: int = board.get_player_color()
+        pieces = array([PiecesEnum.KNIGHT.value, PiecesEnum.BISHOP.value, PiecesEnum.BISHOP.value, PiecesEnum.KNIGHT.value])
         board_array: ndarray[int] = board.get_board_array()
+        favorable_accumulator: int = 0
+        enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
+        unfavorable_accumulator: int = 0
+        favor_light_walked: int = 0
+        un_favor_light_walked: int = 0
 
         light_pieces_positions: dict = {
-            engine_color: array([1, 2, 5, 6], dtype=int8),
-            player_color: array([57, 58, 61, 62], dtype=int8),
+            board.get_engine_color(): array([1, 2, 5, 6], dtype=int8),
+            board.get_player_color(): array([57, 58, 61, 62], dtype=int8),
         }
-        favorable_accumulator = 0
 
         for i in range(0, 4):
             position = light_pieces_positions[favor_color][i]
+            enemy_position = light_pieces_positions[enemy_color][i]
 
             if board_array[position] == favor_color | pieces[i]:
                 favorable_accumulator -= EvalEnum.WALKED.value
             else:
+                favor_light_walked += 1
                 favorable_accumulator += EvalEnum.WALKED.value
 
-        enemy_color = ColorManager.get_opposite_piece_color(favor_color)
-        unfavorable_accumulator = 0
-
-        for i in range(0, 4):
-            position = light_pieces_positions[enemy_color][i]
-
-            if board_array[position] == enemy_color | pieces[i]:
+            if board_array[enemy_position] == enemy_color | pieces[i]:
                 unfavorable_accumulator -= EvalEnum.WALKED.value
             else:
+                un_favor_light_walked += 1
                 unfavorable_accumulator += EvalEnum.WALKED.value
+        if favor_light_walked != 4 and EvalUtil.is_queen_on_start_position(favor_color, board):
+            favor_light_walked -= 2 * EvalEnum.WALKED.value
+        if un_favor_light_walked != 4 and EvalUtil.is_queen_on_start_position(enemy_color, board):
+            favor_light_walked -= 2 * EvalEnum.WALKED.value
         return favorable_accumulator - unfavorable_accumulator
 
     @staticmethod
@@ -149,23 +151,6 @@ class StaticEvaluator:
             score = 8 * math.sqrt(2) - distance
             score_accumulator += score
         return score_accumulator
-
-    @staticmethod
-    def get_piece_point_value(piece_value: int) -> int:
-        """
-        Method used to get proper eval value of a piece
-        :param piece_value: int value of piece
-        :return: int value of piece eval
-        """
-        pieces_dict = {
-            PiecesEnum.KNIGHT.value: EvalEnum.KNIGHT.value,
-            PiecesEnum.BISHOP.value: EvalEnum.BISHOP.value,
-            PiecesEnum.ROOK.value: EvalEnum.ROOK.value,
-            PiecesEnum.QUEEN.value: EvalEnum.QUEEN.value,
-            PiecesEnum.PAWN.value: EvalEnum.PAWN.value,
-            PiecesEnum.KING.value: EvalEnum.KING.value
-        }
-        return pieces_dict[piece_value]
 
     @staticmethod
     @jit(forceobj=True)
