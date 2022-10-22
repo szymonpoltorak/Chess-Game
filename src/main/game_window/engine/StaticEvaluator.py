@@ -10,6 +10,7 @@ from game_window.ColorManager import ColorManager
 from game_window.engine.EvalUtil import EvalUtil
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.EvalEnum import EvalEnum
+from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.moving.MoveUtil import MoveUtil
 
@@ -211,9 +212,9 @@ class StaticEvaluator:
             elif piece == player_color | PiecesEnum.BISHOP.value:
                 player_bishops += 1
         if engine_bishops >= 2:
-            evaluation += 10
+            evaluation += EvalEnum.BISHOP_PAIR.value
         if player_bishops >= 2:
-            evaluation -= 10
+            evaluation -= EvalEnum.BISHOP_PAIR.value
         return EvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
 
     @staticmethod
@@ -231,8 +232,12 @@ class StaticEvaluator:
             piece_color: int = ColorManager.get_piece_color(piece)
             piece_value: int = piece - piece_color
 
-            if piece_value == PiecesEnum.ROOK.value and MoveUtil.is_it_free_vertical_line(board, square):
-                evaluation += EvalUtil.return_proper_evaluation_signed_value(board, 10, piece_color)
-            if piece_value == PiecesEnum.ROOK.value and MoveUtil.is_it_free_horizontal_line(board, square):
-                evaluation += EvalUtil.return_proper_evaluation_signed_value(board, 10, piece_color)
+            if piece_value == PiecesEnum.ROOK.value and MoveUtil.is_it_free_line(board, square, MoveEnum.TOP_STEP.value,
+                                                                                 MoveEnum.TOP_DIR.value):
+                evaluation += EvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.FREE_LINE.value,
+                                                                             piece_color)
+            if piece_value == PiecesEnum.ROOK.value and MoveUtil.is_it_free_line(board, square, MoveEnum.LEFT_STEP.value,
+                                                                                 MoveEnum.LEFT_DIR.value):
+                evaluation += EvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.FREE_LINE.value,
+                                                                             piece_color)
         return EvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)

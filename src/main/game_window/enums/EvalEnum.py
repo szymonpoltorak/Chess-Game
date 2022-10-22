@@ -11,3 +11,6 @@ class EvalEnum(Enum):
     MAIN_CENTER: int = 4
     SIDE_CENTER: int = 2
     WALKED: int = 3
+
+    BISHOP_PAIR: int = 10
+    FREE_LINE: int = 10

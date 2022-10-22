@@ -194,61 +194,31 @@ class MoveUtil:
         return distances
 
     @staticmethod
-    def is_it_free_vertical_line(board: 'Board', square: int) -> bool:
+    def is_it_free_line(board: 'Board', square: int, step: int, direction: int) -> bool:
         """
-        Method used to check lanes if there is any piece on the way of rook in vertical orientation
-        :param board:
-        :param square:
-        :return:
+        Checks if given line is free of any piece
+        :param board: Board instance
+        :param square: rook position in array
+        :param step: direction step
+        :param direction: direction id in distances array
+        :return: bool
         """
-        top_direction = 1
-        bottom_direction: int = 6
+        second_direction: int = 4 if direction == 3 else 6
         board_array: ndarray[int] = board.get_board_array()
         distances: ndarray = board.get_distances()
 
-        distance_to_top: int = distances[square][top_direction]
-        top_step: int = 8
-        top_border: int = distance_to_top * top_step + top_step
+        first_distance: int = distances[square][direction]
+        first_border: int = first_distance * step + step
 
-        distance_to_bottom: int = distances[square][bottom_direction]
-        down_step: int = -8
-        bottom_border: int = distance_to_bottom * down_step + down_step
+        second_distance: int = distances[square][second_direction]
+        second_step: int = -step
+        second_border: int = second_distance * second_step + second_step
 
-        for index in range(square, top_border, top_step):
+        for index in range(square, first_border, step):
             if board_array[index] != PiecesEnum.NONE.value:
                 return False
 
-        for index in range(square, bottom_border, down_step):
-            if board_array[index] != PiecesEnum.NONE.value:
-                return False
-        return True
-
-    @staticmethod
-    def is_it_free_horizontal_line(board: 'Board', square: int) -> bool:
-        """
-        Method used to check lanes if there is any piece on the way of rook in horizontal orientation
-        :param board:
-        :param square:
-        :return:
-        """
-        left_direction = 3
-        right_direction: int = 4
-        board_array: ndarray[int] = board.get_board_array()
-        distances: ndarray = board.get_distances()
-
-        distance_to_left: int = distances[square][left_direction]
-        left_step: int = -1
-        left_border: int = distance_to_left * left_step + left_step
-
-        distance_to_right: int = distances[square][right_direction]
-        right_step: int = 1
-        right_border: int = distance_to_right * right_step + right_step
-
-        for index in range(square, left_border, left_step):
-            if board_array[index] != PiecesEnum.NONE.value:
-                return False
-
-        for index in range(square, right_border, right_step):
+        for index in range(square, second_border, second_step):
             if board_array[index] != PiecesEnum.NONE.value:
                 return False
         return True
