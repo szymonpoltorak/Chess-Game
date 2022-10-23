@@ -19,3 +19,7 @@ class BoardEnum(Enum):
     LETTER_SCALE_Y: int = 70
 
     STARTING_POSITION: str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
+    CENTER_SIDE_SQUARES: tuple[int, int] = (26, 29, 34, 37)
+    CENTER_MAIN_SQUARES: tuple[int, int] = (27, 28, 35, 36)
+    CENTER_SQUARES: tuple[int] = (26, 27, 28, 29, 34, 35, 36, 37)

@@ -13,7 +13,7 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.Move import Move
+from game_window.moving.Move import Move
 from game_window.PromotionData import PromotionData
 
 
@@ -21,18 +21,18 @@ class Canvas(QPainter):
     """
     Class which manages painting board and pieces.
     """
-    __slots__ = array(["__board", "__rect_width", "__rect_height", "__freeze_piece", "__freeze_start", "__freeze_end"])
+    __slots__ = array(["__rect_width", "__rect_height", "__freeze_piece", "__freeze_start", "__freeze_end"],
+                      dtype=str)
 
     def __init__(self):
         super(Canvas, self).__init__()
-        self.__board = Board()
         self.__rect_width = int(CanvasEnum.CANVAS_WIDTH.value / 8)
         self.__rect_height = int(CanvasEnum.CANVAS_HEIGHT.value / 8)
         self.__freeze_piece = -1
         self.__freeze_start = -1
         self.__freeze_end = -1
 
-    def draw_chess_board(self, move: Move) -> None:
+    def draw_chess_board(self, move: Move, board: Board) -> None:
         """
         Method draws a whole chess board on canvas.
         :return: None
@@ -74,8 +74,8 @@ class Canvas(QPainter):
             current_y += self.__rect_height
             current_x = CanvasEnum.CANVAS_X.value
             index_y = current_y
-        self.paint_possible_moves_for_frozen_piece()
-        self.__draw_position_from_fen()
+        self.paint_possible_moves_for_frozen_piece(board)
+        self.__draw_position_from_fen(board)
 
     def draw_character_on_board(self, character: int or str, position_x: int, position_y: int, color: str) -> None:
         """
@@ -134,12 +134,12 @@ class Canvas(QPainter):
             return letters[index].upper()
         return letters[index]
 
-    def __draw_position_from_fen(self) -> None:
+    def __draw_position_from_fen(self, board: Board) -> None:
         """
         Method draws pieces on chess board from fen string representation.
         :return: None
         """
-        fen = self.__board.get_fen_string().replace('/', ' ').split()
+        fen = board.get_fen_string().replace('/', ' ').split()
         current_x = CanvasEnum.CANVAS_X.value
         current_y = CanvasEnum.CANVAS_Y.value
 
@@ -183,9 +183,9 @@ class Canvas(QPainter):
 
             return current_x
 
-    def paint_possible_moves_for_frozen_piece(self) -> None:
+    def paint_possible_moves_for_frozen_piece(self, board: Board) -> None:
         """
-        Method to paint possible moves for not moven piece_square on board
+        Method to paint possible moves_list for not moven piece_square on board
         :return: None
         """
         current_x = CanvasEnum.CANVAS_X.value
@@ -196,9 +196,11 @@ class Canvas(QPainter):
                 break
             for col in range(BoardEnum.BOARD_LENGTH.value):
                 current_square = BoardEnum.BOARD_LENGTH.value * row + col
-                legal_moves = self.__board.get_legal_moves()
+                legal_moves = board.get_legal_moves()
 
-                for legal_move in legal_moves:
+                for legal_move in legal_moves.moves:
+                    if legal_move is None:
+                        break
                     if self.is_it_frozen_piece_target_square(legal_move, current_square):
                         rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
                         self.fillRect(rectangle, QColor("#b0272f"))
@@ -237,13 +239,6 @@ class Canvas(QPainter):
         self.__freeze_piece = move.get_moving_piece()
         self.__freeze_start = move.get_start_square()
         self.__freeze_end = move.get_end_square()
-
-    def get_board(self) -> Board:
-        """
-        Gives access to Board object instance.
-        :return: board instance
-        """
-        return self.__board
 
     def get_rect_width(self) -> int:
         """
