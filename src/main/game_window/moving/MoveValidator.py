@@ -1,5 +1,7 @@
 from typing import TYPE_CHECKING
 
+from numba import jit
+
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
@@ -136,6 +138,7 @@ class MoveValidator:
         return piece in (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value, PiecesEnum.ROOK.value)
 
     @staticmethod
+    @jit(forceobj=True)
     def add_pawn_moves(start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
         """
         Adds possible pawn movements
@@ -190,6 +193,7 @@ class MoveValidator:
         return piece_double_up == 0 and piece_single_up == 0
 
     @staticmethod
+    @jit(forceobj=True)
     def add_pawn_attacks(start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
         """
         Static method used to add pawn attacks

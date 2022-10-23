@@ -13,7 +13,6 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.EvalEnum import EvalEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.MoveUtil import MoveUtil
 
 if TYPE_CHECKING:
     from game_window.Board import Board
@@ -35,8 +34,10 @@ class StaticEvaluator:
         king_pressure = StaticEvaluator.evaluate_king_pressure(board, favor_color)
         bishops = StaticEvaluator.evaluate_bishops(board, favor_color)
         free_lines = StaticEvaluator.evaluate_free_lines_for_rooks(board, favor_color)
+        chains = StaticEvaluator.evaluate_pawn_chains(board, favor_color)
 
         static_eval = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines + bishops
+        static_eval += chains
 
         return static_eval
 
@@ -60,7 +61,7 @@ class StaticEvaluator:
             points: int = EvalUtil.get_piece_point_value(piece_value)
 
             evaluation += points if pieces_color == favor_color else -points
-        return evaluation
+        return EvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
 
     @staticmethod
     @jit(forceobj=True)
@@ -103,7 +104,9 @@ class StaticEvaluator:
             favor_light_walked -= 2 * EvalEnum.WALKED.value
         if un_favor_light_walked != 4 and EvalUtil.is_queen_on_start_position(enemy_color, board):
             favor_light_walked -= 2 * EvalEnum.WALKED.value
-        return favorable_accumulator - unfavorable_accumulator
+
+        evaluation: int = favorable_accumulator - unfavorable_accumulator
+        return EvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
 
     @staticmethod
     def evaluate_king_pressure(board: 'Board', favor_color: int) -> int:
@@ -113,20 +116,19 @@ class StaticEvaluator:
         :param favor_color: int value of color in favor of which we evaluate position
         :return: int evaluation
         """
+        enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
         pressure_on_enemy_king = StaticEvaluator.evaluate_king_pressure_only_for_color(board, favor_color)
-        pressure_on_my_king = StaticEvaluator.evaluate_king_pressure_only_for_color(board,
-                                                                                    ColorManager.get_opposite_piece_color(
-                                                                                        favor_color))
-        pressure = pressure_on_enemy_king - pressure_on_my_king
+        pressure_on_my_king = StaticEvaluator.evaluate_king_pressure_only_for_color(board, enemy_color)
+        evaluation: int = int(pressure_on_enemy_king - pressure_on_my_king)
 
-        return int(pressure)
+        return EvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
 
     @staticmethod
     @jit(forceobj=True)
     def evaluate_king_pressure_only_for_color(board: 'Board', favor_color: int) -> int:
         """
         Method used to evaluate distance of pieces to the enemy king
-        :param favor_color:
+        :param favor_color: int value of color
         :param board: Board instance
         :return: int value of evaluation
         """
@@ -157,7 +159,7 @@ class StaticEvaluator:
     def evaluate_center_possession(board: 'Board', favor_color: int) -> int:
         """
         Method used to evaluate a center possession
-        :param favor_color:
+        :param favor_color: int value of color
         :param board: Board instance
         :return: int value of evaluation
         """
@@ -184,8 +186,8 @@ class StaticEvaluator:
     def evaluate_bishops(board: 'Board', favor_color: int) -> int:
         """
         Method used to evaluate if player has a pair of bishops.
+        :param favor_color: int value of color
         :param board: Board instance
-        :param favor_color: color which is now evaluating for
         :return: int value of evaluation
         """
         evaluation: int = 0
@@ -211,11 +213,11 @@ class StaticEvaluator:
 
     @staticmethod
     @jit(forceobj=True)
-    def evaluate_free_lines_for_rooks(board: 'Board', favor_color: int):
+    def evaluate_free_lines_for_rooks(board: 'Board', favor_color: int) -> int:
         """
         Methods used to evaluate free lines for rooks
+        :param favor_color: int value of color
         :param board: Board instance
-        :param favor_color: color which is now evaluating for
         :return: int value of evaluation
         """
         board_array: ndarray[int] = board.get_board_array()
@@ -225,13 +227,30 @@ class StaticEvaluator:
             piece_color: int = ColorManager.get_piece_color(piece)
             piece_value: int = piece - piece_color
 
-            if piece_value == PiecesEnum.ROOK.value and MoveUtil.is_it_free_line(board, square, MoveEnum.TOP_STEP.value,
+            if piece_value == PiecesEnum.ROOK.value and EvalUtil.is_it_free_line(board, square, MoveEnum.TOP_STEP.value,
                                                                                  MoveEnum.TOP_DIR.value):
                 evaluation += EvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.FREE_LINE.value,
                                                                              piece_color)
-            if piece_value == PiecesEnum.ROOK.value and MoveUtil.is_it_free_line(board, square,
+            if piece_value == PiecesEnum.ROOK.value and EvalUtil.is_it_free_line(board, square,
                                                                                  MoveEnum.LEFT_STEP.value,
                                                                                  MoveEnum.LEFT_DIR.value):
                 evaluation += EvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.FREE_LINE.value,
                                                                              piece_color)
+        return EvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
+
+    @staticmethod
+    def evaluate_pawn_chains(board: 'Board', favor_color: int) -> int:
+        """
+        Method used to evaluate pawn chains on board
+        :param board: Board instance
+        :param favor_color: int value of color
+        :return: int
+        """
+        enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
+
+        favor_eval: int = EvalUtil.get_pawn_chains_eval(board, favor_color)
+        enemy_eval: int = EvalUtil.get_pawn_chains_eval(board, enemy_color)
+
+        evaluation: int = favor_eval - enemy_eval
+
         return EvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)

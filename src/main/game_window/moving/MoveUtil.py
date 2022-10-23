@@ -165,7 +165,6 @@ class MoveUtil:
             MoveUtil.disable_castling_on_side(ColorManager.get_opposite_piece_color(color), square, board)
 
     @staticmethod
-    @jit(forceobj=True)
     def calculate_distance_to_borders() -> ndarray[int]:
         """
         Calculates array of distances of each end_square in every direction to board borders.
@@ -196,33 +195,3 @@ class MoveUtil:
                     squares_to_bottom_right
                 ]
         return distances
-
-    @staticmethod
-    def is_it_free_line(board: 'Board', square: int, step: int, direction: int) -> bool:
-        """
-        Checks if given line is free of any piece
-        :param board: Board instance
-        :param square: rook position in array
-        :param step: direction step
-        :param direction: direction id in distances array
-        :return: bool
-        """
-        second_direction: int = 4 if direction == 3 else 6
-        board_array: ndarray[int] = board.get_board_array()
-        distances: ndarray = board.get_distances()
-
-        first_distance: int = distances[square][direction]
-        first_border: int = first_distance * step + step
-
-        second_distance: int = distances[square][second_direction]
-        second_step: int = -step
-        second_border: int = second_distance * second_step + second_step
-
-        for index in range(square, first_border, step):
-            if board_array[index] != PiecesEnum.NONE.value:
-                return False
-
-        for index in range(square, second_border, second_step):
-            if board_array[index] != PiecesEnum.NONE.value:
-                return False
-        return True

@@ -19,11 +19,12 @@ class Evaluator:
         king_pressure = StaticEvaluator.evaluate_king_pressure(board, favor_color)
         bishops = StaticEvaluator.evaluate_bishops(board, favor_color)
         free_lines = StaticEvaluator.evaluate_free_lines_for_rooks(board, favor_color)
+        chains = StaticEvaluator.evaluate_pawn_chains(board, favor_color)
 
         print(f"\tmaterialEval = {material_eval}\n\tcenterPossessionEval = {center_possession_eval}\n\tlightDevEval = {light_dev_eval}\n\tkingPressure = {king_pressure}")
-        print(f"\tbishops = {bishops}\n\tfree lines = {free_lines}")
+        print(f"\tbishops = {bishops}\n\tfree lines = {free_lines}\n\tpawn chains = {chains}")
 
-        total_eval = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines
+        total_eval = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines + chains + bishops
         print(f"\tTotal = {total_eval}\n")
 
         return total_eval

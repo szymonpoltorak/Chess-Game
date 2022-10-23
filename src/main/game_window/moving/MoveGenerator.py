@@ -176,7 +176,6 @@ class MoveGenerator:
             moves_list.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
 
     @staticmethod
-    @jit(forceobj=True)
     def generate_pawn_moves(moves_list: MoveList, piece: int, color: int, board: 'Board', start_square: int) -> None:
         """
         Static method to generate moves_list for pawns
