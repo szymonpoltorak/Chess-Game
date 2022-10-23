@@ -2,3 +2,5 @@
 __pycache__/
 venv/
 src/resources/ui/test.ui
+.fleet/
+.pytest_cache

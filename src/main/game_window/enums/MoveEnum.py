@@ -58,6 +58,6 @@ class MoveEnum(Enum):
     MAX_NUM_OF_MOVES: int = 80
 
     TOP_DIR: int = 1
+    TOP_STEP: int = -8
     LEFT_DIR: int = 3
-    TOP_STEP: int = 8
     LEFT_STEP: int = -1
