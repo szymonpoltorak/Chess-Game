@@ -137,7 +137,7 @@ def test_add_castling_letters_to_fen_no_castling():
 def test_convert_board_array_to_fen():
     # given
     board = Board()
-    expected = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 0"
+    expected = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
     # when
     result = FenFactory.convert_board_array_to_fen(board)

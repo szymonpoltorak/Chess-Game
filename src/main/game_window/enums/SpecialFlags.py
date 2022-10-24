@@ -8,4 +8,3 @@ class SpecialFlags(Enum):
     PROMOTE_TO_KNIGHT: int = 4
     PROMOTE_TO_ROOK: int = 5
     PROMOTE_TO_BISHOP: int = 6
-    NONE: int = -1

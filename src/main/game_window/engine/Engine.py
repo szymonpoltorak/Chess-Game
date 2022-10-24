@@ -1,15 +1,13 @@
+import random
 from typing import TYPE_CHECKING
 
-from numba import jit
-from numpy import inf
+import numpy
 
-from game_window.ColorManager import ColorManager
 from game_window.engine.Evaluator import Evaluator
-from game_window.moving.Move import Move
-from game_window.moving.MoveData import MoveData
-from game_window.moving.MoveGenerator import MoveGenerator
-from game_window.moving.MoveList import MoveList
-from game_window.moving.MoveUtil import MoveUtil
+from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.Move import Move
+from game_window.MoveGenerator import MoveGenerator
+from game_window.MoveUtil import MoveUtil
 
 if TYPE_CHECKING:
     from game_window.Board import Board
@@ -17,66 +15,64 @@ if TYPE_CHECKING:
 
 class Engine:
     @staticmethod
-    @jit(forceobj=True)
-    def negamax_search(board: 'Board', depth: int, alpha: int, beta: int, color: int) -> int:
-        """
-        Method used to evaluate positions and find possibly best move for engine
-        :param board: Board instance
-        :param depth: how deep computer should look through
-        :param alpha: int value of alpha
-        :param beta: int value of beta
-        :param color: int value of color which turn is now searched for
-        :return: int value of best move evaluation
-        """
+    def search_positions(board: 'Board', depth: int, alpha: int, beta: int, maximizing_player: bool) -> int:
         if depth == 0:
-            return Evaluator.evaluate_position(board, color)
-        moves_list: MoveList = MoveGenerator.generate_legal_moves(color, board)
+            return Evaluator.evaluate_position(board)
 
-        if moves_list.moves[0] is None:
-            return -inf if color == board.get_engine_color() else inf
-        evaluation: int = -inf
+        if not maximizing_player:
+            min_eval = numpy.inf
+            moves = MoveGenerator.generate_legal_moves(PiecesEnum.WHITE.value, board)
 
-        for move in moves_list.moves:
-            if move is None:
-                break
-            deleted_data: MoveData = MoveUtil.make_move(move, color, board)
-            evaluation: int = max(evaluation, -Engine.negamax_search(board, depth - 1, -beta, -alpha,
-                                                                     ColorManager.get_opposite_piece_color(color)))
-            MoveUtil.un_make_move(move, deleted_data, board)
+            if not moves:
+                return Evaluator.evaluate_position(board)
 
-            alpha = max(alpha, evaluation)
+            for move in moves:
+                deleted_piece = MoveUtil.make_move(move, PiecesEnum.WHITE.value, board.get_board_array())
+                movement_eval = Engine.search_positions(board, depth - 1, alpha, beta, False)
+                MoveUtil.un_make_move(move, deleted_piece, board.get_board_array())
 
-            if alpha >= beta:
-                break
-        return evaluation
+                min_eval = min(min_eval, movement_eval)
+                beta = min(beta, movement_eval)
+
+                if beta <= alpha:
+                    break
+            return min_eval
+        elif maximizing_player:
+            max_eval = -numpy.inf
+            moves = MoveGenerator.generate_legal_moves(PiecesEnum.BLACK.value, board)
+
+            if not moves:
+                return Evaluator.evaluate_position(board)
+
+            for move in moves:
+                deleted_piece = MoveUtil.make_move(move, PiecesEnum.BLACK.value, board.get_board_array())
+                movement_eval = Engine.search_positions(board, depth - 1, alpha, beta, True)
+                MoveUtil.un_make_move(move, deleted_piece, board.get_board_array())
+
+                max_eval = max(max_eval, movement_eval)
+                alpha = max(alpha, movement_eval)
+
+                if beta <= alpha:
+                    break
+            return max_eval
+        raise ValueError("WRONG PARAMETERS!")
 
     @staticmethod
-    @jit(forceobj=True)
     def get_computer_move(board: 'Board') -> Move:
-        """
-        Method used to return best computer move possible
-        :param board: Board instance
-        :return: the best computer Move instance
-        """
-        moves_list: MoveList = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
-        depth: int = 3
-        best_eval: int = -inf
-        alpha: int = inf
-        beta: int = -inf
-        best_move: Move or None = None
+        moves = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
+        random.shuffle(moves)
+        alpha = -numpy.inf
+        beta = numpy.inf
+        depth = 2
+        best_eval = -numpy.inf
+        best_move = None
 
-        for move in moves_list.moves:
-            if move is None:
-                break
+        for move in moves:
+            deleted_piece = MoveUtil.make_move(move, PiecesEnum.BLACK.value, board.get_board_array())
+            move_eval = Engine.search_positions(board, depth, alpha, beta, True)
+            MoveUtil.un_make_move(move, deleted_piece, board.get_board_array())
 
-            deleted_data: MoveData = MoveUtil.make_move(move, board.get_engine_color(), board)
-            evaluation: int = -Engine.negamax_search(board, depth, alpha, beta, board.get_player_color())
-            MoveUtil.un_make_move(move, deleted_data, board)
-            print(f"BestEval : {best_eval}\nEvaluation : {evaluation}\n")
-
-            if evaluation > best_eval:
-                best_move: Move or None = move
-                best_eval: int = evaluation
-        print(f"Best Eval : {best_eval}\n-----------------------------------------------------------------")
-
+            if move_eval > best_eval:
+                best_move = move
+                best_eval = move_eval
         return best_move

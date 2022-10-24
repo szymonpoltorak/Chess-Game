@@ -1,5 +1,4 @@
 from numpy import array
-from numpy import int16
 from numpy import ndarray
 from numpy import zeros
 
@@ -8,8 +7,6 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class BoardInitializer:
-    __slots__ = ()
-
     @staticmethod
     def init_black_pieces_array() -> ndarray[int]:
         """
@@ -63,24 +60,26 @@ class BoardInitializer:
         Method initializes starting board.
         :return: board int array
         """
-        board: ndarray[int] = zeros(BoardEnum.BOARD_SIZE.value, dtype=int16)
-        index: int = 0
-        engine_pieces: ndarray[int] = BoardInitializer.get_proper_pieces_arrays(upper_color)
-        player_pieces: ndarray[int] = BoardInitializer.get_proper_pieces_arrays(down_color)
+        board = zeros(BoardEnum.BOARD_SIZE.value)
+        index = 0
+        upper_pieces = BoardInitializer.get_proper_pieces_arrays(upper_color)
+        down_pieces = BoardInitializer.get_proper_pieces_arrays(down_color)
 
         for _ in range(2 * BoardEnum.BOARD_LENGTH.value):
-            board[index] = engine_pieces[index]
+            board[index] = upper_pieces[index]
             index += 1
 
         index += 4 * BoardEnum.BOARD_LENGTH.value
         border_edge_index = 2 * BoardEnum.BOARD_LENGTH.value - 1
 
         for _ in range(2 * BoardEnum.BOARD_LENGTH.value):
-            board[index] = player_pieces[border_edge_index]
+            board[index] = down_pieces[border_edge_index]
             border_edge_index -= 1
             index += 1
         return board
 
     @staticmethod
-    def get_proper_pieces_arrays(color: int) -> ndarray[int]:
-        return BoardInitializer.init_white_pieces_array() if color == PiecesEnum.WHITE.value else BoardInitializer.init_black_pieces_array()
+    def get_proper_pieces_arrays(color: int):
+        if color == PiecesEnum.WHITE.value:
+            return BoardInitializer.init_white_pieces_array()
+        return BoardInitializer.init_black_pieces_array()
