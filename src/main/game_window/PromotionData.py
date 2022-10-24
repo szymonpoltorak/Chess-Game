@@ -1,8 +1,8 @@
 from numpy import array
-from numpy import int16
+from numpy import int8
 from PyQt5.QtGui import QMouseEvent
 
-from game_window.Board import Board
+from game_window.board.Board import Board
 from game_window.enums.PiecesEnum import PiecesEnum
 
 
@@ -80,7 +80,7 @@ class PromotionData:
         if x < self.__position_x or x > bond_x or y > bond_y or y < self.__position_y:
             return
         pieces = array([PiecesEnum.QUEEN.value, PiecesEnum.BISHOP.value, PiecesEnum.KNIGHT.value,
-                        PiecesEnum.ROOK.value], dtype=int16)
+                        PiecesEnum.ROOK.value], dtype=int8)
         board.get_board_array()[self.__square] = self.__piece_color | pieces[self.get_rect_index(y, rect_size)]
         board.update_fen()
         self.__is_promoting = False

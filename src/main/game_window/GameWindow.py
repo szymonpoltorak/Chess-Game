@@ -8,7 +8,9 @@ from PyQt5.QtGui import QPaintEvent
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QWidget
 
-from game_window.Board import Board
+from game_window.board.Board import Board
+from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenUtil import FenUtil
 from game_window.Canvas import Canvas
 from game_window.ColorManager import ColorManager
 from game_window.engine.Engine import Engine
@@ -16,14 +18,13 @@ from game_window.engine.Evaluator import Evaluator
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.FenData import FenData
 from game_window.GameWindowUi import GameWindowUi
 from game_window.moving.EngineMover import EngineMover
+from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from game_window.moving.generation.MoveGenerator import MoveGenerator
+from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.Move import Move
-from game_window.moving.MoveGenerator import MoveGenerator
 from game_window.moving.MoveList import MoveList
-from game_window.moving.MoveUtil import MoveUtil
-from game_window.moving.MoveValidator import MoveValidator
 from game_window.PromotionData import PromotionData
 
 
@@ -51,7 +52,12 @@ class GameWindow(QWidget):
             self.__ui.get_new_game_button().clicked.connect(self.reset_game)
             self.__ui.get_switch_side_button().clicked.connect(self.switch_sides)
 
-    def keyPressEvent(self, event):
+    def keyPressEvent(self, event) -> None:
+        """
+        Method used to debug
+        :param event:
+        :return: None
+        """
         super(GameWindow, self).keyPressEvent(event)
         self.keyPressed.emit(event)
         Evaluator.debug_evaluate_position(self.__board, 8)
@@ -144,7 +150,7 @@ class GameWindow(QWidget):
         final_piece_index: int = 8 * row + col
         color: int = ColorManager.get_piece_color(self.__moving_piece)
 
-        MoveUtil.disable_castling_if_deleted_rook(deleted_piece, color, end_square, self.__board)
+        FenUtil.disable_castling_if_deleted_rook(deleted_piece, color, end_square, self.__board)
 
         self.handle_castling_event(final_piece_index, color)
         deleted_piece: int = self.handle_pawn_special_events(event, color, final_piece_index, deleted_piece)
@@ -153,7 +159,7 @@ class GameWindow(QWidget):
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__board.set_opposite_move_color()
 
-        MoveUtil.update_no_sack_and_pawn_counter(fen_data, deleted_piece, self.__current_move.get_moving_piece())
+        FenUtil.update_no_sack_and_pawn_counter(fen_data, deleted_piece, self.__current_move.get_moving_piece())
         self.update_board_data()
 
     def update_board_data(self) -> None:
@@ -195,10 +201,10 @@ class GameWindow(QWidget):
         fen_data: FenData = self.__board.get_fen_data()
         moving_piece: int = self.__current_move.get_moving_piece()
 
-        if MoveValidator.is_pawn_promoting(self.__current_move, color, self.__board.get_engine_color()):
+        if PawnUtil.is_pawn_promoting(self.__current_move, color, self.__board.get_engine_color()):
             self.__promotion_util.set_promotion_data(color, mouse_event.x(), mouse_event.y(), piece_index)
 
-        if MoveValidator.was_it_en_passant_move(self.__current_move, self.__board):
+        if PawnUtil.was_it_en_passant_move(self.__current_move, self.__board):
             self.__board.make_en_passant_capture(self.__moving_piece)
             deleted_piece = 1
 
@@ -223,9 +229,9 @@ class GameWindow(QWidget):
         :return: None
         """
         if self.__current_move.get_moving_piece() == PiecesEnum.ROOK.value:
-            MoveUtil.disable_castling_on_side(color, self.__current_move.get_start_square(), self.__board)
+            FenUtil.disable_castling_on_side(color, self.__current_move.get_start_square(), self.__board)
 
-        if MoveValidator.is_it_castling(self.__current_move):
+        if KingUtil.is_it_castling(self.__current_move):
             self.__board.castle_king(self.__moving_piece, self.__current_move)
 
         elif self.__current_move.get_moving_piece() == PiecesEnum.KING.value:
@@ -236,6 +242,9 @@ class GameWindow(QWidget):
             self.__board.add_piece_to_the_board(self.__moving_piece, final_piece_index)
 
     def check_quit_release_event_functions(self, start_square: int, row: int, col: int, end_square: int, event) -> bool:
+        """
+        Method used to check conditions to end mouse event.
+        """
         if self.__promotion_util.is_this_pawn_promoting():
             self.__promotion_util.check_user_choice(event, self.__canvas.get_rect_height(), self.__board)
             self.update_board_data()

@@ -3,14 +3,21 @@ from typing import TYPE_CHECKING
 from numpy import ndarray
 
 from game_window.ColorManager import ColorManager
-from game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
+from game_window.enums.BoardEnum import BoardEnum
+from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class PawnEval:
+    """
+    Class containing methods to evaluate pawns
+    """
+
+    __slots__ = ()
+
     @staticmethod
     def evaluate_pawn_chains(board: 'Board', favor_color: int) -> int:
         """
@@ -26,7 +33,7 @@ class PawnEval:
 
         evaluation: int = favor_eval - enemy_eval
 
-        return StaticEvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
+        return evaluation
 
     @staticmethod
     def is_friendly_pawn(board: 'Board', square: int, piece_color: int) -> bool:
@@ -69,7 +76,7 @@ class PawnEval:
 
             if working_index < 0 or working_index > 63:
                 break
-            if not PawnEval.is_friendly_pawn(board, index, color):
+            if not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_left_side.append(working_index)
 
@@ -81,7 +88,7 @@ class PawnEval:
 
             if working_index < 0 or working_index > 63:
                 break
-            if not PawnEval.is_friendly_pawn(board, index, color):
+            if not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_right_side.append(working_index)
         left_leaning_chain = chain_right_side + [index] + chain_left_side
@@ -112,7 +119,7 @@ class PawnEval:
 
             if working_index < 0 or working_index > 63:
                 break
-            if not PawnEval.is_friendly_pawn(board, index, color):
+            if not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_right_side.append(working_index)
         chain_left_side = []
@@ -123,7 +130,7 @@ class PawnEval:
 
             if working_index < 0 or working_index > 63:
                 break
-            if not PawnEval.is_friendly_pawn(board, index, color):
+            if not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_left_side.append(working_index)
         right_leaning_chain = chain_right_side + [index] + chain_left_side
@@ -138,12 +145,12 @@ class PawnEval:
         :param color: int value of color
         :return: int
         """
-        step_left = -9 if color == board.get_player_color() else 7
-        step_right = -7 if color == board.get_player_color() else 9
+        step_left = MoveEnum.TOP_LEFT.value if color == board.get_player_color() else MoveEnum.BOTTOM_LEFT.value
+        step_right = MoveEnum.TOP_RIGHT.value if color == board.get_player_color() else MoveEnum.BOTTOM_RIGHT.value
 
         chain_eval = 0
 
-        for index in range(0, 64):
+        for index in range(BoardEnum.BOARD_SIZE.value):
             if not PawnEval.is_friendly_pawn(board, index, color):
                 continue
 

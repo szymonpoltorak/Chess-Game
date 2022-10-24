@@ -8,6 +8,9 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class BoardInitializer:
+    """
+    Class used to initialize Board array
+    """
     __slots__ = ()
 
     @staticmethod
@@ -83,4 +86,10 @@ class BoardInitializer:
 
     @staticmethod
     def get_proper_pieces_arrays(color: int) -> ndarray[int]:
-        return BoardInitializer.init_white_pieces_array() if color == PiecesEnum.WHITE.value else BoardInitializer.init_black_pieces_array()
+        """
+        Method used to init proper color array
+        :param color: int value of color
+        :return: array containing proper color pieces
+        """
+        return BoardInitializer.init_white_pieces_array() if color == PiecesEnum.WHITE.value else \
+            BoardInitializer.init_black_pieces_array()

@@ -2,18 +2,18 @@ from numpy import array
 from numpy import ndarray
 from numpy import sign
 
-from game_window.BoardInitializer import BoardInitializer
+from game_window.board.BoardInitializer import BoardInitializer
+from game_window.board.BoardUtil import BoardUtil
+from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenFactory import FenFactory
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.FenData import FenData
-from game_window.FenFactory import FenFactory
+from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 from game_window.moving.Move import Move
-from game_window.moving.MoveGenerator import MoveGenerator
 from game_window.moving.MoveList import MoveList
-from game_window.moving.MoveUtil import MoveUtil
-from game_window.moving.MoveValidator import MoveValidator
 
 
 class Board:
@@ -31,7 +31,7 @@ class Board:
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__fen_data: FenData = FenData(self.__player_color)
         self.__color_to_move: int = PiecesEnum.WHITE.value
-        self.__distances_to_borders: ndarray[int] = MoveUtil.calculate_distance_to_borders()
+        self.__distances_to_borders: ndarray[int] = BoardUtil.calculate_distance_to_borders()
         self.__legal_moves: MoveList = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
 
     def castle_king(self, piece: int, move: Move) -> None:
@@ -46,8 +46,7 @@ class Board:
         distance: int = start_square - end_square
         color: int = ColorManager.get_piece_color(piece)
         is_queen_side: bool = distance > 0
-        rook_position: int = MoveValidator.get_rook_position(color, is_queen_side, self.__engine_color,
-                                                             self.__player_color)
+        rook_position: int = KingUtil.get_rook_position(color, is_queen_side, self.__engine_color, self.__player_color)
 
         self.__board_array[start_square] = PiecesEnum.NONE.value
         self.__board_array[end_square] = piece
@@ -68,8 +67,7 @@ class Board:
         end_square: int = move.get_end_square()
         distance: int = start_square - end_square
         is_queen_side: bool = distance > 0
-        rook_position: int = MoveValidator.get_rook_position(color, is_queen_side, self.__engine_color,
-                                                             self.__player_color)
+        rook_position: int = KingUtil.get_rook_position(color, is_queen_side, self.__engine_color, self.__player_color)
 
         self.__board_array[rook_position] = color | PiecesEnum.ROOK.value
         self.__board_array[move.get_end_square()] = PiecesEnum.NONE.value

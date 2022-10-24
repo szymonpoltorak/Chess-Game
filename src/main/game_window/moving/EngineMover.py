@@ -1,17 +1,22 @@
 from typing import TYPE_CHECKING
 
+from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenUtil import FenUtil
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.FenData import FenData
+from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.Move import Move
-from game_window.moving.MoveUtil import MoveUtil
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class EngineMover:
+    """
+    Class containing methods to update board with engine moves
+    """
+
     @staticmethod
     def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
         """
@@ -25,16 +30,16 @@ class EngineMover:
         special_flag: int = computer_move.get_special_flag_value()
         moving_piece: int = computer_move.get_moving_piece()
 
-        MoveUtil.disable_castling_if_deleted_rook(deleted_piece, board.get_player_color(), start_square, board)
+        FenUtil.disable_castling_if_deleted_rook(deleted_piece, board.get_player_color(), start_square, board)
 
         if moving_piece == PiecesEnum.PAWN.value:
             EngineMover.check_pawn_movement(board, computer_move)
 
         if moving_piece == PiecesEnum.ROOK.value:
-            MoveUtil.disable_castling_on_side(board.get_engine_color(), start_square, board)
+            FenUtil.disable_castling_on_side(board.get_engine_color(), start_square, board)
             EngineMover.make_engine_move(computer_move.get_end_square(), moving_piece, board)
 
-        elif MoveUtil.is_it_a_promotion(special_flag):
+        elif PawnUtil.is_it_a_promotion(special_flag):
             EngineMover.make_engine_promotion_move(computer_move, board)
 
         elif special_flag == SpecialFlags.CASTLING.value:
@@ -49,7 +54,7 @@ class EngineMover:
         board.set_opposite_move_color()
         board.get_fen_data().update_move_counter()
 
-        MoveUtil.update_no_sack_and_pawn_counter(board.get_fen_data(), deleted_piece, moving_piece)
+        FenUtil.update_no_sack_and_pawn_counter(board.get_fen_data(), deleted_piece, moving_piece)
 
         return deleted_piece
 

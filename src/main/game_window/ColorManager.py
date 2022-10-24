@@ -3,6 +3,10 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class ColorManager:
+    """
+    Class containing static methods to manage colors
+    """
+
     __slots__ = ()
 
     @staticmethod

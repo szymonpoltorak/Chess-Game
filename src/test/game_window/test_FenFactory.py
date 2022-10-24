@@ -1,6 +1,6 @@
-from game_window.Board import Board
+from game_window.board.Board import Board
+from game_window.board.fen.FenFactory import FenFactory
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.FenFactory import FenFactory
 
 
 def test_get_proper_letter_size_white_color():

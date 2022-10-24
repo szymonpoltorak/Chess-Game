@@ -14,10 +14,16 @@ from game_window.enums.EvalEnum import EvalEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class StaticEvaluator:
+    """
+    Class containing methods for static evaluation
+    """
+
+    __slots__ = ()
+
     @staticmethod
     @jit(forceobj=True)
     def evaluate_static_position(board: 'Board', favor_color: int) -> int:
@@ -60,7 +66,7 @@ class StaticEvaluator:
             points: int = StaticEvalUtil.get_piece_point_value(piece_value)
 
             evaluation += points if pieces_color == board.get_engine_color() else -points
-        return StaticEvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
+        return evaluation
 
     @staticmethod
     @jit(forceobj=True)
@@ -87,4 +93,4 @@ class StaticEvaluator:
             if center_square in BoardEnum.CENTER_MAIN_SQUARES.value:
                 evaluation += StaticEvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.MAIN_CENTER.value,
                                                                                    piece_color)
-        return StaticEvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
+        return evaluation

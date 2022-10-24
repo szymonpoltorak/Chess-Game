@@ -4,15 +4,21 @@ from typing import TYPE_CHECKING
 from numba import jit
 from numpy import ndarray
 
-from game_window.CheckUtil import CheckUtil
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
+from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class KingPressure:
+    """
+    Class containing methods to evaluate king pressure
+    """
+
+    __slots__ = ()
+
     @staticmethod
     def evaluate_king_pressure(board: 'Board', favor_color: int) -> int:
         """
@@ -40,7 +46,7 @@ class KingPressure:
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
         board_array: ndarray[int] = board.get_board_array()
 
-        enemy_king_pos = CheckUtil.find_friendly_king_squares(board_array, enemy_color)
+        enemy_king_pos = KingUtil.find_friendly_king_squares(board_array, enemy_color)
         enemy_king_x = math.floor(enemy_king_pos / 8)
         enemy_king_y = enemy_king_pos - 8 * enemy_king_x
         score_accumulator = 0

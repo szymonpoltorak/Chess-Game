@@ -1,5 +1,5 @@
+from game_window.board.fen.FenData import FenData
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.FenData import FenData
 
 
 def test_set_castling_queen_side_to_true():

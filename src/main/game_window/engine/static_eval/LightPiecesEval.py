@@ -11,10 +11,16 @@ from game_window.enums.EvalEnum import EvalEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class LightPiecesEval:
+    """
+    Class containing methods to evaluate light pieces
+    """
+
+    __slots__ = ()
+
     @staticmethod
     @jit(forceobj=True)
     def evaluate_bishops(board: 'Board', favor_color: int) -> int:
@@ -43,7 +49,7 @@ class LightPiecesEval:
             evaluation += EvalEnum.BISHOP_PAIR.value
         if player_bishops >= 2:
             evaluation -= EvalEnum.BISHOP_PAIR.value
-        return StaticEvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
+        return evaluation
 
     @staticmethod
     @jit(forceobj=True)
@@ -88,4 +94,4 @@ class LightPiecesEval:
             favor_light_walked -= 2 * EvalEnum.WALKED.value
 
         evaluation: int = favorable_accumulator - unfavorable_accumulator
-        return StaticEvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
+        return evaluation

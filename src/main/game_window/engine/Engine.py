@@ -5,17 +5,21 @@ from numpy import inf
 
 from game_window.ColorManager import ColorManager
 from game_window.engine.Evaluator import Evaluator
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 from game_window.moving.Move import Move
 from game_window.moving.MoveData import MoveData
-from game_window.moving.MoveGenerator import MoveGenerator
 from game_window.moving.MoveList import MoveList
-from game_window.moving.MoveUtil import MoveUtil
+from game_window.moving.MoveMaker import MoveMaker
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class Engine:
+    """
+    Class containing methods to pick best moves for computer
+    """
+
     @staticmethod
     @jit(forceobj=True)
     def negamax_search(board: 'Board', depth: int, alpha: int, beta: int, color: int) -> int:
@@ -39,10 +43,10 @@ class Engine:
         for move in moves_list.moves:
             if move is None:
                 break
-            deleted_data: MoveData = MoveUtil.make_move(move, color, board)
+            deleted_data: MoveData = MoveMaker.make_move(move, color, board)
             evaluation: int = max(evaluation, -Engine.negamax_search(board, depth - 1, -beta, -alpha,
                                                                      ColorManager.get_opposite_piece_color(color)))
-            MoveUtil.un_make_move(move, deleted_data, board)
+            MoveMaker.un_make_move(move, deleted_data, board)
 
             alpha = max(alpha, evaluation)
 
@@ -69,9 +73,9 @@ class Engine:
             if move is None:
                 break
 
-            deleted_data: MoveData = MoveUtil.make_move(move, board.get_engine_color(), board)
+            deleted_data: MoveData = MoveMaker.make_move(move, board.get_engine_color(), board)
             evaluation: int = -Engine.negamax_search(board, depth, alpha, beta, board.get_player_color())
-            MoveUtil.un_make_move(move, deleted_data, board)
+            MoveMaker.un_make_move(move, deleted_data, board)
             print(f"BestEval : {best_eval}\nEvaluation : {evaluation}\n")
 
             if evaluation > best_eval:

@@ -9,12 +9,22 @@ from game_window.engine.static_eval.RookEval import RookEval
 from game_window.engine.static_eval.StaticEvaluator import StaticEvaluator
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class Evaluator:
+    """
+    Class containing methods to evaluate position
+    """
+
     @staticmethod
     def debug_evaluate_position(board: 'Board', favor_color: int) -> int:
+        """
+        Debug Method
+        :param board:
+        :param favor_color:
+        :return:
+        """
         print("For BLACK:") if favor_color == 16 else print("For WHITE:")
 
         material_eval = StaticEvaluator.evaluate_pieces_on_board(board, favor_color)

@@ -2,7 +2,7 @@ import pytest
 from numpy import array
 from numpy import zeros
 
-from game_window.CheckUtil import CheckUtil
+from game_window.moving.CheckUtil import CheckUtil
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags

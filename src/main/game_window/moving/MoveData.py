@@ -1,8 +1,11 @@
 from dataclasses import dataclass
 
 
-@dataclass(slots=True, order=True, eq=True, unsafe_hash=True)
+@dataclass(slots=True, order=True, unsafe_hash=True)
 class MoveData:
+    """
+    Class containing data for making and unmaking moves
+    """
     deleted_piece: int or None
     white_castle_king: bool or None
     white_castle_queen: bool or None

@@ -9,10 +9,16 @@ from game_window.enums.EvalEnum import EvalEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class RookEval:
+    """
+    Class containing methods to evaluate rooks
+    """
+
+    __slots__ = ()
+
     @staticmethod
     @jit(forceobj=True)
     def evaluate_free_lines_for_rooks(board: 'Board', favor_color: int) -> int:
@@ -32,7 +38,7 @@ class RookEval:
             if piece_value == PiecesEnum.ROOK.value:
                 free_line_eval = RookEval.get_free_line_eval(board, square)
                 evaluation += StaticEvalUtil.return_proper_evaluation_signed_value(board, free_line_eval, piece_color)
-        return StaticEvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
+        return evaluation
 
     @staticmethod
     def get_horizontal_eval(start_square: int, board: 'Board') -> int:
