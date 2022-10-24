@@ -55,9 +55,3 @@ class MoveEnum(Enum):
     PAWN_DOWN_RIGHT_ATTACK: int = 9
 
     NONE_EN_PASSANT_SQUARE: int = -1
-    MAX_NUM_OF_MOVES: int = 80
-
-    TOP_DIR: int = 1
-    LEFT_DIR: int = 3
-    TOP_STEP: int = 8
-    LEFT_STEP: int = -1

@@ -1,5 +1,4 @@
 from numpy import array
-from numpy import int16
 from PyQt5.QtGui import QMouseEvent
 
 from game_window.Board import Board
@@ -7,7 +6,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class PromotionData:
-    __slots__ = array(["__piece_color", "__position_x", "__position_y", "__is_promoting", "__square"], dtype=str)
+    __slots__ = array(["__piece_color", "__position_x", "__position_y", "__is_promoting", "__square"])
 
     def __init__(self):
         self.__piece_color = -1
@@ -74,13 +73,15 @@ class PromotionData:
         :param board: Board instance
         :return: None
         """
-        bond_x, bond_y = self.__position_x + rect_size, self.__position_y + 4 * rect_size
-        x, y = mouse_event.x(), mouse_event.y()
+        bond_x = self.__position_x + rect_size
+        bond_y = self.__position_y + 4 * rect_size
+        x = mouse_event.x()
+        y = mouse_event.y()
 
         if x < self.__position_x or x > bond_x or y > bond_y or y < self.__position_y:
             return
         pieces = array([PiecesEnum.QUEEN.value, PiecesEnum.BISHOP.value, PiecesEnum.KNIGHT.value,
-                        PiecesEnum.ROOK.value], dtype=int16)
+                        PiecesEnum.ROOK.value])
         board.get_board_array()[self.__square] = self.__piece_color | pieces[self.get_rect_index(y, rect_size)]
         board.update_fen()
         self.__is_promoting = False
@@ -92,7 +93,8 @@ class PromotionData:
         :param rect_size:
         :return: int
         """
-        low_bond, high_bond = self.__position_y, self.__position_y + rect_size
+        low_bond = self.__position_y
+        high_bond = self.__position_y + rect_size
 
         for index in range(4):
             if low_bond < y < high_bond:

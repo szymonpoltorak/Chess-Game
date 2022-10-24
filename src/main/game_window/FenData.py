@@ -1,23 +1,22 @@
 from numpy import array
 
-from game_window.moving.MoveData import MoveData
+from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class FenData:
     __slots__ = array(["__white_castle_king", "__white_castle_queen", "__black_castle_king", "__black_castle_queen",
                        "__en_passant_square", "__en_passant_piece_square", "__move_counter",
-                       "__no_sack_and_pawn_count", "__player_color"], dtype=str)
+                       "__no_sack_and_pawn_count"])
 
-    def __init__(self, player_color: int):
+    def __init__(self):
         self.__white_castle_king = True
         self.__white_castle_queen = True
         self.__black_castle_king = True
         self.__black_castle_queen = True
         self.__en_passant_square = -1
         self.__en_passant_piece_square = -1
-        self.__move_counter = 0
+        self.__move_counter = 1
         self.__no_sack_and_pawn_count = 0
-        self.__player_color = player_color
 
     def can_king_castle_king_side(self, color: int) -> bool:
         """
@@ -25,7 +24,10 @@ class FenData:
         :param color: int value of color
         :return: bool
         """
-        return self.__white_castle_king if color == self.__player_color else self.__black_castle_king
+        if color == PiecesEnum.WHITE.value:
+            return self.__white_castle_king
+        else:
+            return self.__black_castle_king
 
     def can_king_castle_queen_side(self, color: int) -> bool:
         """
@@ -33,7 +35,10 @@ class FenData:
         :param color: int value of color
         :return: bool
         """
-        return self.__white_castle_queen if color == self.__player_color else self.__black_castle_queen
+        if color == PiecesEnum.WHITE.value:
+            return self.__white_castle_queen
+        else:
+            return self.__black_castle_queen
 
     def set_castling_king_side(self, can_castle: bool, color: int) -> None:
         """
@@ -42,7 +47,7 @@ class FenData:
         :param color: int value of color
         :return: None
         """
-        if color == self.__player_color:
+        if color == PiecesEnum.WHITE.value:
             self.__white_castle_king = can_castle
         else:
             self.__black_castle_king = can_castle
@@ -63,7 +68,7 @@ class FenData:
 
     def get_no_sack_and_pawn_count(self) -> int:
         """
-        Gives access to counter of how many moves_list have passed since last pawn move or any sack
+        Gives access to counter of how many moves have passed since last pawn move or any sack
         :return: int value of counter
         """
         return self.__no_sack_and_pawn_count
@@ -86,7 +91,7 @@ class FenData:
         :param color: int value of color
         :return: None
         """
-        if color == self.__player_color:
+        if color == PiecesEnum.WHITE.value:
             self.__white_castle_queen = can_castle
         else:
             self.__black_castle_queen = can_castle
@@ -120,41 +125,3 @@ class FenData:
         :return:
         """
         return self.__en_passant_piece_square
-
-    def get_special_move_data(self) -> tuple:
-        """
-        Method used to return a tuple of special fen data for making and unmaking moves_list
-        :return: tuple
-        """
-        return self.__white_castle_king, self.__white_castle_queen, self.__black_castle_king, self.__black_castle_queen, self.__en_passant_square, self.__en_passant_piece_square
-
-    def update_fen_data(self, prev_fen_data: MoveData) -> None:
-        """
-        Updates fen_data with move_data values
-        :param prev_fen_data: MoveData instance
-        :return: None
-        """
-        self.__white_castle_king = prev_fen_data.white_castle_king
-        self.__white_castle_queen = prev_fen_data.white_castle_queen
-        self.__black_castle_king = prev_fen_data.black_castle_king
-        self.__black_castle_queen = prev_fen_data.black_castle_queen
-        self.__en_passant_square = prev_fen_data.en_passant_square
-        self.__en_passant_piece_square = prev_fen_data.en_passant_piece_square
-
-    def __eq__(self, other):
-        if not isinstance(other, FenData):
-            return False
-        if self.__player_color != other.__player_color or self.__en_passant_square != other.__en_passant_square:
-            return False
-        if self.__en_passant_piece_square != other.__en_passant_piece_square or self.__move_counter != other.__move_counter:
-            return False
-        if self.__no_sack_and_pawn_count != other.__no_sack_and_pawn_count or self.__white_castle_queen != other.__white_castle_queen:
-            return False
-        if self.__white_castle_king != other.__white_castle_king or self.__black_castle_queen != other.__black_castle_queen:
-            return False
-        return self.__black_castle_king == other.__black_castle_king
-
-    def __hash__(self):
-        return hash((self.__black_castle_king, self.__black_castle_queen, self.__white_castle_queen, self.__white_castle_king,
-                     self.__move_counter, self.__no_sack_and_pawn_count, self.__en_passant_piece_square,
-                     self.__en_passant_square, self.__player_color))
