@@ -5,7 +5,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 def test_set_castling_queen_side_to_true():
     # given
     expected = True
-    fen_data = FenData()
+    fen_data = FenData(PiecesEnum.WHITE.value)
     color = PiecesEnum.WHITE.value
 
     # when
@@ -19,7 +19,7 @@ def test_set_castling_queen_side_to_true():
 def test_set_castling_king_side_to_true():
     # given
     expected = True
-    fen_data = FenData()
+    fen_data = FenData(PiecesEnum.WHITE.value)
     color = PiecesEnum.WHITE.value
 
     # when
@@ -33,7 +33,7 @@ def test_set_castling_king_side_to_true():
 def test_set_castling_king_side_to_false():
     # given
     expected = False
-    fen_data = FenData()
+    fen_data = FenData(PiecesEnum.WHITE.value)
     color = PiecesEnum.WHITE.value
 
     # when
@@ -47,7 +47,7 @@ def test_set_castling_king_side_to_false():
 def test_set_castling_queen_side_to_false():
     # given
     expected = False
-    fen_data = FenData()
+    fen_data = FenData(PiecesEnum.WHITE.value)
     color = PiecesEnum.WHITE.value
 
     # when
@@ -60,7 +60,7 @@ def test_set_castling_queen_side_to_false():
 
 def test_can_king_castle_king_side_and_you_can():
     # given
-    fen_data = FenData()
+    fen_data = FenData(PiecesEnum.WHITE.value)
     expected = True
     color = PiecesEnum.BLACK.value
 
@@ -73,7 +73,7 @@ def test_can_king_castle_king_side_and_you_can():
 
 def test_can_king_castle_king_side_and_you_can_not():
     # given
-    fen_data = FenData()
+    fen_data = FenData(PiecesEnum.WHITE.value)
     expected = False
     color = PiecesEnum.BLACK.value
 
@@ -87,7 +87,7 @@ def test_can_king_castle_king_side_and_you_can_not():
 
 def test_can_king_castle_queen_side_and_you_can():
     # given
-    fen_data = FenData()
+    fen_data = FenData(PiecesEnum.WHITE.value)
     expected = True
     color = PiecesEnum.BLACK.value
 
@@ -100,7 +100,7 @@ def test_can_king_castle_queen_side_and_you_can():
 
 def test_can_king_castle_queen_side_and_you_can_not():
     # given
-    fen_data = FenData()
+    fen_data = FenData(PiecesEnum.WHITE.value)
     expected = False
     color = PiecesEnum.BLACK.value
 
@@ -114,7 +114,7 @@ def test_can_king_castle_queen_side_and_you_can_not():
 
 def test_update_no_sack_and_pawn_count_increment():
     # given
-    fen_data = FenData()
+    fen_data = FenData(PiecesEnum.WHITE.value)
     expected = 1
 
     # when
@@ -127,7 +127,7 @@ def test_update_no_sack_and_pawn_count_increment():
 
 def test_update_no_sack_and_pawn_count_zero_counter():
     # given
-    fen_data = FenData()
+    fen_data = FenData(PiecesEnum.WHITE.value)
     expected = 0
 
     # when

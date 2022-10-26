@@ -1,31 +1,7 @@
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.Move import Move
-from game_window.moving.MoveValidator import MoveValidator
-
-
-def test_is_sliding_piece_it_is():
-    # given
-    piece = PiecesEnum.QUEEN.value
-    expected = True
-
-    # when
-    result = MoveValidator.is_sliding_piece(piece)
-
-    # then
-    assert expected == result
-
-
-def test_is_sliding_piece_it_is_not():
-    # given
-    piece = PiecesEnum.KING.value
-    expected = False
-
-    # when
-    result = MoveValidator.is_sliding_piece(piece)
-
-    # then
-    assert expected == result
 
 
 def test_get_attack_direction_left_white():
@@ -35,7 +11,7 @@ def test_get_attack_direction_left_white():
     color = PiecesEnum.WHITE.value
 
     # when
-    result = MoveValidator.get_attack_direction(color, direction, PiecesEnum.BLACK.value)
+    result = PawnUtil.get_attack_direction(color, direction, PiecesEnum.BLACK.value)
 
     # then
     assert expected == result
@@ -48,7 +24,7 @@ def test_get_attack_direction_right_black():
     color = PiecesEnum.BLACK.value
 
     # when
-    result = MoveValidator.get_attack_direction(color, direction, PiecesEnum.BLACK.value)
+    result = PawnUtil.get_attack_direction(color, direction, PiecesEnum.BLACK.value)
 
     # then
     assert expected == result
@@ -63,7 +39,7 @@ def test_is_pawn_promoting_white_pawn_is_promoting():
     expected = True
 
     # when
-    result = MoveValidator.is_pawn_promoting(move, color, PiecesEnum.WHITE.value)
+    result = PawnUtil.is_pawn_promoting(move, color, PiecesEnum.WHITE.value)
 
     # then
     assert expected == result
@@ -78,7 +54,7 @@ def test_is_pawn_promoting_it_is_not_pawn():
     expected = False
 
     # when
-    result = MoveValidator.is_pawn_promoting(move, color, PiecesEnum.WHITE.value)
+    result = PawnUtil.is_pawn_promoting(move, color, PiecesEnum.WHITE.value)
 
     # then
     assert expected == result
@@ -93,7 +69,8 @@ def test_is_pawn_promoting_black_pawn_is_promoting():
     expected = True
 
     # when
-    result = MoveValidator.is_pawn_promoting(move, color, PiecesEnum.WHITE.value)
+    result = PawnUtil.is_pawn_promoting(move, color, PiecesEnum.WHITE.value)
 
     # then
     assert expected == result
+    

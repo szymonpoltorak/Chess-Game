@@ -1,5 +1,6 @@
 from game_window.board.Board import Board
 from game_window.board.fen.FenFactory import FenFactory
+from game_window.board.fen.FenUtil import FenUtil
 from game_window.enums.PiecesEnum import PiecesEnum
 
 
@@ -10,7 +11,7 @@ def test_get_proper_letter_size_white_color():
     color = PiecesEnum.WHITE.value
 
     # when
-    result = FenFactory.get_proper_letter_size(color, letter)
+    result = FenUtil.get_proper_letter_size(color, letter)
 
     # then
     assert expected == result
@@ -23,7 +24,7 @@ def test_get_proper_letter_size_black_color():
     color = PiecesEnum.BLACK.value
 
     # when
-    result = FenFactory.get_proper_letter_size(color, letter)
+    result = FenUtil.get_proper_letter_size(color, letter)
 
     # then
     assert expected == result
@@ -35,7 +36,7 @@ def test_get_color_to_move_fen_letter_white_color():
     expected = " w"
 
     # when
-    result = FenFactory.get_color_to_move_fen_letter(color)
+    result = FenUtil.get_color_to_move_fen_letter(color)
 
     # then
     assert expected == result
@@ -47,7 +48,7 @@ def test_get_color_to_move_fen_letter_black_color():
     expected = " b"
 
     # when
-    result = FenFactory.get_color_to_move_fen_letter(color)
+    result = FenUtil.get_color_to_move_fen_letter(color)
 
     # then
     assert expected == result
@@ -59,7 +60,7 @@ def test_get_proper_color_value_white_piece():
     expected = PiecesEnum.WHITE.value
 
     # when
-    result = FenFactory.get_proper_color_value(piece)
+    result = FenUtil.get_proper_color_value(piece)
 
     # then
     assert expected == result
@@ -71,7 +72,7 @@ def test_get_proper_color_value_black_piece():
     expected = PiecesEnum.BLACK.value
 
     # when
-    result = FenFactory.get_proper_color_value(piece)
+    result = FenUtil.get_proper_color_value(piece)
 
     # then
     assert expected == result
@@ -85,7 +86,7 @@ def test_get_proper_piece_for_fen_white_pawn():
     expected = "P"
 
     # when
-    result = FenFactory.get_proper_piece_for_fen(board.get_board_array(), index, color)
+    result = FenUtil.get_proper_piece_for_fen(board.get_board_array(), index, color)
 
     # then
     assert expected == result
@@ -99,7 +100,7 @@ def test_get_proper_piece_for_fen_black_rook():
     expected = "r"
 
     # when
-    result = FenFactory.get_proper_piece_for_fen(board.get_board_array(), index, color)
+    result = FenUtil.get_proper_piece_for_fen(board.get_board_array(), index, color)
 
     # then
     assert expected == result
@@ -111,7 +112,7 @@ def test_add_castling_letters_to_fen_all_castling_possible():
     expected = " KQkq"
 
     # when
-    result = FenFactory.add_castling_letters_to_fen(board)
+    result = FenUtil.add_castling_letters_to_fen(board)
 
     # then
     assert expected == result
@@ -128,7 +129,7 @@ def test_add_castling_letters_to_fen_no_castling():
     board.get_fen_data().set_castling_queen_side(False, PiecesEnum.WHITE.value)
     board.get_fen_data().set_castling_queen_side(False, PiecesEnum.BLACK.value)
 
-    result = FenFactory.add_castling_letters_to_fen(board)
+    result = FenUtil.add_castling_letters_to_fen(board)
 
     # then
     assert expected == result
@@ -152,7 +153,7 @@ def test_convert_square_into_board_double_index_square_equals_negative_one():
     expected = " -"
 
     # when
-    result = FenFactory.convert_square_into_board_double_index(square)
+    result = FenUtil.convert_square_into_board_double_index(square)
 
     # then
     assert expected == result
@@ -164,7 +165,7 @@ def test_convert_square_into_board_double_index_square_equals_seven():
     expected = " h8"
 
     # when
-    result = FenFactory.convert_square_into_board_double_index(square)
+    result = FenUtil.convert_square_into_board_double_index(square)
 
     # then
     assert expected == result
