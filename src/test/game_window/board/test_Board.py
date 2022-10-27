@@ -1,4 +1,7 @@
+from typing import Tuple
+
 import pytest
+from numpy import ndarray
 
 from game_window.board.Board import Board
 from game_window.enums.PiecesEnum import PiecesEnum
@@ -10,9 +13,9 @@ from game_window.moving.Move import Move
 
 def test_should_this_piece_move_white_color_piece_should_move():
     # given
-    board = Board()
-    expected = True
-    row = 7
+    board: Board = Board()
+    expected: bool = True
+    row: int = 7
     col = 0
 
     # when
@@ -24,13 +27,13 @@ def test_should_this_piece_move_white_color_piece_should_move():
 
 def test_should_this_piece_move_black_color_piece_should_not_move():
     # given
-    board = Board()
-    expected = False
-    row = 0
-    col = 0
+    board: Board = Board()
+    expected: bool = False
+    row: int = 0
+    col: int = 0
 
     # when
-    result = board.should_this_piece_move(row, col)
+    result: int = board.should_this_piece_move(row, col)
 
     # then
     assert expected == result
@@ -38,9 +41,9 @@ def test_should_this_piece_move_black_color_piece_should_not_move():
 
 def test_should_this_piece_move_white_color_negative_values():
     # given
-    board = Board()
-    row = -7
-    col = -1
+    board: Board = Board()
+    row: int = -7
+    col: int = -1
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -51,9 +54,9 @@ def test_should_this_piece_move_white_color_negative_values():
 
 def test_should_this_piece_move_white_color_none_values():
     # given
-    board = Board()
-    row = None
-    col = None
+    board: Board = Board()
+    row: int = None
+    col: int = None
 
     # when
     with pytest.raises(NullArgumentException):
@@ -64,9 +67,9 @@ def test_should_this_piece_move_white_color_none_values():
 
 def test_add_piece_to_the_board_negative_values():
     # given
-    board = Board()
-    piece = -7
-    square = -1
+    board: Board = Board()
+    piece: int = -7
+    square: int = -1
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -77,9 +80,9 @@ def test_add_piece_to_the_board_negative_values():
 
 def test_add_piece_to_the_board_square_value_not_in_bonds():
     # given
-    board = Board()
-    square = -8
-    piece = 8
+    board: Board = Board()
+    square: int = -8
+    piece: int = 8
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -90,9 +93,9 @@ def test_add_piece_to_the_board_square_value_not_in_bonds():
 
 def test_add_piece_to_the_board_piece_and_square_are_none():
     # given
-    board = Board()
-    piece = None
-    square = None
+    board: Board = Board()
+    piece: int = None
+    square: int = None
 
     # when
     with pytest.raises(NullArgumentException):
@@ -103,9 +106,9 @@ def test_add_piece_to_the_board_piece_and_square_are_none():
 
 def test_add_piece_to_the_board_piece_not_exists():
     # given
-    board = Board()
-    square = 8
-    piece = 48
+    board: Board = Board()
+    square: int = 8
+    piece: int = 48
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -116,15 +119,15 @@ def test_add_piece_to_the_board_piece_not_exists():
 
 def test_add_piece_to_the_board_piece_proper_add():
     # given
-    board = Board()
+    board: Board = Board()
     board_array = board.get_board_array()
-    square = 8
-    piece = 18
-    expected = 18
+    square: int = 8
+    piece: int = 18
+    expected: int = 18
 
     # when
     board.add_piece_to_the_board(piece, square)
-    result = board_array[square]
+    result: int = board_array[square]
 
     # then
     assert expected == result
@@ -132,9 +135,9 @@ def test_add_piece_to_the_board_piece_proper_add():
 
 def test_delete_piece_from_board_none_values():
     # given
-    board = Board()
-    row = None
-    col = None
+    board: Board = Board()
+    row: int = None
+    col: int = None
 
     # when
     with pytest.raises(NullArgumentException):
@@ -145,9 +148,9 @@ def test_delete_piece_from_board_none_values():
 
 def test_delete_piece_from_board_values_not_with_bonds():
     # given
-    board = Board()
-    row = 86
-    col = -7
+    board: Board = Board()
+    row: int = 86
+    col: int = -7
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -158,12 +161,12 @@ def test_delete_piece_from_board_values_not_with_bonds():
 
 def test_set_opposite_color_sides():
     # given
-    board = Board()
-    expected = (PiecesEnum.BLACK.value, PiecesEnum.WHITE.value)
+    board: Board = Board()
+    expected: Tuple[int, int] = (PiecesEnum.BLACK.value, PiecesEnum.WHITE.value)
 
     # when
     board.set_opposite_color_sides()
-    result = board.get_player_color(), board.get_engine_color()
+    result: Tuple[int, int] = board.get_player_color(), board.get_engine_color()
 
     # then
     assert expected == result
@@ -171,21 +174,21 @@ def test_set_opposite_color_sides():
 
 def test_castle_king_proper_use():
     # given
-    board = Board()
-    board_array = board.get_board_array()
-    castling_move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
-    expected_rook_pos = 61
-    expected_king_pos = 62
-    rook = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
-    king = PiecesEnum.WHITE.value | PiecesEnum.KING.value
+    board: Board = Board()
+    board_array: ndarray[int] = board.get_board_array()
+    castling_move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
+    expected_rook_pos: int = 61
+    expected_king_pos: int = 62
+    rook: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
+    king: int = PiecesEnum.WHITE.value | PiecesEnum.KING.value
 
     board.delete_piece_from_board(6, 5)
     board.delete_piece_from_board(6, 6)
 
     # when
     board.castle_king(PiecesEnum.WHITE.value | PiecesEnum.KING.value, castling_move)
-    result_piece_on_rook_pos = board_array[expected_rook_pos]
-    result_piece_on_king_pos = board_array[expected_king_pos]
+    result_piece_on_rook_pos: int = board_array[expected_rook_pos]
+    result_piece_on_king_pos: int = board_array[expected_king_pos]
 
     # then
     assert rook == result_piece_on_rook_pos and king == result_piece_on_king_pos
@@ -193,8 +196,8 @@ def test_castle_king_proper_use():
 
 def test_castle_king_not_a_king():
     # given
-    board = Board()
-    castling_move = Move(60, 62, PiecesEnum.ROOK.value, -1)
+    board: Board = Board()
+    castling_move: Move = Move(60, 62, PiecesEnum.ROOK.value, -1)
 
     board.delete_piece_from_board(6, 5)
     board.delete_piece_from_board(6, 6)
@@ -208,8 +211,8 @@ def test_castle_king_not_a_king():
 
 def test_castle_king_not_castling_move():
     # given
-    board = Board()
-    castling_move = Move(60, 62, PiecesEnum.KING.value, -1)
+    board: Board = Board()
+    castling_move: Move = Move(60, 62, PiecesEnum.KING.value, -1)
 
     board.delete_piece_from_board(6, 5)
     board.delete_piece_from_board(6, 6)
@@ -223,7 +226,7 @@ def test_castle_king_not_castling_move():
 
 def test_castle_king_null_arguments():
     # given
-    board = Board()
+    board: Board = Board()
 
     board.delete_piece_from_board(6, 5)
     board.delete_piece_from_board(6, 6)
@@ -237,7 +240,7 @@ def test_castle_king_null_arguments():
 
 def test_un_castle_king_null_arguments():
     # given
-    board = Board()
+    board: Board = Board()
 
     # when
     with pytest.raises(NullArgumentException):
@@ -248,8 +251,8 @@ def test_un_castle_king_null_arguments():
 
 def test_un_castle_king_not_castling_move():
     # given
-    board = Board()
-    color = PiecesEnum.WHITE.value
+    board: Board = Board()
+    color: int = PiecesEnum.WHITE.value
     castling_move = Move(60, 62, PiecesEnum.KING.value, -1)
 
     # when
@@ -261,9 +264,9 @@ def test_un_castle_king_not_castling_move():
 
 def test_un_castle_king_not_existing_color():
     # given
-    board = Board()
-    color = 81
-    castling_move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
+    board: Board = Board()
+    color: int = 81
+    castling_move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -274,13 +277,13 @@ def test_un_castle_king_not_existing_color():
 
 def test_un_castle_king_proper_use():
     # given
-    board = Board()
-    board_array = board.get_board_array()
-    castling_move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
-    expected_rook_pos = 63
-    expected_king_pos = 60
-    rook = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
-    king = PiecesEnum.WHITE.value | PiecesEnum.KING.value
+    board: Board = Board()
+    board_array: ndarray[int] = board.get_board_array()
+    castling_move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
+    expected_rook_pos: int = 63
+    expected_king_pos: int = 60
+    rook: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
+    king: int = PiecesEnum.WHITE.value | PiecesEnum.KING.value
 
     board.delete_piece_from_board(6, 5)
     board.delete_piece_from_board(6, 6)
@@ -289,8 +292,8 @@ def test_un_castle_king_proper_use():
     board.castle_king(PiecesEnum.WHITE.value | PiecesEnum.KING.value, castling_move)
     board.un_castle_king(castling_move, PiecesEnum.WHITE.value)
 
-    result_piece_on_rook_pos = board_array[expected_rook_pos]
-    result_piece_on_king_pos = board_array[expected_king_pos]
+    result_piece_on_rook_pos: int = board_array[expected_rook_pos]
+    result_piece_on_king_pos: int = board_array[expected_king_pos]
 
     # then
     assert rook == result_piece_on_rook_pos and king == result_piece_on_king_pos

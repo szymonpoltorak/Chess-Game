@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Tuple
 
 
 class BoardEnum(Enum):
@@ -20,6 +21,6 @@ class BoardEnum(Enum):
 
     STARTING_POSITION: str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-    CENTER_SIDE_SQUARES: tuple[int, int] = (26, 29, 34, 37)
-    CENTER_MAIN_SQUARES: tuple[int, int] = (27, 28, 35, 36)
-    CENTER_SQUARES: tuple[int] = (26, 27, 28, 29, 34, 35, 36, 37)
+    CENTER_SIDE_SQUARES: Tuple[int, int] = (26, 29, 34, 37)
+    CENTER_MAIN_SQUARES: Tuple[int, int] = (27, 28, 35, 36)
+    CENTER_SQUARES: Tuple[int] = (26, 27, 28, 29, 34, 35, 36, 37)

@@ -1,5 +1,9 @@
+from typing import Tuple
+
 from numpy import array
 
+from game_window.exceptions.IllegalArgumentException import IllegalArgumentException
+from game_window.exceptions.NullArgumentException import NullArgumentException
 from game_window.moving.MoveData import MoveData
 
 
@@ -13,15 +17,15 @@ class FenData:
                        "__no_sack_and_pawn_count", "__player_color"], dtype=str)
 
     def __init__(self, player_color: int):
-        self.__white_castle_king = True
-        self.__white_castle_queen = True
-        self.__black_castle_king = True
-        self.__black_castle_queen = True
-        self.__en_passant_square = -1
-        self.__en_passant_piece_square = -1
-        self.__move_counter = 0
-        self.__no_sack_and_pawn_count = 0
-        self.__player_color = player_color
+        self.__white_castle_king: bool = True
+        self.__white_castle_queen: bool = True
+        self.__black_castle_king: bool = True
+        self.__black_castle_queen: bool = True
+        self.__en_passant_square: int = -1
+        self.__en_passant_piece_square: int = -1
+        self.__move_counter: int = 0
+        self.__no_sack_and_pawn_count: int = 0
+        self.__player_color: int = player_color
 
     def can_king_castle_king_side(self, color: int) -> bool:
         """
@@ -29,6 +33,10 @@ class FenData:
         :param color: int value of color
         :return: bool
         """
+        if color is None:
+            raise NullArgumentException("COLOR CANNOT BE NULL!")
+        if color not in (8, 16):
+            raise IllegalArgumentException("WRONG COLOR ARGUMENT!")
         return self.__white_castle_king if color == self.__player_color else self.__black_castle_king
 
     def can_king_castle_queen_side(self, color: int) -> bool:
@@ -37,6 +45,10 @@ class FenData:
         :param color: int value of color
         :return: bool
         """
+        if color is None:
+            raise NullArgumentException("COLOR CANNOT BE NULL!")
+        if color not in (8, 16):
+            raise IllegalArgumentException("WRONG COLOR ARGUMENT!")
         return self.__white_castle_queen if color == self.__player_color else self.__black_castle_queen
 
     def set_castling_king_side(self, can_castle: bool, color: int) -> None:
@@ -46,6 +58,11 @@ class FenData:
         :param color: int value of color
         :return: None
         """
+        if color is None or can_castle is None:
+            raise NullArgumentException("COLOR AND CAN_CASTLE CANNOT BE NULLS!")
+        if color not in (8, 16):
+            raise IllegalArgumentException("WRONG COLOR ARGUMENT!")
+
         if color == self.__player_color:
             self.__white_castle_king = can_castle
         else:
@@ -78,6 +95,9 @@ class FenData:
         :param to_zero: bool value if counter should be made 0 or not
         :return: None
         """
+        if to_zero is None:
+            raise NullArgumentException("ARGUMENTS CANNOT BE NULLS!")
+
         if to_zero:
             self.__no_sack_and_pawn_count = 0
             return
@@ -90,6 +110,11 @@ class FenData:
         :param color: int value of color
         :return: None
         """
+        if color is None or can_castle is None:
+            raise NullArgumentException("COLOR AND CAN_CASTLE CANNOT BE NULLS!")
+        if color not in (8, 16):
+            raise IllegalArgumentException("WRONG COLOR ARGUMENT!")
+
         if color == self.__player_color:
             self.__white_castle_queen = can_castle
         else:
@@ -101,6 +126,10 @@ class FenData:
         :param square: int value of end_square
         :return: None
         """
+        if square is None:
+            raise NullArgumentException("SQUARE CANNOT BE NULL!")
+        if square < 0 or square > 63:
+            raise IllegalArgumentException("SQUARE IS NOT WITHIN BONDS!")
         self.__en_passant_square = square
 
     def set_en_passant_piece_square(self, piece_square: int) -> None:
@@ -125,7 +154,7 @@ class FenData:
         """
         return self.__en_passant_piece_square
 
-    def get_special_move_data(self) -> tuple:
+    def get_special_move_data(self) -> Tuple:
         """
         Method used to return a tuple of special fen data for making and unmaking moves_list
         :return: tuple
@@ -138,6 +167,9 @@ class FenData:
         :param prev_fen_data: MoveData instance
         :return: None
         """
+        if prev_fen_data is None:
+            raise NullArgumentException("MOVE DATA CANNOT BE NULL!")
+
         self.__white_castle_king = prev_fen_data.white_castle_king
         self.__white_castle_queen = prev_fen_data.white_castle_queen
         self.__black_castle_king = prev_fen_data.black_castle_king

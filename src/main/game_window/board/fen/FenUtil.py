@@ -8,6 +8,9 @@ from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.exceptions.IllegalArgumentException import IllegalArgumentException
+from game_window.exceptions.IllegalStateException import IllegalStateException
+from game_window.exceptions.NullArgumentException import NullArgumentException
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -27,12 +30,17 @@ class FenUtil:
         :param moving_piece: int value of a moving piece
         :return: None
         """
+        if deleted_piece is None or fen_data is None or moving_piece is None:
+            raise NullArgumentException("ARGUMENTS CANNOT BE NULLS!")
+        if deleted_piece < 0 or moving_piece not in PiecesEnum.PIECES_TUPLE.value:
+            raise IllegalArgumentException("IMPOSSIBLE ARGUMENTS GIVEN!")
+
         if deleted_piece != 0 or moving_piece == PiecesEnum.PAWN.value:
             fen_data.update_no_sack_and_pawn_count(True)
         elif deleted_piece == 0 or moving_piece != PiecesEnum.PAWN.value:
             fen_data.update_no_sack_and_pawn_count(False)
         else:
-            raise ValueError("NOT POSSIBLE CONDITION OCCURRED! WRONG PARAMETERS")
+            raise IllegalStateException("NOT POSSIBLE CONDITION OCCURRED! WRONG PARAMETERS")
 
     @staticmethod
     def disable_castling_on_side(color: int, target_square: int, board: 'Board') -> None:
@@ -43,12 +51,19 @@ class FenUtil:
         :param board: Board instance
         :return: None
         """
+        if board is None or color is None or target_square is None:
+            raise NullArgumentException("METHOD ARGUMENTS CANNOT BE NULLS!")
+        if target_square < 0 or target_square > 63 or color not in (PiecesEnum.WHITE.value, PiecesEnum.BLACK.value):
+            raise IllegalArgumentException("ARGUMENTS ARE NOT WITHIN ACCEPTABLE BONDS!")
+
         fen_data: FenData = board.get_fen_data()
 
         if target_square in (MoveEnum.TOP_ROOK_QUEEN.value, MoveEnum.BOTTOM_ROOK_QUEEN.value):
             fen_data.set_castling_queen_side(False, color)
         elif target_square in (MoveEnum.TOP_ROOK_KING.value, MoveEnum.BOTTOM_ROOK_KING.value):
             fen_data.set_castling_king_side(False, color)
+        else:
+            raise IllegalStateException("WRONG ARGUMENTS MADE IMPOSSIBLE CASE!")
 
     @staticmethod
     def disable_castling_if_deleted_rook(deleted_piece: int, color: int, square: int, board: 'Board') -> None:
@@ -60,6 +75,12 @@ class FenUtil:
         :param board: Board instance
         :return: None
         """
+        if deleted_piece is None or color is None or square is None or board is None:
+            raise NullArgumentException("GIVEN ARGUMENTS CANNOT BE NULLS!")
+        if deleted_piece not in PiecesEnum.PIECES_TUPLE.value or square < 0 or square > 63 or color not in \
+                (PiecesEnum.WHITE.value, PiecesEnum.BLACK.value):
+            raise IllegalArgumentException("WRONG PARAMETERS GIVEN!")
+
         if deleted_piece == ColorManager.get_opposite_piece_color(color) | PiecesEnum.ROOK.value:
             FenUtil.disable_castling_on_side(ColorManager.get_opposite_piece_color(color), square, board)
 
@@ -105,10 +126,10 @@ class FenUtil:
         :param board: Board instance
         :return: str
         """
-        fen_data = board.get_fen_data()
-        king = "k"
-        queen = "q"
-        castle_string = " "
+        fen_data: FenData = board.get_fen_data()
+        king: str = "k"
+        queen: str = "q"
+        castle_string: str = " "
 
         if fen_data.can_king_castle_king_side(PiecesEnum.WHITE.value):
             castle_string = f"{castle_string}{FenUtil.get_proper_letter_size(PiecesEnum.WHITE.value, king)}"

@@ -2,6 +2,9 @@ from enum import Enum
 
 
 class EvalEnum(Enum):
+    """
+    Enum containing evaluation values for certain things
+    """
     QUEEN: int = 70
     BISHOP: int = 30
     KNIGHT: int = 25
