@@ -6,6 +6,7 @@ from numpy import zeros
 
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.exceptions.NullArgumentException import NullArgumentException
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -57,5 +58,7 @@ class BoardUtil:
         :param board: Board instance
         :return: bool
         """
+        if board is None:
+            raise NullArgumentException("BOARD CANNOT BE NULL!")
         return board.get_engine_color() == PiecesEnum.WHITE.value
 

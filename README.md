@@ -9,6 +9,7 @@ scene for party analysis, user profile, login screen, players list, settings and
 * Sass 1.54,
 * Css 3,
 * playsound 1.2.2,
+* coverage 6.5.0,
 * PyTest 1.7.3,
 * Numba 0.56.3,
 * NumPy 1.23.3.

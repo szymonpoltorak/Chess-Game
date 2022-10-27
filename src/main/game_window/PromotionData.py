@@ -7,6 +7,9 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class PromotionData:
+    """
+    CLass containing methods for pawn promotion
+    """
     __slots__ = array(["__piece_color", "__position_x", "__position_y", "__is_promoting", "__square"], dtype=str)
 
     def __init__(self):

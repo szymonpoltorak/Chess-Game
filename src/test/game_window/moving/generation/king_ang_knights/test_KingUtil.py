@@ -65,3 +65,4 @@ def test_get_castling_squares_move_distance_less_than_0():
 
     # then
     assert expected.all() == result.all()
+    

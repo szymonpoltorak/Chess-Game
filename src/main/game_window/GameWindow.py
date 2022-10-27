@@ -18,6 +18,7 @@ from game_window.engine.Evaluator import Evaluator
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.GameWindowUi import GameWindowUi
 from game_window.moving.EngineMover import EngineMover
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
@@ -228,13 +229,16 @@ class GameWindow(QWidget):
         :param color: int value of color
         :return: None
         """
-        if self.__current_move.get_moving_piece() == PiecesEnum.ROOK.value:
+        piece: int = self.__current_move.get_moving_piece()
+
+        if piece == PiecesEnum.ROOK.value:
             FenUtil.disable_castling_on_side(color, self.__current_move.get_start_square(), self.__board)
 
         if KingUtil.is_it_castling(self.__current_move):
+            self.__current_move.set_special_flag(SpecialFlags.CASTLING.value)
             self.__board.castle_king(self.__moving_piece, self.__current_move)
 
-        elif self.__current_move.get_moving_piece() == PiecesEnum.KING.value:
+        elif piece == PiecesEnum.KING.value:
             self.__board.get_fen_data().set_castling_king_side(False, color)
             self.__board.get_fen_data().set_castling_queen_side(False, color)
             self.__board.add_piece_to_the_board(self.__moving_piece, final_piece_index)

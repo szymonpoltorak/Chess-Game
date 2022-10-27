@@ -20,3 +20,5 @@ class PiecesEnum(Enum):
     SCALE_HEIGHT: int = 75
     SCALE_X: int = 5
     SCALE_Y: int = 5
+
+    PIECES_TUPLE: tuple[int] = (0, 1, 2, 3, 4, 5, 6)

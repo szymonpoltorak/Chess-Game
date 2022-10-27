@@ -16,6 +16,14 @@ class Move:
         self.__piece: int = piece
         self.__special_flag: int = special_flag
 
+    def set_special_flag(self, special_flag: int) -> None:
+        """
+        Method used to set the special flag
+        :param special_flag:
+        :return: None
+        """
+        self.__special_flag = special_flag
+
     def set_start_square(self, row: int or None, col: int or None) -> None:
         """
         Method to set row and col index of a start movement end_square
