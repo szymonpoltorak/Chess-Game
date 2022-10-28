@@ -11,8 +11,8 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.exceptions.IllegalArgumentException import IllegalArgumentException
-from game_window.exceptions.NullArgumentException import NullArgumentException
+from exceptions.IllegalArgumentException import IllegalArgumentException
+from exceptions.NullArgumentException import NullArgumentException
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from game_window.moving.generation.MoveGenerator import MoveGenerator
 from game_window.moving.Move import Move

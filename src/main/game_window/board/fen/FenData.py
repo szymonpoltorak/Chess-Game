@@ -2,8 +2,8 @@ from typing import Tuple
 
 from numpy import array
 
-from game_window.exceptions.IllegalArgumentException import IllegalArgumentException
-from game_window.exceptions.NullArgumentException import NullArgumentException
+from exceptions.IllegalArgumentException import IllegalArgumentException
+from exceptions.NullArgumentException import NullArgumentException
 from game_window.moving.MoveData import MoveData
 
 

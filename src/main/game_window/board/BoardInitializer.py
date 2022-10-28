@@ -1,5 +1,5 @@
 from numpy import array
-from numpy import int16
+from numpy import int8
 from numpy import ndarray
 from numpy import zeros
 
@@ -34,7 +34,7 @@ class BoardInitializer:
                              PiecesEnum.BLACK.value | PiecesEnum.PAWN.value,
                              PiecesEnum.BLACK.value | PiecesEnum.PAWN.value,
                              PiecesEnum.BLACK.value | PiecesEnum.PAWN.value,
-                             PiecesEnum.BLACK.value | PiecesEnum.PAWN.value])
+                             PiecesEnum.BLACK.value | PiecesEnum.PAWN.value], dtype=int8)
         return piece_array
 
     @staticmethod
@@ -58,7 +58,7 @@ class BoardInitializer:
                       PiecesEnum.WHITE.value | PiecesEnum.PAWN.value,
                       PiecesEnum.WHITE.value | PiecesEnum.PAWN.value,
                       PiecesEnum.WHITE.value | PiecesEnum.PAWN.value,
-                      PiecesEnum.WHITE.value | PiecesEnum.PAWN.value])
+                      PiecesEnum.WHITE.value | PiecesEnum.PAWN.value], dtype=int8)
 
     @staticmethod
     def init_starting_board(upper_color: int, down_color: int) -> ndarray[int]:
@@ -66,7 +66,7 @@ class BoardInitializer:
         Method initializes starting board.
         :return: board int array
         """
-        board: ndarray[int] = zeros(BoardEnum.BOARD_SIZE.value, dtype=int16)
+        board: ndarray[int] = zeros(BoardEnum.BOARD_SIZE.value, dtype=int8)
         index: int = 0
         engine_pieces: ndarray[int] = BoardInitializer.get_proper_pieces_arrays(upper_color)
         player_pieces: ndarray[int] = BoardInitializer.get_proper_pieces_arrays(down_color)

@@ -2,7 +2,7 @@ import pytest
 
 from game_window.board.Board import Board
 from game_window.board.BoardUtil import BoardUtil
-from game_window.exceptions.NullArgumentException import NullArgumentException
+from exceptions.NullArgumentException import NullArgumentException
 
 
 def test_is_board_inverted_board_is_inverted():

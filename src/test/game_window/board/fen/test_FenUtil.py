@@ -5,9 +5,8 @@ from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenUtil import FenUtil
 from game_window.ColorManager import ColorManager
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.exceptions.IllegalArgumentException import IllegalArgumentException
-from game_window.exceptions.IllegalStateException import IllegalStateException
-from game_window.exceptions.NullArgumentException import NullArgumentException
+from exceptions.IllegalArgumentException import IllegalArgumentException
+from exceptions.NullArgumentException import NullArgumentException
 
 
 def test_convert_square_into_board_double_index_square_equals_negative_one():

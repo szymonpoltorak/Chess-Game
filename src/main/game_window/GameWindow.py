@@ -143,7 +143,7 @@ class GameWindow(QWidget):
         end_square: int = self.__current_move.get_end_square()
         fen_data: FenData = self.__board.get_fen_data()
 
-        if not self.check_quit_release_event_functions(start_square, row, col, end_square, event):
+        if not self.check_quit_release_event_functions(start_square, row, col, end_square, event.x(), event.y()):
             return
         end_square: int = self.__current_move.get_end_square()
         fen_data.update_move_counter()
@@ -248,12 +248,13 @@ class GameWindow(QWidget):
         else:
             self.__board.add_piece_to_the_board(self.__moving_piece, final_piece_index)
 
-    def check_quit_release_event_functions(self, start_square: int, row: int, col: int, end_square: int, event) -> bool:
+    def check_quit_release_event_functions(self, start_square: int, row: int, col: int, end_square: int, x: int,
+                                           y: int) -> bool:
         """
         Method used to check conditions to end mouse event.
         """
         if self.__promotion_util.is_this_pawn_promoting():
-            self.__promotion_util.check_user_choice(event, self.__canvas.get_rect_height(), self.__board)
+            self.__promotion_util.check_user_choice(self.__canvas.get_rect_height(), self.__board, x, y)
             self.update_board_data()
             return False
 

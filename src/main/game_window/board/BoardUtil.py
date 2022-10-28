@@ -6,7 +6,7 @@ from numpy import zeros
 
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.exceptions.NullArgumentException import NullArgumentException
+from exceptions.NullArgumentException import NullArgumentException
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board

@@ -8,9 +8,9 @@ from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.exceptions.IllegalArgumentException import IllegalArgumentException
-from game_window.exceptions.IllegalStateException import IllegalStateException
-from game_window.exceptions.NullArgumentException import NullArgumentException
+from exceptions.IllegalArgumentException import IllegalArgumentException
+from exceptions import IllegalStateException
+from exceptions.NullArgumentException import NullArgumentException
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -78,10 +78,6 @@ class FenUtil:
         if square < 0 or square > 63 or color not in (PiecesEnum.WHITE.value, PiecesEnum.BLACK.value):
             raise IllegalArgumentException("WRONG PARAMETERS GIVEN!")
         enemy_color: int = ColorManager.get_opposite_piece_color(color)
-
-        if deleted_piece not in (enemy_color | 0, enemy_color | 1, enemy_color | 2, enemy_color | 3,
-                                 enemy_color | 4, enemy_color | 5, enemy_color | 6):
-            raise IllegalArgumentException("WRONG PARAMETERS GIVEN!")
 
         if deleted_piece == enemy_color | PiecesEnum.ROOK.value:
             FenUtil.disable_castling_on_side(enemy_color, square, board)

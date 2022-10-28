@@ -6,8 +6,8 @@ from numpy import ndarray
 from game_window.board.Board import Board
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.exceptions.IllegalArgumentException import IllegalArgumentException
-from game_window.exceptions.NullArgumentException import NullArgumentException
+from exceptions.IllegalArgumentException import IllegalArgumentException
+from exceptions.NullArgumentException import NullArgumentException
 from game_window.moving.Move import Move
 
 
