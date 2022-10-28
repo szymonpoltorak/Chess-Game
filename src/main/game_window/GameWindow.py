@@ -145,7 +145,7 @@ class GameWindow(QWidget):
 
         if not self.check_quit_release_event_functions(start_square, row, col, end_square, event):
             return
-
+        end_square: int = self.__current_move.get_end_square()
         fen_data.update_move_counter()
         deleted_piece: int = self.__board.delete_piece_from_board(row, col)
         final_piece_index: int = 8 * row + col
@@ -154,7 +154,9 @@ class GameWindow(QWidget):
         FenUtil.disable_castling_if_deleted_rook(deleted_piece, color, end_square, self.__board)
 
         self.handle_castling_event(final_piece_index, color)
-        deleted_piece: int = self.handle_pawn_special_events(event, color, final_piece_index, deleted_piece)
+
+        deleted_piece: int = self.handle_pawn_special_events(color, final_piece_index, deleted_piece,
+                                                             event.x(), event.y())
 
         self.play_proper_sound(deleted_piece)
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
@@ -187,11 +189,12 @@ class GameWindow(QWidget):
         self.__current_move = computer_move
         self.update()
 
-    def handle_pawn_special_events(self, mouse_event: QMouseEvent, color: int, piece_index: int,
-                                   deleted_piece: int) -> int:
+    def handle_pawn_special_events(self, color: int, piece_index: int, deleted_piece: int, mouse_x: int,
+                                   mouse_y: int) -> int:
         """
         Method used to handle every pawn special events
-        :param mouse_event: mouse release event
+        :param mouse_y: mouse x position int
+        :param mouse_x: mouse y position y
         :param color: int value of color
         :param piece_index: int value of piece index
         :param deleted_piece: value of deleted piece
@@ -203,7 +206,7 @@ class GameWindow(QWidget):
         moving_piece: int = self.__current_move.get_moving_piece()
 
         if PawnUtil.is_pawn_promoting(self.__current_move, color, self.__board.get_engine_color()):
-            self.__promotion_util.set_promotion_data(color, mouse_event.x(), mouse_event.y(), piece_index)
+            self.__promotion_util.set_promotion_data(color, mouse_x, mouse_y, piece_index)
 
         if PawnUtil.was_it_en_passant_move(self.__current_move, self.__board):
             self.__board.make_en_passant_capture(self.__moving_piece)

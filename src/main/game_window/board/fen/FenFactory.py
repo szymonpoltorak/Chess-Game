@@ -46,7 +46,7 @@ class FenFactory:
                 fen = f"{fen}/"
             current_element += BoardEnum.BOARD_LENGTH.value
         fen = f"{fen}{FenUtil.get_color_to_move_fen_letter(board.get_color_to_move())}"
-        fen = f"{fen}{FenUtil.add_castling_letters_to_fen(board)}"
+        fen = f"{fen}{FenUtil.add_castling_letters_to_fen(board.get_fen_data())}"
         fen = f"{fen}{FenUtil.convert_square_into_board_double_index(board.get_fen_data().get_en_passant_square())}"
         fen = f"{fen} {board.get_fen_data().get_no_sack_and_pawn_count()} {board.get_fen_data().get_move_counter()}"
 

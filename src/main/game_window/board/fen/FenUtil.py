@@ -62,8 +62,6 @@ class FenUtil:
             fen_data.set_castling_queen_side(False, color)
         elif target_square in (MoveEnum.TOP_ROOK_KING.value, MoveEnum.BOTTOM_ROOK_KING.value):
             fen_data.set_castling_king_side(False, color)
-        else:
-            raise IllegalStateException("WRONG ARGUMENTS MADE IMPOSSIBLE CASE!")
 
     @staticmethod
     def disable_castling_if_deleted_rook(deleted_piece: int, color: int, square: int, board: 'Board') -> None:
@@ -77,12 +75,16 @@ class FenUtil:
         """
         if deleted_piece is None or color is None or square is None or board is None:
             raise NullArgumentException("GIVEN ARGUMENTS CANNOT BE NULLS!")
-        if deleted_piece not in PiecesEnum.PIECES_TUPLE.value or square < 0 or square > 63 or color not in \
-                (PiecesEnum.WHITE.value, PiecesEnum.BLACK.value):
+        if square < 0 or square > 63 or color not in (PiecesEnum.WHITE.value, PiecesEnum.BLACK.value):
+            raise IllegalArgumentException("WRONG PARAMETERS GIVEN!")
+        enemy_color: int = ColorManager.get_opposite_piece_color(color)
+
+        if deleted_piece not in (enemy_color | 0, enemy_color | 1, enemy_color | 2, enemy_color | 3,
+                                 enemy_color | 4, enemy_color | 5, enemy_color | 6):
             raise IllegalArgumentException("WRONG PARAMETERS GIVEN!")
 
-        if deleted_piece == ColorManager.get_opposite_piece_color(color) | PiecesEnum.ROOK.value:
-            FenUtil.disable_castling_on_side(ColorManager.get_opposite_piece_color(color), square, board)
+        if deleted_piece == enemy_color | PiecesEnum.ROOK.value:
+            FenUtil.disable_castling_on_side(enemy_color, square, board)
 
     @staticmethod
     def convert_square_into_board_double_index(square: int) -> str:
@@ -91,6 +93,10 @@ class FenUtil:
         :param square: int value of end_square
         :return: str
         """
+        if square is None:
+            raise NullArgumentException("SQUARE CANNOT BE NULL!")
+        if square < -1 or square > 63:
+            raise IllegalArgumentException("SQUARE IS NOT WITHIN ACCEPTABLE BONDS!")
         if square == -1:
             return " -"
 
@@ -107,6 +113,10 @@ class FenUtil:
         :param color: int value of color
         :return: str
         """
+        if color is None:
+            raise NullArgumentException("COLOR CANNOT BE NULL!")
+        if color not in (PiecesEnum.BLACK.value, PiecesEnum.WHITE.value):
+            raise IllegalArgumentException("SUCH COLOR DOES NOT EXIST!")
         return " w" if color == PiecesEnum.WHITE.value else " b"
 
     @staticmethod
@@ -117,16 +127,21 @@ class FenUtil:
         :param letter: str
         :return: str
         """
+        if color is None or letter is None:
+            raise NullArgumentException("COLOR AND LETTER CANNOT BE NULLS!")
+        if color not in (PiecesEnum.BLACK.value, PiecesEnum.WHITE.value):
+            raise IllegalArgumentException("SUCH COLOR DOES NOT EXIST!")
         return letter.upper() if color == PiecesEnum.WHITE.value else letter
 
     @staticmethod
-    def add_castling_letters_to_fen(board: 'Board') -> str:
+    def add_castling_letters_to_fen(fen_data: FenData) -> str:
         """
         Method to get proper letters representing castling capabilities of kings
-        :param board: Board instance
+        :param fen_data: FenData instance
         :return: str
         """
-        fen_data: FenData = board.get_fen_data()
+        if fen_data is None:
+            raise NullArgumentException("FEN DATA CANNOT BE NULL!")
         king: str = "k"
         queen: str = "q"
         castle_string: str = " "
@@ -144,15 +159,6 @@ class FenUtil:
         return castle_string
 
     @staticmethod
-    def get_proper_color_value(piece_value: int) -> int:
-        """
-        Gives proper color value based on piece_square value.
-        :param piece_value: int piece_square value
-        :return: piece_square color value
-        """
-        return PiecesEnum.WHITE.value if piece_value - PiecesEnum.BLACK.value < 0 else PiecesEnum.BLACK.value
-
-    @staticmethod
     def get_proper_piece_for_fen(board: ndarray[int], index: int, color_value: int) -> str:
         """
         Gets proper fen letter for board int array.
@@ -161,6 +167,11 @@ class FenUtil:
         :param color_value: int value of color
         :return: proper str letter
         """
+        if board is None or None in (board.any(), index, color_value):
+            raise NullArgumentException("ARGUMENTS CANNOT BE NULLS!")
+        if index < 0 or index > 63 or color_value not in (PiecesEnum.BLACK.value, PiecesEnum.WHITE.value):
+            raise IllegalArgumentException("ARGUMENTS ARE WITHIN NORMAL BONDS!")
+
         piece = board[index]
         piece_letters = {
             color_value | PiecesEnum.PAWN.value: "p",
