@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Iterator
 
 from numpy import ndarray
 
@@ -28,7 +29,7 @@ class MoveList:
         """
         return self.free_index == 0
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         return self.moves.__iter__()
 
     def __contains__(self, move: Move) -> bool:

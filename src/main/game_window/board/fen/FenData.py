@@ -1,9 +1,10 @@
-from typing import Tuple
+from typing import Tuple, Optional
 
 from numpy import array
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
+from game_window.ColorManager import ColorManager
 from game_window.moving.MoveData import MoveData
 
 
@@ -17,17 +18,17 @@ class FenData:
                        "__no_sack_and_pawn_count", "__player_color"], dtype=str)
 
     def __init__(self, player_color: int):
-        self.__white_castle_king: bool = True
-        self.__white_castle_queen: bool = True
-        self.__black_castle_king: bool = True
-        self.__black_castle_queen: bool = True
-        self.__en_passant_square: int = -1
-        self.__en_passant_piece_square: int = -1
+        self.__white_castle_king: Optional[bool] = True
+        self.__white_castle_queen: Optional[bool] = True
+        self.__black_castle_king: Optional[bool] = True
+        self.__black_castle_queen: Optional[bool] = True
+        self.__en_passant_square: Optional[int] = -1
+        self.__en_passant_piece_square: Optional[int] = -1
         self.__move_counter: int = 0
         self.__no_sack_and_pawn_count: int = 0
         self.__player_color: int = player_color
 
-    def can_king_castle_king_side(self, color: int) -> bool:
+    def can_king_castle_king_side(self, color: int) -> Optional[bool]:
         """
         Returns if king can castle on king side
         :param color: int value of color
@@ -35,11 +36,11 @@ class FenData:
         """
         if color is None:
             raise NullArgumentException("COLOR CANNOT BE NULL!")
-        if color not in (8, 16):
+        if not ColorManager.is_it_valid_color(color):
             raise IllegalArgumentException("WRONG COLOR ARGUMENT!")
         return self.__white_castle_king if color == self.__player_color else self.__black_castle_king
 
-    def can_king_castle_queen_side(self, color: int) -> bool:
+    def can_king_castle_queen_side(self, color: int) -> Optional[bool]:
         """
         Returns if king can castle on queen side
         :param color: int value of color
@@ -140,26 +141,29 @@ class FenData:
         """
         self.__en_passant_piece_square = piece_square
 
-    def get_en_passant_square(self) -> int:
+    def get_en_passant_square(self) -> Optional[int]:
         """
         Gives access to an en passant end_square value
-        :return:
+        :return: int value of en passant square
         """
         return self.__en_passant_square
 
-    def get_en_passant_piece_square(self) -> int:
+    def get_en_passant_piece_square(self) -> Optional[int]:
         """
         Gives access to an en passant piece end_square value
-        :return:
+        :return: int value of an en passant target square
         """
         return self.__en_passant_piece_square
 
-    def get_special_move_data(self) -> Tuple:
+    def get_special_move_data(self) -> Tuple[Optional[bool], Optional[bool], Optional[bool], Optional[bool],
+                                             Optional[int], Optional[int]]:
+        # TODO MAKE IT RETURN MOVEDATA INSTANCE
         """
         Method used to return a tuple of special fen data for making and unmaking moves_list
         :return: tuple
         """
-        return self.__white_castle_king, self.__white_castle_queen, self.__black_castle_king, self.__black_castle_queen, self.__en_passant_square, self.__en_passant_piece_square
+        return self.__white_castle_king, self.__white_castle_queen, self.__black_castle_king, self.__black_castle_queen,\
+               self.__en_passant_square, self.__en_passant_piece_square
 
     def update_fen_data(self, prev_fen_data: MoveData) -> None:
         """
@@ -177,7 +181,7 @@ class FenData:
         self.__en_passant_square = prev_fen_data.en_passant_square
         self.__en_passant_piece_square = prev_fen_data.en_passant_piece_square
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, FenData):
             return False
         if self.__player_color != other.__player_color or self.__en_passant_square != other.__en_passant_square:
@@ -190,7 +194,7 @@ class FenData:
             return False
         return self.__black_castle_king == other.__black_castle_king
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash((self.__black_castle_king, self.__black_castle_queen, self.__white_castle_queen, self.__white_castle_king,
                      self.__move_counter, self.__no_sack_and_pawn_count, self.__en_passant_piece_square,
                      self.__en_passant_square, self.__player_color))

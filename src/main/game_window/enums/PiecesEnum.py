@@ -22,4 +22,4 @@ class PiecesEnum(Enum):
     SCALE_X: int = 5
     SCALE_Y: int = 5
 
-    PIECES_TUPLE: Tuple[int] = (0, 1, 2, 3, 4, 5, 6)
+    PIECES_TUPLE: Tuple[int, ...] = (0, 1, 2, 3, 4, 5, 6)

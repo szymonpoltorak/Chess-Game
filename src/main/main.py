@@ -5,7 +5,7 @@ from PyQt5.QtWidgets import QApplication
 from game_window.GameWindow import GameWindow
 
 
-def main():
+def main() -> None:
     app = QApplication(sys.argv)
     window = GameWindow()
     window.show()
@@ -13,7 +13,7 @@ def main():
     sys.exit(app.exec_())
 
 
-def except_hook(cls, exception, traceback):
+def except_hook(cls, exception, traceback) -> None:
     sys.__excepthook__(cls, exception, traceback)
 
 

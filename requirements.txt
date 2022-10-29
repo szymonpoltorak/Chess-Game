@@ -2,5 +2,6 @@ PyQt5~=5.15.7
 numba~=0.56.3
 numpy~=1.23.3
 playsound~=1.2.2
-pytest~=7.1.3
+pytest~=7.2.0
 coverage~=6.5.0
+mypy~=0.982

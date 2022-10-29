@@ -5,7 +5,7 @@ from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QWidget, QPushButton
 
 from game_window.enums.GameWindowEnum import GameWindowEnum
 from game_window.Sidebar import Sidebar
@@ -182,8 +182,8 @@ class GameWindowUi:
         """
         return self.__side_bar
 
-    def get_new_game_button(self):
+    def get_new_game_button(self) -> QPushButton:
         return self.__new_game_button
 
-    def get_switch_side_button(self):
+    def get_switch_side_button(self) -> QPushButton:
         return self.__switch_side_button

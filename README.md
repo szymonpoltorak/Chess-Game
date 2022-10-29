@@ -3,6 +3,12 @@
 Chess Engine made w GUI. Programme will cover the engine itself written in python, gui written in PyQt5. Gui will cover
 scene for party analysis, user profile, login screen, players list, settings and of course new game.
 
+## Table Of Contents
+1. [Technology Stack](#technology-stack)
+2. [How to install necessary dependencies](#how-to-install-necessary-dependencies)
+3. [Credits to Authors](#credits-to-authors)
+4. [Troubleshooting](#troubleshooting)
+
 ## Technology Stack
 * PyQt 5.15.7,
 * Python 3.10,
@@ -12,6 +18,7 @@ scene for party analysis, user profile, login screen, players list, settings and
 * coverage 6.5.0,
 * PyTest 1.7.3,
 * Numba 0.56.3,
+* mypy 0.982,
 * NumPy 1.23.3.
 
 ## How to install necessary dependencies
@@ -66,7 +73,8 @@ educational purposes.
 **Chess Sound**
 * [Source](https://github.com/lichess-org/lila/tree/38bfadac3e319516341771086e8edc594d4d4b07).
 
-## What if test coverage does not work for you ?
+## Troubleshooting
+* **What if test coverage does not work for you ?**
 
 You have edit `run_coverage.py` from this :
 ```python
@@ -92,3 +100,8 @@ for arg in sys.argv:
 sys.argv = argv
 ```
 [Source](https://youtrack.jetbrains.com/issue/PY-48213)
+
+* **I am getting FileNotFoundError with paths.** 
+
+The problem is you have bad project settings. If you are using pycharm go to run configuration
+and edit `Working Directory` to `<path to Chess-Game>/Chess-Game` and it will fix this issue.

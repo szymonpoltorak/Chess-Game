@@ -21,7 +21,7 @@ class Sidebar:
                        "__profile_horizontal_layout", "__profile_menu", "__players_frame",
                        "__players_horizontal_layout", "__players_menu"], dtype=str)
 
-    def __init__(self, game_window: QWidget):
+    def __init__(self, game_window: QWidget) -> None:
         self.__side_bar = QtWidgets.QFrame(game_window)
         self.__side_bar.setGeometry(QtCore.QRect(SidebarEnum.SIDEBAR_X.value, SidebarEnum.SIDEBAR_Y.value,
                                                  SidebarEnum.SIDEBAR_WIDTH.value, SidebarEnum.SIDEBAR_HEIGHT.value))
@@ -42,7 +42,7 @@ class Sidebar:
         self.__init_profile()
         self.__init_settings()
 
-    def __init_settings(self):
+    def __init_settings(self) -> None:
         """
         Initializes settings menu option and its icon.
         :return: None
@@ -65,7 +65,7 @@ class Sidebar:
         self.__settings_menu.setToolTip("Settings")
         self.__side_bar_vertical_layout.addWidget(self.__settings_frame)
 
-    def __init_play(self):
+    def __init_play(self) -> None:
         """
         Initializes play menu option and its icon.
         :return: None
@@ -94,7 +94,7 @@ class Sidebar:
         self.__play_horizontal_layout.addWidget(self.__play_menu)
         self.__side_bar_vertical_layout.addWidget(self.__play_frame)
 
-    def __init_analysis(self):
+    def __init_analysis(self) -> None:
         """
         Initializes analysis menu option and its icon.
         :return: None
@@ -117,7 +117,7 @@ class Sidebar:
         self.__analyze_horizontal_layout.addWidget(self.__analysis_menu)
         self.__side_bar_vertical_layout.addWidget(self.__analysis_frame)
 
-    def __init_profile(self):
+    def __init_profile(self) -> None:
         """
         Initializes profile menu option and its icon.
         :return: None
@@ -140,7 +140,7 @@ class Sidebar:
         self.__profile_horizontal_layout.addWidget(self.__profile_menu)
         self.__side_bar_vertical_layout.addWidget(self.__profile_frame)
 
-    def __init_players(self):
+    def __init_players(self) -> None:
         """
         Initializes players menu option and its icon.
         :return: None
@@ -163,7 +163,7 @@ class Sidebar:
         self.__players_horizontal_layout.addWidget(self.__players_menu)
         self.__side_bar_vertical_layout.addWidget(self.__players_frame)
 
-    def __frame_menu_first_setup(self, frame: QFrame):
+    def __frame_menu_first_setup(self, frame: QFrame) -> None:
         frame.setMinimumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
                                           SidebarEnum.SIDEBAR_ICON_FRAME_HEIGHT.value))
         frame.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_FRAME_WIDTH.value,
