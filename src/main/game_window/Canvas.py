@@ -12,6 +12,7 @@ from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
+from game_window.enums.Paths import Paths
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.moving.Move import Move
 from game_window.PromotionData import PromotionData
@@ -166,7 +167,7 @@ class Canvas(QPainter):
             return current_x
         except ValueError:
             piece = piece_letter.upper()
-            pieces_path = "src/resources/images/pieces/"
+            pieces_path = Paths.PIECES_PATH.value
             extension = ".png"
 
             if piece_letter.isupper():
@@ -198,7 +199,7 @@ class Canvas(QPainter):
                 current_square = BoardEnum.BOARD_LENGTH.value * row + col
                 legal_moves = board.get_legal_moves()
 
-                for legal_move in legal_moves.moves:
+                for legal_move in legal_moves:
                     if legal_move is None:
                         break
                     if self.is_it_frozen_piece_target_square(legal_move, current_square):

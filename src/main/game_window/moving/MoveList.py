@@ -20,3 +20,16 @@ class MoveList:
         """
         self.moves[self.free_index] = move
         self.free_index += 1
+
+    def is_empty(self) -> bool:
+        """
+        Method used to check if move list is empty
+        :return: bool
+        """
+        return self.free_index == 0
+
+    def __iter__(self):
+        return self.moves.__iter__()
+
+    def __contains__(self, move: Move) -> bool:
+        return move in self.moves

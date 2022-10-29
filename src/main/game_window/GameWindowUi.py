@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QWidget
 
 from game_window.enums.GameWindowEnum import GameWindowEnum
 from game_window.Sidebar import Sidebar
+from game_window.enums.Paths import Paths
 
 
 class GameWindowUi:
@@ -27,8 +28,7 @@ class GameWindowUi:
         game_window.resize(GameWindowEnum.WINDOW_WIDTH.value, GameWindowEnum.WINDOW_HEIGHT.value)
 
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("src/resources/images/ui_icons/chess_icon.png"), QtGui.QIcon.Normal,
-                       QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(Paths.WINDOW_ICON.value), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         game_window.setWindowIcon(icon)
         game_window.setLocale(QtCore.QLocale(QtCore.QLocale.English, QtCore.QLocale.UnitedStates))
         game_window.setMinimumSize(QtCore.QSize(GameWindowEnum.WINDOW_WIDTH.value, GameWindowEnum.WINDOW_HEIGHT.value))
@@ -76,7 +76,7 @@ class GameWindowUi:
                                                   GameWindowEnum.USER_ICON_Y.value,
                                                   GameWindowEnum.USER_ICON_WIDTH.value,
                                                   GameWindowEnum.USER_ICON_HEIGHT.value))
-        self.__user_icon.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/user.png"))
+        self.__user_icon.setPixmap(QtGui.QPixmap(Paths.USER_ICON.value))
         self.__user_icon.setScaledContents(True)
         self.__user_icon.setObjectName("__user_icon")
 
@@ -101,7 +101,7 @@ class GameWindowUi:
                                                     GameWindowEnum.ENGINE_ICON_Y.value,
                                                     GameWindowEnum.ENGINE_ICON_WIDTH.value,
                                                     GameWindowEnum.ENGINE_ICON_HEIGHT.value))
-        self.__engine_icon.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/engine.svg"))
+        self.__engine_icon.setPixmap(QtGui.QPixmap(Paths.ENGINE_ICON.value))
         self.__engine_icon.setScaledContents(True)
         self.__engine_icon.setObjectName("__engine_icon")
 

@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 
 from numba import jit
 
+from exceptions.IllegalArgumentException import IllegalArgumentException
+from exceptions.NullArgumentException import NullArgumentException
 from game_window.ColorManager import ColorManager
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
@@ -22,7 +24,7 @@ class SlidingPiecesGen:
 
     @staticmethod
     @jit(forceobj=True)
-    def generate_sliding_piece_move(piece: int, start_square: int, moves_list: MoveList, color: int, board: 'Board') -> None:
+    def generate_sliding_piece_moves(piece: int, start_square: int, moves_list: MoveList, color: int, board: 'Board') -> None:
         """
         Static method used to generate moves_list for sliding pieces
         :param piece: int value of piece_square
@@ -32,9 +34,15 @@ class SlidingPiecesGen:
         :param board: Board instance
         :return: None
         """
+        if None in (piece, start_square, moves_list, color, board):
+            raise NullArgumentException("CANNOT GENERATE MOVES WHILE ARGS ARE NULLS!")
+        if not ColorManager.is_it_valid_color(color) or piece not in PiecesEnum.PIECES_TUPLE.value or start_square > 63 \
+                or start_square < 0:
+            raise IllegalArgumentException("GIVEN ARGS ARE NOT WITHIN BONDS!")
+
         for direction in range(MoveEnum.SLIDING_DIRECTIONS_NUMBER.value):
             for direction_step in range(board.get_distances()[start_square][direction]):
-                if not SlidingPiecesGen.is_it_sliding_piece(piece, MoveEnum.SLIDING_DIRECTIONS.value[direction]):
+                if not SlidingPiecesGen.is_it_sliding_piece_move(piece, MoveEnum.SLIDING_DIRECTIONS.value[direction]):
                     continue
                 move_target: int = start_square + MoveEnum.SLIDING_DIRECTIONS.value[direction] * (direction_step + 1)
                 piece_on_move_target: int = board.get_board_array()[move_target]
@@ -47,13 +55,17 @@ class SlidingPiecesGen:
                     break
 
     @staticmethod
-    def is_it_sliding_piece(piece: int, direction: int) -> bool:
+    def is_it_sliding_piece_move(piece: int, direction: int) -> bool:
         """
         Static method used to check if this move should be calculated
         :param piece: int value of piece_square
         :param direction: int value of direction
         :return: bool value of if move should be calculated or not
         """
+        if piece is None or direction is None:
+            raise NullArgumentException("ARGUMENTS CANNOT BE NULLS!")
+        if not SlidingPiecesGen.is_sliding_piece(piece) or direction not in MoveEnum.SLIDING_DIRECTIONS.value:
+            raise IllegalArgumentException("WRONG ARGUMENTS GIVEN TO METHOD!")
         diagonal_pieces: tuple[int, int] = (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value)
         diagonal_directions: tuple[int, int, int, int] = (MoveEnum.TOP_LEFT.value, MoveEnum.TOP_RIGHT.value,
                                                           MoveEnum.BOTTOM_LEFT.value, MoveEnum.BOTTOM_RIGHT.value)
@@ -73,5 +85,7 @@ class SlidingPiecesGen:
         :param piece: int value of piece_square
         :return: bool value of if piece_square is sliding piece_square or not
         """
+        if piece is None:
+            raise NullArgumentException("PIECE CANNOT BE NULL!")
         return piece in (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value, PiecesEnum.ROOK.value)
 

@@ -261,7 +261,7 @@ def test_set_en_passant_square_nulls():
 def test_set_en_passant_square_is_not_within_bonds():
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
-    square = -1
+    square = -2
 
     # when
     with pytest.raises(IllegalArgumentException):

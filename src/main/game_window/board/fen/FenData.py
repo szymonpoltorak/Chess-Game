@@ -128,7 +128,7 @@ class FenData:
         """
         if square is None:
             raise NullArgumentException("SQUARE CANNOT BE NULL!")
-        if square < 0 or square > 63:
+        if square < -1 or square > 63:
             raise IllegalArgumentException("SQUARE IS NOT WITHIN BONDS!")
         self.__en_passant_square = square
 

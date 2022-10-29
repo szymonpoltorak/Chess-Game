@@ -40,7 +40,7 @@ class Engine:
             return -inf if color == board.get_engine_color() else inf
         evaluation: int = -inf
 
-        for move in moves_list.moves:
+        for move in moves_list:
             if move is None:
                 break
             deleted_data: MoveData = MoveMaker.make_move(move, color, board)
@@ -69,7 +69,7 @@ class Engine:
         beta: int = -inf
         best_move: Move or None = None
 
-        for move in moves_list.moves:
+        for move in moves_list:
             if move is None:
                 break
 

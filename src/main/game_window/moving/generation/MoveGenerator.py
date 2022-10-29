@@ -38,7 +38,7 @@ class MoveGenerator:
         pseudo_legal_moves: MoveList = MoveGenerator.generate_moves(color_to_move, board)
         legal_moves: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object), 0)
 
-        for move_to_verify in pseudo_legal_moves.moves:
+        for move_to_verify in pseudo_legal_moves:
             if move_to_verify is None:
                 break
             is_it_valid_move: bool = True
@@ -46,7 +46,7 @@ class MoveGenerator:
             opponent_moves: MoveList = MoveGenerator.generate_moves(ColorManager.get_opposite_piece_color(color_to_move), board)
             kings_square: int = KingUtil.find_friendly_king_squares(board.get_board_array(), color_to_move)
 
-            for move in opponent_moves.moves:
+            for move in opponent_moves:
                 special_flag: int = move_to_verify.get_special_flag_value()
 
                 if move is None:
@@ -84,7 +84,7 @@ class MoveGenerator:
                 continue
 
             if SlidingPiecesGen.is_sliding_piece(piece):
-                SlidingPiecesGen.generate_sliding_piece_move(piece, square, moves_list, color_to_move, board)
+                SlidingPiecesGen.generate_sliding_piece_moves(piece, square, moves_list, color_to_move, board)
             elif piece == PiecesEnum.KNIGHT.value or piece == PiecesEnum.KING.value:
                 KingKnightGen.generate_moves_for_knight_and_king(moves_list, piece, color_to_move, board, square)
             elif piece == PiecesEnum.PAWN.value:

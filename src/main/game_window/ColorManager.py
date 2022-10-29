@@ -49,3 +49,12 @@ class ColorManager:
         """
         return BoardEnum.SECONDARY_BOARD_COLOR.value if color == BoardEnum.PRIMARY_BOARD_COLOR.value else \
             BoardEnum.PRIMARY_BOARD_COLOR.value
+
+    @staticmethod
+    def is_it_valid_color(color: int) -> bool:
+        """
+        Methods returns if piece color is a valid one
+        :param color: int value of color
+        :return: bool
+        """
+        return color in (PiecesEnum.BLACK.value, PiecesEnum.WHITE.value)

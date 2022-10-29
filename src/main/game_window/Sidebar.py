@@ -6,6 +6,7 @@ from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QFrame
 from PyQt5.QtWidgets import QWidget
 
+from game_window.enums.Paths import Paths
 from game_window.enums.SidebarEnum import SidebarEnum
 
 
@@ -57,7 +58,7 @@ class Sidebar:
         self.__settings_menu.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__settings_menu.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_WIDTH.value,
                                                          SidebarEnum.SIDEBAR_ICON_HEIGHT.value))
-        self.__settings_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/settings.svg"))
+        self.__settings_menu.setPixmap(QtGui.QPixmap(Paths.SETTINGS_ICON.value))
         self.__settings_menu.setScaledContents(True)
         self.__settings_menu.setObjectName("__settings_menu")
         self.__settings_horizontal_layout.addWidget(self.__settings_menu)
@@ -86,7 +87,7 @@ class Sidebar:
         self.__play_menu.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__play_menu.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_WIDTH.value,
                                                      SidebarEnum.SIDEBAR_ICON_HEIGHT.value))
-        self.__play_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/play.svg"))
+        self.__play_menu.setPixmap(QtGui.QPixmap(Paths.PLAY_ICON.value))
         self.__play_menu.setScaledContents(True)
         self.__play_menu.setObjectName("__play_menu")
         self.__play_menu.setToolTip("Play a game")
@@ -109,7 +110,7 @@ class Sidebar:
         self.__analysis_menu.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__analysis_menu.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_WIDTH.value,
                                                          SidebarEnum.SIDEBAR_ICON_HEIGHT.value))
-        self.__analysis_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/analysis.svg"))
+        self.__analysis_menu.setPixmap(QtGui.QPixmap(Paths.ANALYSIS_ICON.value))
         self.__analysis_menu.setScaledContents(True)
         self.__analysis_menu.setObjectName("__analysis_menu")
         self.__analysis_menu.setToolTip("Analyze Parties")
@@ -132,7 +133,7 @@ class Sidebar:
         self.__profile_menu.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__profile_menu.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_WIDTH.value,
                                                         SidebarEnum.SIDEBAR_ICON_HEIGHT.value))
-        self.__profile_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/profile.svg"))
+        self.__profile_menu.setPixmap(QtGui.QPixmap(Paths.PROFILE_ICON.value))
         self.__profile_menu.setScaledContents(True)
         self.__profile_menu.setObjectName("__profile_menu")
         self.__profile_menu.setToolTip("Your Profile")
@@ -155,7 +156,7 @@ class Sidebar:
         self.__players_menu.setCursor(QCursor(QtCore.Qt.PointingHandCursor))
         self.__players_menu.setMaximumSize(QtCore.QSize(SidebarEnum.SIDEBAR_ICON_WIDTH.value,
                                                         SidebarEnum.SIDEBAR_ICON_HEIGHT.value))
-        self.__players_menu.setPixmap(QtGui.QPixmap("src/resources/images/ui_icons/players.svg"))
+        self.__players_menu.setPixmap(QtGui.QPixmap(Paths.PLAYERS_ICON.value))
         self.__players_menu.setScaledContents(True)
         self.__players_menu.setObjectName("__players_menu")
         self.__players_menu.setToolTip("Player array")

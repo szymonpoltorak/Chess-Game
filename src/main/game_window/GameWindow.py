@@ -1,3 +1,5 @@
+from pathlib import Path, PureWindowsPath
+
 from numpy import array
 from playsound import playsound
 from PyQt5 import QtCore
@@ -17,6 +19,7 @@ from game_window.engine.Engine import Engine
 from game_window.engine.Evaluator import Evaluator
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
+from game_window.enums.Paths import Paths
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.GameWindowUi import GameWindowUi
@@ -47,7 +50,7 @@ class GameWindow(QWidget):
         self.__current_move: Move = Move(None, None, None, -1)
         self.__promotion_util: PromotionData = PromotionData()
 
-        with open("src/resources/styles/GameWindow.min.css", "r", encoding="utf-8") as style:
+        with open(Paths.GAME_WINDOW_CSS.value, "r", encoding="utf-8") as style:
             self.__ui: GameWindowUi = GameWindowUi(self)
             self.setStyleSheet(style.read())
             self.__ui.get_new_game_button().clicked.connect(self.reset_game)
@@ -279,8 +282,7 @@ class GameWindow(QWidget):
         :param deleted_piece: int value of piece_square
         :return: None
         """
-        playsound("src/resources/sounds/Move.mp3") if deleted_piece == 0 else playsound(
-            "src/resources/sounds/Capture.mp3")
+        playsound(Paths.MOVE_SOUND.value) if deleted_piece == 0 else playsound(Paths.CAPTURE_SOUND.value)
 
     def reset_game(self) -> None:
         """

@@ -53,7 +53,7 @@ class FenUtil:
         """
         if board is None or color is None or target_square is None:
             raise NullArgumentException("METHOD ARGUMENTS CANNOT BE NULLS!")
-        if target_square < 0 or target_square > 63 or color not in (PiecesEnum.WHITE.value, PiecesEnum.BLACK.value):
+        if target_square < 0 or target_square > 63 or not ColorManager.is_it_valid_color(color):
             raise IllegalArgumentException("ARGUMENTS ARE NOT WITHIN ACCEPTABLE BONDS!")
 
         fen_data: FenData = board.get_fen_data()
@@ -75,7 +75,7 @@ class FenUtil:
         """
         if deleted_piece is None or color is None or square is None or board is None:
             raise NullArgumentException("GIVEN ARGUMENTS CANNOT BE NULLS!")
-        if square < 0 or square > 63 or color not in (PiecesEnum.WHITE.value, PiecesEnum.BLACK.value):
+        if square < 0 or square > 63 or not ColorManager.is_it_valid_color(color):
             raise IllegalArgumentException("WRONG PARAMETERS GIVEN!")
         enemy_color: int = ColorManager.get_opposite_piece_color(color)
 
@@ -125,7 +125,7 @@ class FenUtil:
         """
         if color is None or letter is None:
             raise NullArgumentException("COLOR AND LETTER CANNOT BE NULLS!")
-        if color not in (PiecesEnum.BLACK.value, PiecesEnum.WHITE.value):
+        if not ColorManager.is_it_valid_color(color):
             raise IllegalArgumentException("SUCH COLOR DOES NOT EXIST!")
         return letter.upper() if color == PiecesEnum.WHITE.value else letter
 
@@ -165,7 +165,7 @@ class FenUtil:
         """
         if board is None or None in (board.any(), index, color_value):
             raise NullArgumentException("ARGUMENTS CANNOT BE NULLS!")
-        if index < 0 or index > 63 or color_value not in (PiecesEnum.BLACK.value, PiecesEnum.WHITE.value):
+        if index < 0 or index > 63 or not ColorManager.is_it_valid_color(color_value):
             raise IllegalArgumentException("ARGUMENTS ARE WITHIN NORMAL BONDS!")
 
         piece = board[index]

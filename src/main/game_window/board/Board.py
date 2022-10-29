@@ -224,7 +224,7 @@ class Board:
         :param move: current move player wants to play
         :return: bool value whether move is legal or not
         """
-        return move in self.__legal_moves.moves
+        return self.__legal_moves.__contains__(move)
 
     def update_fen(self) -> None:
         """
