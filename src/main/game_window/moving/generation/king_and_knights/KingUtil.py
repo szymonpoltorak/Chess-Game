@@ -1,8 +1,9 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
-from numpy import array
+from numpy import array, int8, dtype
 from numpy import ndarray
 
+from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.BoardUtil import BoardUtil
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
@@ -70,9 +71,17 @@ class KingUtil:
         :param move: Move instance
         :return: bool
         """
-        move_length: int = abs(move.get_end_square() - move.get_start_square())
+        if move is None:
+            raise NullArgumentException("MOVE CANNOT BE NULL!")
+        end_square: int = move.get_end_square()
+        start_square: int = move.get_start_square()
+        moving_piece: int = move.get_moving_piece()
 
-        return move.get_moving_piece() == PiecesEnum.KING.value and move_length == MoveEnum.CASTLE_MOVE.value
+        if None in (end_square, start_square, moving_piece):
+            raise NullArgumentException("MOVING FIELDS CANNOT BE NULLS HERE!")
+        move_length: int = abs(end_square - start_square)
+
+        return moving_piece == PiecesEnum.KING.value and move_length == MoveEnum.CASTLE_MOVE.value
 
     @staticmethod
     def get_rook_position(color: int, is_queen_side: bool, upper_color: int, down_color: int) -> int:
@@ -93,7 +102,7 @@ class KingUtil:
         return move_dict[is_queen_side, color]
 
     @staticmethod
-    def get_castling_squares(move: Move) -> ndarray[int]:
+    def get_castling_squares(move: Move) -> ndarray[int, dtype[int8]]:
         """
         Method used to get castling squares depending on given move
         :param move: Move instance
@@ -108,7 +117,7 @@ class KingUtil:
         return array([start_square, start_square - 1, start_square - 2])
 
     @staticmethod
-    def find_friendly_king_squares(board_array: ndarray[int], color_to_move: int) -> int:
+    def find_friendly_king_squares(board_array: ndarray[int, dtype[int8]], color_to_move: int) -> int:
         """
         Finds a friendly king on given board array
         :param board_array: ndarray of board 1D

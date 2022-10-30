@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
 from numba import jit
-from numpy import ndarray
+from numpy import ndarray, int8, dtype
 
 from game_window.ColorManager import ColorManager
 from game_window.engine.static_eval.KingPressure import KingPressure
@@ -33,15 +33,15 @@ class StaticEvaluator:
         :param favor_color: int value of color in favor of which we evaluate position
         :return: int evaluation
         """
-        material_eval = StaticEvaluator.evaluate_pieces_on_board(board, favor_color)
-        center_possession_eval = StaticEvaluator.evaluate_center_possession(board, favor_color)
-        light_dev_eval = LightPiecesEval.evaluate_light_pieces_walked(board, favor_color)
-        king_pressure = KingPressure.evaluate_king_pressure(board, favor_color)
-        bishops = LightPiecesEval.evaluate_bishops(board, favor_color)
-        free_lines = RookEval.evaluate_free_lines_for_rooks(board, favor_color)
-        chains = PawnEval.evaluate_pawn_chains(board, favor_color)
+        material_eval: int = StaticEvaluator.evaluate_pieces_on_board(board, favor_color)
+        center_possession_eval: int = StaticEvaluator.evaluate_center_possession(board, favor_color)
+        light_dev_eval: int = LightPiecesEval.evaluate_light_pieces_walked(board, favor_color)
+        king_pressure: int = KingPressure.evaluate_king_pressure(board, favor_color)
+        bishops: int = LightPiecesEval.evaluate_bishops(board, favor_color)
+        free_lines: int = RookEval.evaluate_free_lines_for_rooks(board, favor_color)
+        chains: int = PawnEval.evaluate_pawn_chains(board, favor_color)
 
-        static_eval = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines + bishops
+        static_eval: int = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines + bishops
         static_eval += chains
 
         return static_eval
@@ -56,7 +56,7 @@ class StaticEvaluator:
         :return: int value of evaluation
         """
         evaluation: int = 0
-        board_array: ndarray[int] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
 
         for square in board_array:
             if square == 0:
@@ -78,7 +78,7 @@ class StaticEvaluator:
         :return: int value of evaluation
         """
         evaluation: int = 0
-        board_array: ndarray[int] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
 
         for center_square in BoardEnum.CENTER_SQUARES.value:
             piece: int = board_array[center_square]

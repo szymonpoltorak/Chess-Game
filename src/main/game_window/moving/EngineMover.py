@@ -48,7 +48,7 @@ class EngineMover:
 
         elif special_flag == SpecialFlags.EN_PASSANT.value:
             board.make_en_passant_capture(moving_piece)
-            deleted_piece: int = 1
+            deleted_piece = 1
         else:
             EngineMover.make_engine_move(computer_move.get_end_square(), computer_move.get_moving_piece(), board)
         board.set_opposite_move_color()

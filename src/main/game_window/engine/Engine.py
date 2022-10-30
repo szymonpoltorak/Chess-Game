@@ -44,7 +44,7 @@ class Engine:
             if move is None:
                 break
             deleted_data: MoveData = MoveMaker.make_move(move, color, board)
-            evaluation: int = max(evaluation, -Engine.negamax_search(board, depth - 1, -beta, -alpha,
+            evaluation = max(evaluation, -Engine.negamax_search(board, depth - 1, -beta, -alpha,
                                                                      ColorManager.get_opposite_piece_color(color)))
             MoveMaker.un_make_move(move, deleted_data, board)
 
@@ -67,7 +67,7 @@ class Engine:
         best_eval: int = -inf
         alpha: int = inf
         beta: int = -inf
-        best_move: Move or None = None
+        best_move: Move | None = None
 
         for move in moves_list:
             if move is None:
@@ -79,8 +79,8 @@ class Engine:
             print(f"BestEval : {best_eval}\nEvaluation : {evaluation}\n")
 
             if evaluation > best_eval:
-                best_move: Move or None = move
-                best_eval: int = evaluation
+                best_move = move
+                best_eval = evaluation
         print(f"Best Eval : {best_eval}\n-----------------------------------------------------------------")
 
         return best_move

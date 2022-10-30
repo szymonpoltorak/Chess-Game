@@ -1,4 +1,4 @@
-from numpy import array
+from numpy import array, dtype, ndarray, generic
 from PyQt5.QtCore import QRect
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
@@ -25,7 +25,7 @@ class Canvas(QPainter):
     __slots__ = array(["__rect_width", "__rect_height", "__freeze_piece", "__freeze_start", "__freeze_end"],
                       dtype=str)
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(Canvas, self).__init__()
         self.__rect_width = int(CanvasEnum.CANVAS_WIDTH.value / 8)
         self.__rect_height = int(CanvasEnum.CANVAS_HEIGHT.value / 8)
@@ -78,7 +78,7 @@ class Canvas(QPainter):
         self.paint_possible_moves_for_frozen_piece(board)
         self.__draw_position_from_fen(board)
 
-    def draw_character_on_board(self, character: int or str, position_x: int, position_y: int, color: str) -> None:
+    def draw_character_on_board(self, character: int | str, position_x: int, position_y: int, color: str) -> None:
         """
         Draw characters : number and letters on board edges.
         :param character: characters string which we want to paint on canvas
@@ -129,7 +129,7 @@ class Canvas(QPainter):
         :param color: int value of color
         :return: str
         """
-        letters = array(["q", "b", "n", "r"])
+        letters: ndarray[str, dtype[generic]] = array(["q", "b", "n", "r"], dtype=str)
 
         if color == PiecesEnum.WHITE.value:
             return letters[index].upper()

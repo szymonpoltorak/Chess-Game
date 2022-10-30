@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from numpy import ndarray
+from numpy import ndarray, int8, dtype
 
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
@@ -67,7 +67,7 @@ class PawnEval:
 
         chain_left_side = []
         working_index = index
-        distances: ndarray[int] = board.get_distances()
+        distances: ndarray[int, dtype[int8]] = board.get_distances()
         can_i_go_left = lambda square: distances[square][3] != 0
         can_i_go_right = lambda square: distances[square][4] != 0
 
@@ -110,7 +110,7 @@ class PawnEval:
         chain_right_side = []
         working_index = index
 
-        distances: ndarray[int] = board.get_distances()
+        distances: ndarray[int, dtype[int8]] = board.get_distances()
         can_i_go_left = lambda square: distances[square][3] != 0
         can_i_go_right = lambda square: distances[square][4] != 0
 

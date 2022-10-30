@@ -1,7 +1,7 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from numba import jit
-from numpy import ndarray
+from numpy import ndarray, int8, dtype
 
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenUtil import FenUtil
@@ -41,7 +41,7 @@ class MoveMaker:
         if board.get_board_array()[end_square] == color | PiecesEnum.ROOK.value:
             FenUtil.disable_castling_on_side(color, end_square, board)
         if move.get_moving_piece() == PiecesEnum.ROOK.value:
-            move_data: MoveData = MoveMaker.move_and_copy_move_data(board, move, color)
+            move_data = MoveMaker.move_and_copy_move_data(board, move, color)
             FenUtil.disable_castling_on_side(board.get_engine_color(), move.get_start_square(), board)
 
             return move_data
@@ -52,7 +52,7 @@ class MoveMaker:
 
             return MoveData(deleted_piece, white_king, white_queen, black_king, black_queen, en_square, en_piece)
         elif moving_piece == PiecesEnum.KING.value:
-            move_data: MoveData = MoveMaker.move_and_copy_move_data(board, move, color)
+            move_data = MoveMaker.move_and_copy_move_data(board, move, color)
             fen_data.set_castling_king_side(False, board.get_engine_color())
             fen_data.set_castling_queen_side(False, board.get_engine_color())
 
@@ -73,10 +73,10 @@ class MoveMaker:
         """
         end_square: int = move.get_end_square()
         start_square: int = move.get_start_square()
-        board_array: ndarray[int] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
         special_flag: int = move.get_special_flag_value()
         fen_data: FenData = board.get_fen_data()
-        deleted_piece = deleted_data.deleted_piece
+        deleted_piece: int = deleted_data.deleted_piece
         color: int = ColorManager.get_piece_color(deleted_piece)
 
         if special_flag == SpecialFlags.CASTLING.value:
@@ -97,7 +97,7 @@ class MoveMaker:
         :param color: int value of color
         :return: MoveData instance
         """
-        board_array: ndarray[int] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
         fen_data: FenData = board.get_fen_data()
         end_square: int = move.get_end_square()
         white_king, white_queen, black_king, black_queen, en_square, en_piece = fen_data.get_special_move_data()

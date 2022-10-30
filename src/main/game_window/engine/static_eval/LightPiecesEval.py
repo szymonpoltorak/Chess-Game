@@ -1,7 +1,7 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 
 from numba import jit
-from numpy import array
+from numpy import array, dtype
 from numpy import int8
 from numpy import ndarray
 
@@ -31,7 +31,7 @@ class LightPiecesEval:
         :return: int value of evaluation
         """
         evaluation: int = 0
-        board_array: ndarray[int] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
         engine_color: int = board.get_engine_color()
         player_color: int = board.get_player_color()
         engine_bishops: int = 0
@@ -61,14 +61,14 @@ class LightPiecesEval:
         :return: int value of evaluation
         """
         pieces = array([PiecesEnum.KNIGHT.value, PiecesEnum.BISHOP.value, PiecesEnum.BISHOP.value, PiecesEnum.KNIGHT.value])
-        board_array: ndarray[int] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
         favorable_accumulator: int = 0
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
         unfavorable_accumulator: int = 0
         favor_light_walked: int = 0
         un_favor_light_walked: int = 0
 
-        light_pieces_positions: dict = {
+        light_pieces_positions: Dict[int, ndarray[int, dtype[int8]]] = {
             board.get_engine_color(): array([1, 2, 5, 6], dtype=int8),
             board.get_player_color(): array([57, 58, 61, 62], dtype=int8),
         }

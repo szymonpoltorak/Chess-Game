@@ -3,6 +3,7 @@ from typing import Optional
 from numpy import array
 
 from game_window.enums.BoardEnum import BoardEnum
+from game_window.enums.MoveEnum import MoveEnum
 
 
 class Move:
@@ -12,11 +13,11 @@ class Move:
 
     __slots__ = array(["__start_square", "__end_square", "__piece", "__special_flag"], dtype=str)
 
-    def __init__(self, start_square: Optional[int], end_square: Optional[int], piece: Optional[int], special_flag: int)\
+    def __init__(self, start_square: int, end_square: int, piece: int, special_flag: int)\
             -> None:
-        self.__start_square: Optional[int] = start_square
-        self.__end_square: Optional[int] = end_square
-        self.__piece: Optional[int] = piece
+        self.__start_square: int = start_square
+        self.__end_square: int = end_square
+        self.__piece: int = piece
         self.__special_flag: int = special_flag
 
     def set_special_flag(self, special_flag: int) -> None:
@@ -27,27 +28,27 @@ class Move:
         """
         self.__special_flag = special_flag
 
-    def set_start_square(self, row: Optional[int], col: Optional[int]) -> None:
+    def set_start_square(self, row: int, col: int) -> None:
         """
         Method to set row and col index of a start movement end_square
         :param row: int row index of end_square
         :param col: int col index of end_square
         :return: None
         """
-        if row is None or col is None:
-            self.__start_square = None
+        if row == MoveEnum.NONE.value or col == MoveEnum.NONE.value:
+            self.__start_square = MoveEnum.NONE.value
         else:
             self.__start_square = BoardEnum.BOARD_LENGTH.value * row + col
 
-    def set_end_square(self, row: Optional[int], col: Optional[int]) -> None:
+    def set_end_square(self, row: int, col: int) -> None:
         """
         Method to set row and col index of an end movement end_square
         :param row: int row index of end_square
         :param col: int col index of end_square
         :return: None
         """
-        if row is None or col is None:
-            self.__end_square = None
+        if row == MoveEnum.NONE.value or col == MoveEnum.NONE.value:
+            self.__end_square = MoveEnum.NONE.value
         else:
             self.__end_square = BoardEnum.BOARD_LENGTH.value * row + col
 
@@ -58,21 +59,21 @@ class Move:
         """
         return self.__special_flag
 
-    def get_start_square(self) -> Optional[int]:
+    def get_start_square(self) -> int:
         """
         Gives access to tuple with start move end_square coordinates
         :return: int start index of piece_square on board
         """
         return self.__start_square
 
-    def get_end_square(self) -> Optional[int]:
+    def get_end_square(self) -> int:
         """
         Gives access to tuple with end move end_square coordinates
         :return: int end index of piece_square on board
         """
         return self.__end_square
 
-    def get_moving_piece(self) -> Optional[int]:
+    def get_moving_piece(self) -> int:
         """
         Gives access to moving piece_square value
         :return: int piece_square value

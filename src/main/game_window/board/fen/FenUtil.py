@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from numpy import array
+from numpy import array, dtype, int8
 from numpy import ndarray
 
 from game_window.board.fen.FenData import FenData
@@ -9,7 +9,6 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions import IllegalStateException
 from exceptions.NullArgumentException import NullArgumentException
 
 if TYPE_CHECKING:
@@ -39,8 +38,6 @@ class FenUtil:
             fen_data.update_no_sack_and_pawn_count(True)
         elif deleted_piece == 0 or moving_piece != PiecesEnum.PAWN.value:
             fen_data.update_no_sack_and_pawn_count(False)
-        else:
-            raise IllegalStateException("NOT POSSIBLE CONDITION OCCURRED! WRONG PARAMETERS")
 
     @staticmethod
     def disable_castling_on_side(color: int, target_square: int, board: 'Board') -> None:
@@ -155,7 +152,7 @@ class FenUtil:
         return castle_string
 
     @staticmethod
-    def get_proper_piece_for_fen(board: ndarray[int], index: int, color_value: int) -> str:
+    def get_proper_piece_for_fen(board: ndarray[int, dtype[int8]], index: int, color_value: int) -> str:
         """
         Gets proper fen letter for board int array.
         :param board: int array of board

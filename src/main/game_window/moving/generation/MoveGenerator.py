@@ -54,10 +54,10 @@ class MoveGenerator:
                 end_square: int = move.get_end_square()
 
                 if special_flag == SpecialFlags.CASTLING.value and end_square in KingUtil.get_castling_squares(move_to_verify):
-                    is_it_valid_move: bool = False
+                    is_it_valid_move = False
                     break
                 if end_square == kings_square:
-                    is_it_valid_move: bool = False
+                    is_it_valid_move = False
                     break
             if is_it_valid_move:
                 legal_moves.append(move_to_verify)

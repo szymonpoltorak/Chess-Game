@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 from numba import jit
 
@@ -39,11 +39,11 @@ class KingKnightGen:
         :return: None
         """
         if piece == PiecesEnum.KING.value:
-            directions: tuple[int] = MoveEnum.KING_DIRECTIONS.value
+            directions: Tuple[int, ...] = MoveEnum.KING_DIRECTIONS.value
             piece_range: int = MoveEnum.KING_RANGE.value
         else:
-            directions: tuple[int] = MoveEnum.KNIGHT_DIRECTIONS.value
-            piece_range: int = MoveEnum.MAX_KNIGHT_JUMP.value
+            directions = MoveEnum.KNIGHT_DIRECTIONS.value
+            piece_range = MoveEnum.MAX_KNIGHT_JUMP.value
 
         for direction in range(MoveEnum.KK_DIRECTIONS_NUMBER.value):
             move_target: int = start_square + directions[direction]
@@ -82,13 +82,13 @@ class KingKnightGen:
             if not BoardUtil.is_board_inverted(board):
                 move_target: int = start_square + MoveEnum.CASTLE_MOVE.value
             else:
-                move_target: int = start_square - MoveEnum.CASTLE_MOVE.value
+                move_target = start_square - MoveEnum.CASTLE_MOVE.value
             moves_list.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
 
         if not KingUtil.is_anything_on_queen_side(board, start_square) and fen_data.can_king_castle_queen_side(
                 color):
             if not BoardUtil.is_board_inverted(board):
-                move_target: int = start_square - MoveEnum.CASTLE_MOVE.value
+                move_target = start_square - MoveEnum.CASTLE_MOVE.value
             else:
-                move_target: int = start_square + MoveEnum.CASTLE_MOVE.value
+                move_target = start_square + MoveEnum.CASTLE_MOVE.value
             moves_list.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))

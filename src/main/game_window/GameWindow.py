@@ -1,10 +1,8 @@
-from pathlib import Path, PureWindowsPath
-
 from numpy import array
 from playsound import playsound
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QCursor
+from PyQt5.QtGui import QCursor, QKeyEvent
 from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtGui import QPaintEvent
 from PyQt5.QtWidgets import QMessageBox
@@ -41,13 +39,14 @@ class GameWindow(QWidget):
 
     keyPressed = QtCore.pyqtSignal(int)
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(GameWindow, self).__init__()
 
         self.__board = Board()
         self.__canvas: Canvas = Canvas()
         self.__moving_piece: int = -1
-        self.__current_move: Move = Move(None, None, None, -1)
+        self.__current_move: Move = Move(MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value,
+                                         MoveEnum.NONE.value)
         self.__promotion_util: PromotionData = PromotionData()
 
         with open(Paths.GAME_WINDOW_CSS.value, "r", encoding="utf-8") as style:
@@ -56,7 +55,7 @@ class GameWindow(QWidget):
             self.__ui.get_new_game_button().clicked.connect(self.reset_game)
             self.__ui.get_switch_side_button().clicked.connect(self.switch_sides)
 
-    def keyPressEvent(self, event) -> None:
+    def keyPressEvent(self, event: QKeyEvent) -> None:
         """
         Method used to debug
         :param event:
@@ -87,7 +86,7 @@ class GameWindow(QWidget):
         """
         return self.__ui
 
-    def __start_mouse_events(self, mouse_event: QMouseEvent) -> tuple[int, int] or tuple[None, None]:
+    def __start_mouse_events(self, mouse_event: QMouseEvent) -> tuple[int, int] | tuple[None, None]:
         """
         Prepares row and col indexes for mouse press and release events
         :param mouse_event: QMouseEvent
@@ -114,7 +113,7 @@ class GameWindow(QWidget):
         """
         Override method which is used while user pressed mouse on QWidget.
         :param mouse_press_event: event of mouse pressed on QWidget
-        :return: 
+        :return: None
         """
         row, col = self.__start_mouse_events(mouse_press_event)
 
@@ -122,11 +121,11 @@ class GameWindow(QWidget):
             return
 
         if row is None or col is None or not self.__board.should_this_piece_move(row, col):
-            self.__current_move.set_start_square(None, None)
-            self.__current_move.set_end_square(None, None)
+            self.__current_move.set_start_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
+            self.__current_move.set_end_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
             return
 
-        self.__moving_piece: int = self.__board.delete_piece_from_board(row, col)
+        self.__moving_piece = self.__board.delete_piece_from_board(row, col)
         piece_value: int = self.__moving_piece - ColorManager.get_piece_color(self.__moving_piece)
 
         self.__current_move.set_start_square(row, col)
@@ -158,7 +157,7 @@ class GameWindow(QWidget):
 
         self.handle_castling_event(final_piece_index, color)
 
-        deleted_piece: int = self.handle_pawn_special_events(color, final_piece_index, deleted_piece,
+        deleted_piece = self.handle_pawn_special_events(color, final_piece_index, deleted_piece,
                                                              event.x(), event.y())
 
         self.play_proper_sound(deleted_piece)
@@ -270,8 +269,8 @@ class GameWindow(QWidget):
             self.__board.add_piece_to_the_board(self.__moving_piece, start_square)
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
             self.__canvas.copy_current_move(self.__current_move)
-            self.__current_move.set_start_square(None, None)
-            self.__current_move.set_end_square(None, None)
+            self.__current_move.set_start_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
+            self.__current_move.set_end_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
             self.update()
             return False
         return True
@@ -290,8 +289,8 @@ class GameWindow(QWidget):
         :return: None
         """
         self.__board.__init__()
-        self.__current_move.set_start_square(None, None)
-        self.__current_move.set_end_square(None, None)
+        self.__current_move.set_start_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
+        self.__current_move.set_end_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
         self.update()
 
     def switch_sides(self) -> None:

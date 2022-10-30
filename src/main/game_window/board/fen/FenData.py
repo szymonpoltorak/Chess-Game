@@ -18,17 +18,17 @@ class FenData:
                        "__no_sack_and_pawn_count", "__player_color"], dtype=str)
 
     def __init__(self, player_color: int):
-        self.__white_castle_king: Optional[bool] = True
-        self.__white_castle_queen: Optional[bool] = True
-        self.__black_castle_king: Optional[bool] = True
-        self.__black_castle_queen: Optional[bool] = True
-        self.__en_passant_square: Optional[int] = -1
-        self.__en_passant_piece_square: Optional[int] = -1
+        self.__white_castle_king: bool = True
+        self.__white_castle_queen: bool = True
+        self.__black_castle_king: bool = True
+        self.__black_castle_queen: bool = True
+        self.__en_passant_square: int = -1
+        self.__en_passant_piece_square: int = -1
         self.__move_counter: int = 0
         self.__no_sack_and_pawn_count: int = 0
         self.__player_color: int = player_color
 
-    def can_king_castle_king_side(self, color: int) -> Optional[bool]:
+    def can_king_castle_king_side(self, color: int) -> bool:
         """
         Returns if king can castle on king side
         :param color: int value of color
@@ -40,7 +40,7 @@ class FenData:
             raise IllegalArgumentException("WRONG COLOR ARGUMENT!")
         return self.__white_castle_king if color == self.__player_color else self.__black_castle_king
 
-    def can_king_castle_queen_side(self, color: int) -> Optional[bool]:
+    def can_king_castle_queen_side(self, color: int) -> bool:
         """
         Returns if king can castle on queen side
         :param color: int value of color
@@ -48,7 +48,7 @@ class FenData:
         """
         if color is None:
             raise NullArgumentException("COLOR CANNOT BE NULL!")
-        if color not in (8, 16):
+        if not ColorManager.is_it_valid_color(color):
             raise IllegalArgumentException("WRONG COLOR ARGUMENT!")
         return self.__white_castle_queen if color == self.__player_color else self.__black_castle_queen
 
@@ -61,7 +61,7 @@ class FenData:
         """
         if color is None or can_castle is None:
             raise NullArgumentException("COLOR AND CAN_CASTLE CANNOT BE NULLS!")
-        if color not in (8, 16):
+        if not ColorManager.is_it_valid_color(color):
             raise IllegalArgumentException("WRONG COLOR ARGUMENT!")
 
         if color == self.__player_color:
@@ -141,29 +141,28 @@ class FenData:
         """
         self.__en_passant_piece_square = piece_square
 
-    def get_en_passant_square(self) -> Optional[int]:
+    def get_en_passant_square(self) -> int:
         """
         Gives access to an en passant end_square value
         :return: int value of en passant square
         """
         return self.__en_passant_square
 
-    def get_en_passant_piece_square(self) -> Optional[int]:
+    def get_en_passant_piece_square(self) -> int:
         """
         Gives access to an en passant piece end_square value
         :return: int value of an en passant target square
         """
         return self.__en_passant_piece_square
 
-    def get_special_move_data(self) -> Tuple[Optional[bool], Optional[bool], Optional[bool], Optional[bool],
-                                             Optional[int], Optional[int]]:
+    def get_special_move_data(self) -> Tuple[bool, bool, bool, bool, int, int]:
         # TODO MAKE IT RETURN MOVEDATA INSTANCE
         """
         Method used to return a tuple of special fen data for making and unmaking moves_list
         :return: tuple
         """
-        return self.__white_castle_king, self.__white_castle_queen, self.__black_castle_king, self.__black_castle_queen,\
-               self.__en_passant_square, self.__en_passant_piece_square
+        return self.__white_castle_king, self.__white_castle_queen, self.__black_castle_king, \
+               self.__black_castle_queen, self.__en_passant_square, self.__en_passant_piece_square
 
     def update_fen_data(self, prev_fen_data: MoveData) -> None:
         """
@@ -195,6 +194,7 @@ class FenData:
         return self.__black_castle_king == other.__black_castle_king
 
     def __hash__(self) -> int:
-        return hash((self.__black_castle_king, self.__black_castle_queen, self.__white_castle_queen, self.__white_castle_king,
-                     self.__move_counter, self.__no_sack_and_pawn_count, self.__en_passant_piece_square,
-                     self.__en_passant_square, self.__player_color))
+        return hash(
+            (self.__black_castle_king, self.__black_castle_queen, self.__white_castle_queen, self.__white_castle_king,
+             self.__move_counter, self.__no_sack_and_pawn_count, self.__en_passant_piece_square,
+             self.__en_passant_square, self.__player_color))

@@ -1,4 +1,5 @@
 from game_window.board.Board import Board
+from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.Move import Move
@@ -27,7 +28,8 @@ def test_un_make_move():
     board = Board()
     expected: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
     deleted_piece: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
-    deleted_data: MoveData = MoveData(deleted_piece, None, None, None, None, None, None)
+    deleted_data: MoveData = MoveData(deleted_piece, MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value,
+                                      MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value)
     start_square: int = 63
     end_square: int = 0
     move: Move = Move(start_square, end_square, PiecesEnum.ROOK.value, SpecialFlags.NONE.value)

@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from numba import jit
 
@@ -61,9 +61,9 @@ class PawnGen:
         else:
             if double_move_target > 63 or move_target > 63:
                 return
-            direction: int = -1
-            pawn_index_bounds_min: int = 8
-            pawn_index_bounds_max: int = 15
+            direction = -1
+            pawn_index_bounds_min = 8
+            pawn_index_bounds_max = 15
 
         move_target += direction * MoveEnum.PAWN_UP_SINGLE_MOVE.value
         double_move_target += direction * MoveEnum.PAWN_UP_SINGLE_MOVE.value * 2
@@ -137,7 +137,7 @@ class PawnGen:
         :return: None
         """
         upper_color: int = board.get_engine_color()
-        en_passant_square: int = board.get_fen_data().get_en_passant_square()
+        en_passant_square: Optional[int] = board.get_fen_data().get_en_passant_square()
         en_passant_target_left: int = start_square + PawnUtil.get_attack_direction(color, "LEFT", upper_color)
         en_passant_target_right: int = start_square + PawnUtil.get_attack_direction(color, "RIGHT", upper_color)
 

@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from numpy import int8
+from numpy import int8, dtype
 from numpy import ndarray
 from numpy import zeros
 
@@ -20,7 +20,7 @@ class BoardUtil:
     __slots__ = ()
 
     @staticmethod
-    def calculate_distance_to_borders() -> ndarray[int]:
+    def calculate_distance_to_borders() -> ndarray[int, dtype[int8]]:
         """
         Calculates array of distances of each end_square in every direction to board borders.
         :return: ndarray of distances

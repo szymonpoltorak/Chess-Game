@@ -2,7 +2,7 @@ import math
 from typing import TYPE_CHECKING
 
 from numba import jit
-from numpy import ndarray
+from numpy import ndarray, int8, dtype
 
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
@@ -44,12 +44,12 @@ class KingPressure:
         :return: int value of evaluation
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
-        board_array: ndarray[int] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
 
-        enemy_king_pos = KingUtil.find_friendly_king_squares(board_array, enemy_color)
-        enemy_king_x = math.floor(enemy_king_pos / 8)
-        enemy_king_y = enemy_king_pos - 8 * enemy_king_x
-        score_accumulator = 0
+        enemy_king_pos: int = KingUtil.find_friendly_king_squares(board_array, enemy_color)
+        enemy_king_x: int = math.floor(enemy_king_pos / 8)
+        enemy_king_y: int = enemy_king_pos - 8 * enemy_king_x
+        score_accumulator: int = 0
 
         for pos in range(BoardEnum.BOARD_SIZE.value):
             if ColorManager.get_piece_color(board_array[pos]) != favor_color:
@@ -62,5 +62,5 @@ class KingPressure:
 
             distance = math.sqrt(x_diff * x_diff + y_diff * y_diff)
             score = 8 * math.sqrt(2) - distance
-            score_accumulator += score
+            score_accumulator += int(score)
         return score_accumulator

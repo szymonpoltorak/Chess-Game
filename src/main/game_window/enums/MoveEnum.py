@@ -60,3 +60,5 @@ class MoveEnum(Enum):
     TOP_STEP: int = -8
     LEFT_DIR: int = 3
     LEFT_STEP: int = -1
+
+    NONE: int = -1

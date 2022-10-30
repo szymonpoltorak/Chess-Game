@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import Iterator
+from typing import Iterator, Any
 
-from numpy import ndarray
+from numpy import ndarray, dtype, generic
 
 from game_window.moving.Move import Move
 
@@ -11,7 +11,7 @@ class MoveList:
     """
     Class containing the list of moves
     """
-    moves: ndarray[Move]
+    moves: ndarray[Move, dtype[generic]]
     free_index: int
 
     def append(self, move: Move) -> None:
@@ -29,7 +29,7 @@ class MoveList:
         """
         return self.free_index == 0
 
-    def __iter__(self) -> Iterator:
+    def __iter__(self) -> Any:
         return self.moves.__iter__()
 
     def __contains__(self, move: Move) -> bool:

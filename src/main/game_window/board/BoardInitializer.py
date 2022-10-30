@@ -1,4 +1,4 @@
-from numpy import array
+from numpy import array, dtype
 from numpy import int8
 from numpy import ndarray
 from numpy import zeros
@@ -14,7 +14,7 @@ class BoardInitializer:
     __slots__ = ()
 
     @staticmethod
-    def init_black_pieces_array() -> ndarray[int]:
+    def init_black_pieces_array() -> ndarray[int, dtype[int8]]:
         """
         Initializes array of pieces on starting position depending on given color value.
         :return: array of starting pieces of given color
@@ -38,7 +38,7 @@ class BoardInitializer:
         return piece_array
 
     @staticmethod
-    def init_white_pieces_array() -> ndarray[int]:
+    def init_white_pieces_array() -> ndarray[int, dtype[int8]]:
         """
         Initializes array of pieces on starting position depending on given color value.
         :return: array of starting pieces of given color
@@ -61,15 +61,15 @@ class BoardInitializer:
                       PiecesEnum.WHITE.value | PiecesEnum.PAWN.value], dtype=int8)
 
     @staticmethod
-    def init_starting_board(upper_color: int, down_color: int) -> ndarray[int]:
+    def init_starting_board(upper_color: int, down_color: int) -> ndarray[int, dtype[int8]]:
         """
         Method initializes starting board.
         :return: board int array
         """
-        board: ndarray[int] = zeros(BoardEnum.BOARD_SIZE.value, dtype=int8)
+        board: ndarray[int, dtype[int8]] = zeros(BoardEnum.BOARD_SIZE.value, dtype=int8)
         index: int = 0
-        engine_pieces: ndarray[int] = BoardInitializer.get_proper_pieces_arrays(upper_color)
-        player_pieces: ndarray[int] = BoardInitializer.get_proper_pieces_arrays(down_color)
+        engine_pieces: ndarray[int, dtype[int8]] = BoardInitializer.get_proper_pieces_arrays(upper_color)
+        player_pieces: ndarray[int, dtype[int8]] = BoardInitializer.get_proper_pieces_arrays(down_color)
 
         for _ in range(2 * BoardEnum.BOARD_LENGTH.value):
             board[index] = engine_pieces[index]
@@ -85,7 +85,7 @@ class BoardInitializer:
         return board
 
     @staticmethod
-    def get_proper_pieces_arrays(color: int) -> ndarray[int]:
+    def get_proper_pieces_arrays(color: int) -> ndarray[int, dtype[int8]]:
         """
         Method used to init proper color array
         :param color: int value of color

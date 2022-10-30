@@ -13,7 +13,7 @@ class PromotionData:
     """
     __slots__ = array(["__piece_color", "__position_x", "__position_y", "__is_promoting", "__square"], dtype=str)
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.__piece_color = -1
         self.__position_x = -1
         self.__position_y = -1
@@ -113,6 +113,6 @@ class PromotionData:
         """
         return self.__is_promoting
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Color : {self.__piece_color}\nX : {self.__position_x}\nY : {self.__position_y}\n" \
                f"IsPromoting : {self.__is_promoting}\nSquare : {self.__square}\n"

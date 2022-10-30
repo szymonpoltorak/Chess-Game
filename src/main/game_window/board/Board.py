@@ -1,4 +1,4 @@
-from numpy import array
+from numpy import array, int8, dtype
 from numpy import ndarray
 from numpy import sign
 
@@ -26,15 +26,15 @@ class Board:
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
                        "__fen_data", "__engine_color", "__player_color"], dtype=str)
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.__engine_color: int = PiecesEnum.BLACK.value
         self.__player_color: int = PiecesEnum.WHITE.value
-        self.__board_array: ndarray[int] = BoardInitializer.init_starting_board(self.__engine_color,
+        self.__board_array: ndarray[int, dtype[int8]] = BoardInitializer.init_starting_board(self.__engine_color,
                                                                                 self.__player_color)
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__fen_data: FenData = FenData(self.__player_color)
         self.__color_to_move: int = PiecesEnum.WHITE.value
-        self.__distances_to_borders: ndarray[int] = BoardUtil.calculate_distance_to_borders()
+        self.__distances_to_borders: ndarray[int, dtype[int8]] = BoardUtil.calculate_distance_to_borders()
         self.__legal_moves: MoveList = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
 
     def castle_king(self, piece: int, move: Move) -> None:
@@ -115,14 +115,14 @@ class Board:
         """
         return self.__legal_moves
 
-    def get_distances(self) -> ndarray[int]:
+    def get_distances(self) -> ndarray[int, dtype[int8]]:
         """
         Gives access to distances to borders array
         :return: ndarray of distances
         """
         return self.__distances_to_borders
 
-    def get_board_array(self) -> ndarray[int]:
+    def get_board_array(self) -> ndarray[int, dtype[int8]]:
         """
         Gives access to board int array.
         :return: board int array
@@ -259,7 +259,7 @@ class Board:
         """
         self.set_opposite_color_sides()
         self.__board_array = BoardInitializer.init_starting_board(self.__engine_color, self.__player_color)
-        self.__fen_data.__init__(self.__player_color)
+        self.__fen_data = FenData(self.__player_color)
         self.__color_to_move = PiecesEnum.WHITE.value
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
         self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
@@ -293,7 +293,7 @@ class Board:
         """
         return self.__player_color
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, Board):
             return False
         if self.__board_array != other.get_board_array() or self.__player_color != other.get_player_color():
@@ -304,7 +304,7 @@ class Board:
             return False
         return self.__distances_to_borders == other.get_distances() and self.__color_to_move == other.get_color_to_move()
 
-    def __hash__(self):
+    def __hash__(self) -> int:
         return hash(
             (self.__color_to_move, self.__player_color, self.__engine_color, self.__distances_to_borders.tobytes(),
              self.__board_array.tobytes(), self.__fen_string, self.__fen_data))

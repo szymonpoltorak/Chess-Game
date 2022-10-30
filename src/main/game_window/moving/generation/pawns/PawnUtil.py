@@ -1,8 +1,11 @@
-from typing import TYPE_CHECKING
+from numpy import int8
+from typing import TYPE_CHECKING, Optional
 
-from numpy import array
+from numpy import array, dtype
 from numpy import ndarray
 
+from exceptions.IllegalArgumentException import IllegalArgumentException
+from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.fen.FenData import FenData
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
@@ -67,13 +70,22 @@ class PawnUtil:
         :param color: int value of color
         :return: bool
         """
+        if None in (move, color, upper_color):
+            raise NullArgumentException("ARGUMENTS CANNOT BE NULLS!")
+        if not ColorManager.is_it_valid_color(color) or not ColorManager.is_it_valid_color(upper_color):
+            raise IllegalArgumentException("SUCH COLORS DOES NOT EXIST!")
+        end_square: Optional[int] = move.get_end_square()
+
+        if end_square is None:
+            raise NullArgumentException("END SQUARE CANNOT BE NULL!")
+
         if move.get_moving_piece() != PiecesEnum.PAWN.value:
             return False
-        if upper_color and 0 <= move.get_end_square() <= 7:
+        if upper_color and 0 <= end_square <= 7:
             return True
         opposite_color: int = ColorManager.get_opposite_piece_color(upper_color)
 
-        return color == opposite_color and 57 <= move.get_end_square() <= 63
+        return color == opposite_color and 57 <= end_square <= 63
 
     @staticmethod
     def no_piece_in_pawns_way(double_move_target: int, start_square: int, board: 'Board', step: int) -> bool:
@@ -111,6 +123,8 @@ class PawnUtil:
         :param special_flag: int value of a special flag
         :return: bool
         """
-        promotions: ndarray[int] = array([SpecialFlags.PROMOTE_TO_ROOK.value, SpecialFlags.PROMOTE_TO_QUEEN.value,
-                                          SpecialFlags.PROMOTE_TO_BISHOP.value, SpecialFlags.PROMOTE_TO_KNIGHT.value])
+        promotions: ndarray[int, dtype[int8]] = array([SpecialFlags.PROMOTE_TO_ROOK.value,
+                                                       SpecialFlags.PROMOTE_TO_QUEEN.value,
+                                                       SpecialFlags.PROMOTE_TO_BISHOP.value,
+                                                       SpecialFlags.PROMOTE_TO_KNIGHT.value], dtype=int8)
         return special_flag in promotions
