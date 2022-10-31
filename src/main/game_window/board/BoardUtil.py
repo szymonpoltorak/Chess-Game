@@ -1,12 +1,11 @@
-from typing import TYPE_CHECKING
-
 from numpy import int8, dtype
 from numpy import ndarray
 from numpy import zeros
+from typing import TYPE_CHECKING
 
+from exceptions.NullArgumentException import NullArgumentException
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from exceptions.NullArgumentException import NullArgumentException
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board

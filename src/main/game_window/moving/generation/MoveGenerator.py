@@ -1,20 +1,18 @@
-from typing import TYPE_CHECKING
-
-from numba import jit
 from numpy import full
+from typing import TYPE_CHECKING
 
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.moving.MoveData import MoveData
+from game_window.moving.MoveList import MoveList
+from game_window.moving.MoveMaker import MoveMaker
 from game_window.moving.generation.king_and_knights.KingKnightGen import KingKnightGen
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from game_window.moving.generation.pawns.PawnGen import PawnGen
 from game_window.moving.generation.sliding_piece.SlidingPiecesGen import SlidingPiecesGen
-from game_window.moving.MoveData import MoveData
-from game_window.moving.MoveList import MoveList
-from game_window.moving.MoveMaker import MoveMaker
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -66,7 +64,6 @@ class MoveGenerator:
         return legal_moves
 
     @staticmethod
-    @jit(forceobj=True)
     def generate_moves(color_to_move: int, board: 'Board') -> MoveList:
         """
         Static method used  to generate legal moves_list for pieces of given color

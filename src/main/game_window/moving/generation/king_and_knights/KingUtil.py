@@ -1,7 +1,6 @@
-from typing import TYPE_CHECKING, Optional
-
 from numpy import array, int8, dtype
 from numpy import ndarray
+from typing import TYPE_CHECKING
 
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.BoardUtil import BoardUtil

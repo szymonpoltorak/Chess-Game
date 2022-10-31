@@ -1,5 +1,3 @@
-from numpy import array
-from playsound import playsound
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor, QKeyEvent
@@ -7,12 +5,17 @@ from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtGui import QPaintEvent
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QWidget
+from numpy import array
+from playsound import playsound
+from typing import Tuple
 
+from game_window.Canvas import Canvas
+from game_window.ColorManager import ColorManager
+from game_window.GameWindowUi import GameWindowUi
+from game_window.PromotionData import PromotionData
 from game_window.board.Board import Board
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenUtil import FenUtil
-from game_window.Canvas import Canvas
-from game_window.ColorManager import ColorManager
 from game_window.engine.Engine import Engine
 from game_window.engine.Evaluator import Evaluator
 from game_window.enums.CanvasEnum import CanvasEnum
@@ -20,14 +23,12 @@ from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.Paths import Paths
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.GameWindowUi import GameWindowUi
 from game_window.moving.EngineMover import EngineMover
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-from game_window.moving.generation.MoveGenerator import MoveGenerator
-from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.Move import Move
 from game_window.moving.MoveList import MoveList
-from game_window.PromotionData import PromotionData
+from game_window.moving.generation.MoveGenerator import MoveGenerator
+from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 
 
 class GameWindow(QWidget):
@@ -86,14 +87,14 @@ class GameWindow(QWidget):
         """
         return self.__ui
 
-    def __start_mouse_events(self, mouse_event: QMouseEvent) -> tuple[int, int] | tuple[None, None]:
+    def __start_mouse_events(self, mouse_event: QMouseEvent) -> Tuple[int, int]:
         """
         Prepares row and col indexes for mouse press and release events
         :param mouse_event: QMouseEvent
         :return: row and col indexes if everything is good or None, None
         """
         if mouse_event.button() != Qt.LeftButton:
-            return None, None
+            return MoveEnum.NONE.value, MoveEnum.NONE.value
 
         canvas_width: int = CanvasEnum.CANVAS_WIDTH.value
         canvas_height: int = CanvasEnum.CANVAS_HEIGHT.value
@@ -102,7 +103,7 @@ class GameWindow(QWidget):
 
         if current_position_x < 0 or current_position_x > canvas_width or current_position_y < 0 \
                 or current_position_y > canvas_height:
-            return None, None
+            return MoveEnum.NONE.value, MoveEnum.NONE.value
 
         col: int = (current_position_x / self.__canvas.get_rect_width()).__floor__()
         row: int = (current_position_y / self.__canvas.get_rect_height()).__floor__()
@@ -120,7 +121,7 @@ class GameWindow(QWidget):
         if not self.__board.get_legal_moves() or self.__promotion_util.is_this_pawn_promoting():
             return
 
-        if row is None or col is None or not self.__board.should_this_piece_move(row, col):
+        if MoveEnum.NONE.value in (row, col) or not self.__board.should_this_piece_move(row, col):
             self.__current_move.set_start_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
             self.__current_move.set_end_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
             return
@@ -147,7 +148,7 @@ class GameWindow(QWidget):
 
         if not self.check_quit_release_event_functions(start_square, row, col, end_square, event.x(), event.y()):
             return
-        end_square: int = self.__current_move.get_end_square()
+        end_square = self.__current_move.get_end_square()
         fen_data.update_move_counter()
         deleted_piece: int = self.__board.delete_piece_from_board(row, col)
         final_piece_index: int = 8 * row + col
@@ -157,8 +158,7 @@ class GameWindow(QWidget):
 
         self.handle_castling_event(final_piece_index, color)
 
-        deleted_piece = self.handle_pawn_special_events(color, final_piece_index, deleted_piece,
-                                                             event.x(), event.y())
+        deleted_piece = self.handle_pawn_special_events(color, final_piece_index, deleted_piece, event.x(), event.y())
 
         self.play_proper_sound(deleted_piece)
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
@@ -260,7 +260,7 @@ class GameWindow(QWidget):
             self.update_board_data()
             return False
 
-        if start_square is None or row is None or col is None:
+        if start_square is None or MoveEnum.NONE.value in (row, col):
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
             return False
         self.__current_move.set_end_square(row, col)

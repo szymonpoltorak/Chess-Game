@@ -15,5 +15,5 @@ class EvalEnum(Enum):
     SIDE_CENTER: int = 2
     WALKED: int = 3
 
-    BISHOP_PAIR: int = 10
-    FREE_LINE: int = 10
+    BISHOP_PAIR: float = 10
+    FREE_LINE: float = 10

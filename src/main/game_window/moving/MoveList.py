@@ -1,7 +1,7 @@
 from dataclasses import dataclass
-from typing import Iterator, Any
 
 from numpy import ndarray, dtype, generic
+from typing import Any
 
 from game_window.moving.Move import Move
 

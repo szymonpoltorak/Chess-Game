@@ -1,7 +1,5 @@
-from typing import TYPE_CHECKING
-
-from numba import jit
 from numpy import ndarray, int8, dtype
+from typing import TYPE_CHECKING
 
 from game_window.ColorManager import ColorManager
 from game_window.engine.static_eval.KingPressure import KingPressure
@@ -25,37 +23,35 @@ class StaticEvaluator:
     __slots__ = ()
 
     @staticmethod
-    @jit(forceobj=True)
-    def evaluate_static_position(board: 'Board', favor_color: int) -> int:
+    def evaluate_static_position(board: 'Board', favor_color: int) -> float:
         """
         Method used to return an evaluation of starting position
         :param board: Board instance
-        :param favor_color: int value of color in favor of which we evaluate position
-        :return: int evaluation
+        :param favor_color: float value of color in favor of which we evaluate position
+        :return: float evaluation
         """
-        material_eval: int = StaticEvaluator.evaluate_pieces_on_board(board, favor_color)
-        center_possession_eval: int = StaticEvaluator.evaluate_center_possession(board, favor_color)
-        light_dev_eval: int = LightPiecesEval.evaluate_light_pieces_walked(board, favor_color)
-        king_pressure: int = KingPressure.evaluate_king_pressure(board, favor_color)
-        bishops: int = LightPiecesEval.evaluate_bishops(board, favor_color)
-        free_lines: int = RookEval.evaluate_free_lines_for_rooks(board, favor_color)
-        chains: int = PawnEval.evaluate_pawn_chains(board, favor_color)
+        material_eval: float = StaticEvaluator.evaluate_pieces_on_board(board, favor_color)
+        center_possession_eval: float = StaticEvaluator.evaluate_center_possession(board, favor_color)
+        light_dev_eval: float = LightPiecesEval.evaluate_light_pieces_walked(board, favor_color)
+        king_pressure: float = KingPressure.evaluate_king_pressure(board, favor_color)
+        bishops: float = LightPiecesEval.evaluate_bishops(board, favor_color)
+        free_lines: float = RookEval.evaluate_free_lines_for_rooks(board, favor_color)
+        chains: float = PawnEval.evaluate_pawn_chains(board, favor_color)
 
-        static_eval: int = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines + bishops
+        static_eval: float = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines + bishops
         static_eval += chains
 
         return static_eval
 
     @staticmethod
-    @jit(forceobj=True)
-    def evaluate_pieces_on_board(board: 'Board', favor_color: int) -> int:
+    def evaluate_pieces_on_board(board: 'Board', favor_color: int) -> float:
         """
         Method used to sum value of pieces on board and return this sum as evaluation
         :param favor_color:
         :param board: Board instance
-        :return: int value of evaluation
+        :return: float value of evaluation
         """
-        evaluation: int = 0
+        evaluation: float = 0
         board_array: ndarray[int, dtype[int8]] = board.get_board_array()
 
         for square in board_array:
@@ -63,21 +59,20 @@ class StaticEvaluator:
                 continue
             pieces_color: int = ColorManager.get_piece_color(square)
             piece_value: int = square - pieces_color
-            points: int = StaticEvalUtil.get_piece_point_value(piece_value)
+            points: float = StaticEvalUtil.get_piece_point_value(piece_value)
 
             evaluation += points if pieces_color == board.get_engine_color() else -points
         return evaluation
 
     @staticmethod
-    @jit(forceobj=True)
-    def evaluate_center_possession(board: 'Board', favor_color: int) -> int:
+    def evaluate_center_possession(board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate a center possession
-        :param favor_color: int value of color
+        :param favor_color: float value of color
         :param board: Board instance
-        :return: int value of evaluation
+        :return: float value of evaluation
         """
-        evaluation: int = 0
+        evaluation: float = 0
         board_array: ndarray[int, dtype[int8]] = board.get_board_array()
 
         for center_square in BoardEnum.CENTER_SQUARES.value:

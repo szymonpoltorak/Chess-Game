@@ -15,7 +15,7 @@ class StaticEvalUtil:
     __slots__ = ()
 
     @staticmethod
-    def return_proper_evaluation_signed_value(board: 'Board', evaluation: int, favor_color: int) -> int:
+    def return_proper_evaluation_signed_value(board: 'Board', evaluation: float, favor_color: int) -> float:
         """
         Method used to return a proper mark of evaluation based on favor_color to move
         :param favor_color:

@@ -1,6 +1,5 @@
-from typing import Tuple, Optional
-
 from numpy import array
+from typing import Tuple
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException

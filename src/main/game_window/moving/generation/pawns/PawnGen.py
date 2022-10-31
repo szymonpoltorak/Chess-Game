@@ -1,14 +1,12 @@
 from typing import TYPE_CHECKING, Optional
 
-from numba import jit
-
 from game_window.ColorManager import ColorManager
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.Move import Move
 from game_window.moving.MoveList import MoveList
+from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -36,7 +34,6 @@ class PawnGen:
         PawnGen.add_pawn_attacks(start_square, piece, color, moves_list, board)
 
     @staticmethod
-    @jit(forceobj=True)
     def add_pawn_moves(start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
         """
         Adds possible pawn movements
@@ -76,7 +73,6 @@ class PawnGen:
             PawnGen.add_moves_and_promotions(start_square, move_target, piece, moves_list)
 
     @staticmethod
-    @jit(forceobj=True)
     def add_pawn_attacks(start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
         """
         Static method used to add pawn attacks

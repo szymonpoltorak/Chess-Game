@@ -1,13 +1,12 @@
-from numpy import int8
-from typing import TYPE_CHECKING, Optional
-
 from numpy import array, dtype
+from numpy import int8
 from numpy import ndarray
+from typing import TYPE_CHECKING, Optional
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.fen.FenData import FenData
 from game_window.ColorManager import ColorManager
+from game_window.board.fen.FenData import FenData
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum

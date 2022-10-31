@@ -9,6 +9,8 @@ scene for party analysis, user profile, login screen, players list, settings and
 3. [Credits to Authors](#credits-to-authors)
 4. [Troubleshooting](#troubleshooting)
 
+***
+
 ## Technology Stack
 * PyQt 5.15.7,
 * Python 3.10,
@@ -17,9 +19,10 @@ scene for party analysis, user profile, login screen, players list, settings and
 * playsound 1.2.2,
 * coverage 6.5.0,
 * PyTest 1.7.3,
-* Numba 0.56.3,
 * mypy 0.982,
 * NumPy 1.23.3.
+
+***
 
 ## How to install necessary dependencies
 
@@ -36,6 +39,9 @@ npm install -g sass
 ```bash
 pip install -r requirements.txt
 ```
+[Return To Table Of Contents](#table-of-contents)
+
+***
 
 ## Credits to Authors
 I am not the author of those graphics and sounds and I do not claim the right of ownership over them. I use them just in
@@ -73,10 +79,14 @@ educational purposes.
 **Chess Sound**
 * [Source](https://github.com/lichess-org/lila/tree/38bfadac3e319516341771086e8edc594d4d4b07).
 
-## Troubleshooting
-* **What if test coverage does not work for you ?**
+[Return To Table Of Contents](#table-of-contents)
 
-You have edit `run_coverage.py` from this :
+***
+
+## Troubleshooting
+* **I cannot use code coverage!**
+
+You have to edit `run_coverage.py` from this :
 ```python
 argv = []
 for arg in sys.argv:
@@ -105,3 +115,7 @@ sys.argv = argv
 
 The problem is you have bad project settings. If you are using pycharm go to run configuration
 and edit `Working Directory` to `<path to Chess-Game>/Chess-Game` and it will fix this issue.
+
+[Return To Table Of Contents](#table-of-contents)
+
+***

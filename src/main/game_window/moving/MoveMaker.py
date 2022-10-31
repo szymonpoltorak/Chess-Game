@@ -1,11 +1,9 @@
-from typing import TYPE_CHECKING, Optional
-
-from numba import jit
 from numpy import ndarray, int8, dtype
+from typing import TYPE_CHECKING
 
+from game_window.ColorManager import ColorManager
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenUtil import FenUtil
-from game_window.ColorManager import ColorManager
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.Move import Move
@@ -23,7 +21,6 @@ class MoveMaker:
     __slots__ = ()
 
     @staticmethod
-    @jit(forceobj=True)
     def make_move(move: Move, color: int, board: 'Board') -> MoveData:
         # TODO PROMOTION MAY NOT WORK PROPERLY
         """
@@ -61,7 +58,6 @@ class MoveMaker:
             return MoveMaker.move_and_copy_move_data(board, move, color)
 
     @staticmethod
-    @jit(forceobj=True)
     def un_make_move(move: Move, deleted_data: MoveData, board: 'Board') -> None:
         # TODO PROMOTION MAY NOT WORK PROPERLY
         """

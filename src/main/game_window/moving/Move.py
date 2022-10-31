@@ -1,5 +1,3 @@
-from typing import Optional
-
 from numpy import array
 
 from game_window.enums.BoardEnum import BoardEnum

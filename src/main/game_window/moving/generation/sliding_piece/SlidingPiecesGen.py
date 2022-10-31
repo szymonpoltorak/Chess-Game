@@ -1,7 +1,5 @@
 from typing import TYPE_CHECKING
 
-from numba import jit
-
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.ColorManager import ColorManager
@@ -23,7 +21,6 @@ class SlidingPiecesGen:
     __slots__ = ()
 
     @staticmethod
-    @jit(forceobj=True)
     def generate_sliding_piece_moves(piece: int, start_square: int, moves_list: MoveList, color: int, board: 'Board') -> None:
         """
         Static method used to generate moves_list for sliding pieces

@@ -111,3 +111,27 @@ def test_get_opposite_square_color_secondary_square_color():
 
     # then
     assert expected == result
+
+
+def test_is_it_valid_color_not_valid_color():
+    # given
+    color: int = -6
+    expected: bool = False
+
+    # when
+    result: bool = ColorManager.is_it_valid_color(color)
+
+    # then
+    assert result == expected
+
+
+def test_is_it_valid_color_valid_color():
+    # given
+    color: int = PiecesEnum.WHITE.value
+    expected: bool = True
+
+    # when
+    result: bool = ColorManager.is_it_valid_color(color)
+
+    # then
+    assert result == expected

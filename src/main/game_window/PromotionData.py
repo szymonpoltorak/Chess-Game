@@ -1,10 +1,10 @@
 from numpy import array
 from numpy import int8
 
-from game_window.board.Board import Board
-from game_window.enums.PiecesEnum import PiecesEnum
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
+from game_window.board.Board import Board
+from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class PromotionData:

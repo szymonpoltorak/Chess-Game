@@ -1,6 +1,5 @@
-from typing import TYPE_CHECKING
-
 from numpy import ndarray, int8, dtype
+from typing import TYPE_CHECKING
 
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
@@ -19,19 +18,19 @@ class PawnEval:
     __slots__ = ()
 
     @staticmethod
-    def evaluate_pawn_chains(board: 'Board', favor_color: int) -> int:
+    def evaluate_pawn_chains(board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate pawn chains on board
         :param board: Board instance
         :param favor_color: int value of color
-        :return: int
+        :return: float
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
 
-        favor_eval: int = PawnEval.get_pawn_chains_eval(board, favor_color)
-        enemy_eval: int = PawnEval.get_pawn_chains_eval(board, enemy_color)
+        favor_eval: float = PawnEval.get_pawn_chains_eval(board, favor_color)
+        enemy_eval: float = PawnEval.get_pawn_chains_eval(board, enemy_color)
 
-        evaluation: int = favor_eval - enemy_eval
+        evaluation: float = favor_eval - enemy_eval
 
         return evaluation
 
@@ -138,12 +137,12 @@ class PawnEval:
         return len(right_leaning_chain)
 
     @staticmethod
-    def get_pawn_chains_eval(board: 'Board', color: int) -> int:
+    def get_pawn_chains_eval(board: 'Board', color: int) -> float:
         """
         Method used to evaluate pawn chains for current color
         :param board: Board instance
         :param color: int value of color
-        :return: int
+        :return: float
         """
         step_left = MoveEnum.TOP_LEFT.value if color == board.get_player_color() else MoveEnum.BOTTOM_LEFT.value
         step_right = MoveEnum.TOP_RIGHT.value if color == board.get_player_color() else MoveEnum.BOTTOM_RIGHT.value
