@@ -155,7 +155,6 @@ class FenData:
         return self.__en_passant_piece_square
 
     def get_special_move_data(self) -> Tuple[bool, bool, bool, bool, int, int]:
-        # TODO MAKE IT RETURN MOVEDATA INSTANCE
         """
         Method used to return a tuple of special fen data for making and unmaking moves_list
         :return: tuple
