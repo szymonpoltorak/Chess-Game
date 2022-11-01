@@ -32,6 +32,8 @@ class PawnUtil:
         :param board: Board instance
         :return: bool
         """
+        if None in (move, board):
+            raise NullArgumentException("CANNOT WORK WITH NULLS!")
         fen_data: FenData = board.get_fen_data()
 
         if move.get_moving_piece() != PiecesEnum.PAWN.value or fen_data.get_en_passant_square() == -1:
@@ -42,36 +44,43 @@ class PawnUtil:
         return move.get_end_square() == fen_data.get_en_passant_square()
 
     @staticmethod
-    def get_attack_direction(color: int, direction: str, upper_color: int) -> int:
+    def get_attack_direction(color: int, direction: str, engine_color: int) -> int:
         """
         Gets proper int direction of end_square
-        :param upper_color: color of upper pieces
+        :param engine_color: color of upper pieces
         :param color: int value of color
         :param direction: str attack direction
         :return: int
         """
-        down_color: int = ColorManager.get_opposite_piece_color(upper_color)
+        if None in (color, direction, engine_color):
+            raise NullArgumentException("I CANNOT WORK ON NULLS!")
+        if not ColorManager.is_it_valid_color(color) or not ColorManager.is_it_valid_color(engine_color):
+            raise IllegalArgumentException("INVALID COLOR VALUES!")
+        if direction not in ("LEFT", "RIGHT"):
+            raise IllegalArgumentException("IMPOSSIBLE DIRECTION!")
+
+        player_color: int = ColorManager.get_opposite_piece_color(engine_color)
         direct: str = direction.upper()
         pawn_direction_dict = {
-            ("LEFT", down_color): MoveEnum.PAWN_UP_LEFT_ATTACK.value,
-            ("RIGHT", down_color): MoveEnum.PAWN_UP_RIGHT_ATTACK.value,
-            ("LEFT", upper_color): MoveEnum.PAWN_DOWN_LEFT_ATTACK.value,
-            ("RIGHT", upper_color): MoveEnum.PAWN_DOWN_RIGHT_ATTACK.value
+            ("LEFT", player_color): MoveEnum.PAWN_UP_LEFT_ATTACK.value,
+            ("RIGHT", player_color): MoveEnum.PAWN_UP_RIGHT_ATTACK.value,
+            ("LEFT", engine_color): MoveEnum.PAWN_DOWN_LEFT_ATTACK.value,
+            ("RIGHT", engine_color): MoveEnum.PAWN_DOWN_RIGHT_ATTACK.value
         }
         return pawn_direction_dict[direct, color]
 
     @staticmethod
-    def is_pawn_promoting(move: Move, color: int, upper_color: int) -> bool:
+    def is_pawn_promoting(move: Move, color: int, engine_color: int) -> bool:
         """
         Methods checks if pawn is promoting or not
-        :param upper_color: color of upper pieces
+        :param engine_color: color of upper pieces
         :param move: Move instance
         :param color: int value of color
         :return: bool
         """
-        if None in (move, color, upper_color):
+        if None in (move, color, engine_color):
             raise NullArgumentException("ARGUMENTS CANNOT BE NULLS!")
-        if not ColorManager.is_it_valid_color(color) or not ColorManager.is_it_valid_color(upper_color):
+        if not ColorManager.is_it_valid_color(color) or not ColorManager.is_it_valid_color(engine_color):
             raise IllegalArgumentException("SUCH COLORS DOES NOT EXIST!")
         end_square: Optional[int] = move.get_end_square()
 
@@ -80,11 +89,11 @@ class PawnUtil:
 
         if move.get_moving_piece() != PiecesEnum.PAWN.value:
             return False
-        if upper_color and 0 <= end_square <= 7:
+        if engine_color and 0 <= end_square <= 7:
             return True
-        opposite_color: int = ColorManager.get_opposite_piece_color(upper_color)
+        player_color: int = ColorManager.get_opposite_piece_color(engine_color)
 
-        return color == opposite_color and 57 <= end_square <= 63
+        return color == player_color and 57 <= end_square <= 63
 
     @staticmethod
     def no_piece_in_pawns_way(double_move_target: int, start_square: int, board: 'Board', step: int) -> bool:
@@ -96,6 +105,10 @@ class PawnUtil:
         :param step: int value of step
         :return: bool
         """
+        if None in (double_move_target, start_square, board, step):
+            raise NullArgumentException("CANNOT WORK ON NULLS!")
+        if double_move_target < 0 or double_move_target > 63 or start_square < 0 or start_square > 63:
+            raise IllegalArgumentException("SQUARES OUT OF BOARD BOUNDS!")
         piece_single_up: int = board.get_board_array()[start_square + step]
         piece_double_up: int = board.get_board_array()[double_move_target]
 
@@ -110,6 +123,11 @@ class PawnUtil:
         :param attack_range: int value of range attack
         :return: bool
         """
+        if None in (start_square, move_target, attack_range):
+            raise NullArgumentException("DO NOT PASS NULLS AS ARGUMENTS!")
+        if start_square < 0 or start_square > 63 or move_target < 0 or move_target > 63:
+            raise IllegalArgumentException("SQUARES OUT OF BOARD BOUNDS!")
+
         start_col: int = start_square % BoardEnum.BOARD_LENGTH.value
         target_col: int = move_target % BoardEnum.BOARD_LENGTH.value
 
@@ -122,6 +140,9 @@ class PawnUtil:
         :param special_flag: int value of a special flag
         :return: bool
         """
+        if special_flag is None:
+            raise NullArgumentException("SPECIAL FLAG SHOULD NOT BE NULL!")
+
         promotions: ndarray[int, dtype[int8]] = array([SpecialFlags.PROMOTE_TO_ROOK.value,
                                                        SpecialFlags.PROMOTE_TO_QUEEN.value,
                                                        SpecialFlags.PROMOTE_TO_BISHOP.value,

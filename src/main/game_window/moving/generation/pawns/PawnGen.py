@@ -102,7 +102,7 @@ class PawnGen:
                                                           MoveEnum.PAWN_RANGE.value):
                 PawnGen.add_moves_and_promotions(start_square, right_piece_square, piece, moves_list)
 
-        PawnGen.check_en_passant_movement(start_square, piece, color, moves_list, board)
+        PawnGen.add_en_passant_moves(start_square, piece, color, moves_list, board)
 
     @staticmethod
     def add_moves_and_promotions(start_square: int, move_target: int, piece: int, moves_list: MoveList) -> None:
@@ -121,8 +121,7 @@ class PawnGen:
             moves_list.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
 
     @staticmethod
-    def check_en_passant_movement(start_square: int, piece: int, color: int, moves_list: MoveList,
-                                  board: 'Board') -> None:
+    def add_en_passant_moves(start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
         """
         Checks if there is an en passant movement and add it to list
         :param start_square:
