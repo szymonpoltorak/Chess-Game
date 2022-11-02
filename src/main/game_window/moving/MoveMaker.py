@@ -1,6 +1,7 @@
 from numpy import ndarray, int8, dtype
 from typing import TYPE_CHECKING
 
+from game_window.board.BoardUtil import BoardUtil
 from game_window.ColorManager import ColorManager
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenUtil import FenUtil
@@ -22,7 +23,6 @@ class MoveMaker:
 
     @staticmethod
     def make_move(move: Move, color: int, board: 'Board') -> MoveData:
-        # TODO PROMOTION MAY NOT WORK PROPERLY
         """
         Method used to make a given move. It means to update the board int array
         :param board: Board instance
@@ -42,6 +42,20 @@ class MoveMaker:
             FenUtil.disable_castling_on_side(board.get_engine_color(), move.get_start_square(), board)
 
             return move_data
+
+        elif special_flag in SpecialFlags.PROMOTIONS.value:
+            move_data: MoveData = MoveMaker.move_and_copy_move_data(board, move, color)
+            board.get_board_array()[move.get_end_square()] = BoardUtil.get_promotion_piece(color, special_flag)
+
+            return move_data
+
+        elif special_flag == SpecialFlags.EN_PASSANT.value:
+            deleted_piece: int = color | moving_piece
+            white_king, white_queen, black_king, black_queen, en_square, en_piece = fen_data.get_special_move_data()
+            board.make_en_passant_capture(deleted_piece)
+
+            return MoveData(deleted_piece, white_king, white_queen, black_king, black_queen, en_square, en_piece)
+
         elif special_flag == SpecialFlags.CASTLING.value:
             deleted_piece: int = color | moving_piece
             white_king, white_queen, black_king, black_queen, en_square, en_piece = fen_data.get_special_move_data()
@@ -59,7 +73,6 @@ class MoveMaker:
 
     @staticmethod
     def un_make_move(move: Move, deleted_data: MoveData, board: 'Board') -> None:
-        # TODO PROMOTION MAY NOT WORK PROPERLY
         """
         Removes given move with a value of deleted piece
         :param deleted_data: MoveData instance
@@ -78,6 +91,15 @@ class MoveMaker:
         if special_flag == SpecialFlags.CASTLING.value:
             board.un_castle_king(move, color)
             fen_data.update_fen_data(deleted_data)
+
+        elif special_flag in SpecialFlags.PROMOTIONS.value:
+            fen_data.update_fen_data(deleted_data)
+            color: int = ColorManager.get_piece_color(board_array[end_square])
+
+            moved_piece: int = color | move.get_moving_piece()
+            board_array[end_square] = deleted_piece
+            board_array[start_square] = moved_piece
+
         else:
             fen_data.update_fen_data(deleted_data)
             moved_piece: int = board_array[end_square]

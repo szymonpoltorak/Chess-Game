@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass(slots=True, order=True, unsafe_hash=True, eq=True)
+@dataclass(slots=True, order=True, unsafe_hash=True)
 class MoveData:
     """
     Class containing data for making and unmaking moves

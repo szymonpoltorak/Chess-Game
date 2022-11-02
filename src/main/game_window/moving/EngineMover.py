@@ -19,6 +19,7 @@ class EngineMover:
 
     @staticmethod
     def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
+        # TODO VERIFY THIS METHOD
         """
         Updates board with a computer move
         :param board: Board instance

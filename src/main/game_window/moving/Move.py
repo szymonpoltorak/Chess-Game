@@ -11,8 +11,7 @@ class Move:
 
     __slots__ = array(["__start_square", "__end_square", "__piece", "__special_flag"], dtype=str)
 
-    def __init__(self, start_square: int, end_square: int, piece: int, special_flag: int)\
-            -> None:
+    def __init__(self, start_square: int, end_square: int, piece: int, special_flag: int) -> None:
         self.__start_square: int = start_square
         self.__end_square: int = end_square
         self.__piece: int = piece

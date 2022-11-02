@@ -1,3 +1,5 @@
+from typing import Dict
+
 from numpy import int8, dtype
 from numpy import ndarray
 from numpy import zeros
@@ -6,6 +8,7 @@ from typing import TYPE_CHECKING
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.enums.SpecialFlags import SpecialFlags
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -61,3 +64,18 @@ class BoardUtil:
             raise NullArgumentException("BOARD CANNOT BE NULL!")
         return board.get_engine_color() == PiecesEnum.WHITE.value
 
+    @staticmethod
+    def get_promotion_piece(color: int, flag: int) -> int:
+        """
+        Method used to return a promotion piece depending on a flag
+        :param color: int value of piece color
+        :param flag: int value of promotion flag
+        :return: int value of piece
+        """
+        promotion_pieces: Dict[int, int] = {
+            SpecialFlags.PROMOTE_TO_QUEEN.value: PiecesEnum.QUEEN.value,
+            SpecialFlags.PROMOTE_TO_KNIGHT.value: PiecesEnum.KNIGHT.value,
+            SpecialFlags.PROMOTE_TO_ROOK.value: PiecesEnum.ROOK.value,
+            SpecialFlags.PROMOTE_TO_BISHOP.value: PiecesEnum.BISHOP.value
+        }
+        return color | promotion_pieces[flag]

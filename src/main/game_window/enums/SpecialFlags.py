@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Tuple
 
 
 class SpecialFlags(Enum):
@@ -12,3 +13,5 @@ class SpecialFlags(Enum):
     PROMOTE_TO_ROOK: int = 5
     PROMOTE_TO_BISHOP: int = 6
     NONE: int = -1
+
+    PROMOTIONS: Tuple[int, ...] = (PROMOTE_TO_QUEEN, PROMOTE_TO_BISHOP, PROMOTE_TO_ROOK, PROMOTE_TO_KNIGHT)
