@@ -80,4 +80,4 @@ class Engine:
                 best_eval = evaluation
         print(f"Best Eval : {best_eval}\n-----------------------------------------------------------------")
 
-        return best_move
+        return best_move if best_eval != -inf else None

@@ -9,6 +9,7 @@ from game_window.board.fen.FenData import FenData
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.moving.Move import Move
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -174,3 +175,21 @@ class FenUtil:
             color_value | PiecesEnum.ROOK.value: "r"
         }
         return FenUtil.get_proper_letter_size(color_value, piece_letters[piece])
+
+    @staticmethod
+    def update_fen_data_with_double_pawn_movement(move: Move, fen_data: FenData) -> None:
+        end_square: int = move.get_end_square()
+        moving_piece: int = move.get_moving_piece()
+        move_length: int = end_square - move.get_start_square()
+
+        if move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value and moving_piece == PiecesEnum.PAWN.value:
+            fen_data.set_en_passant_square(end_square - MoveEnum.PAWN_UP_SINGLE_MOVE.value)
+            fen_data.set_en_passant_piece_square(end_square)
+
+        elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value and moving_piece == PiecesEnum.PAWN.value:
+            fen_data.set_en_passant_square(end_square - MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
+            fen_data.set_en_passant_piece_square(end_square)
+
+        elif moving_piece != PiecesEnum.PAWN.value and fen_data.get_en_passant_square() != -1:
+            fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+            fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)

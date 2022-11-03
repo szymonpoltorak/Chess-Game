@@ -202,10 +202,7 @@ class GameWindow(QWidget):
         :param deleted_piece: value of deleted piece
         :return: int
         """
-        end_square: int = self.__current_move.get_end_square()
-        move_length: int = end_square - self.__current_move.get_start_square()
         fen_data: FenData = self.__board.get_fen_data()
-        moving_piece: int = self.__current_move.get_moving_piece()
 
         if PawnUtil.is_pawn_promoting(self.__current_move, color, self.__board.get_engine_color()):
             self.__promotion_util.set_promotion_data(color, mouse_x, mouse_y, piece_index)
@@ -213,18 +210,8 @@ class GameWindow(QWidget):
         if PawnUtil.was_it_en_passant_move(self.__current_move, self.__board):
             self.__board.make_en_passant_capture(self.__moving_piece)
             deleted_piece = 1
+        FenUtil.update_fen_data_with_double_pawn_movement(self.__current_move, fen_data)
 
-        elif move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value and moving_piece == PiecesEnum.PAWN.value:
-            fen_data.set_en_passant_square(end_square - MoveEnum.PAWN_UP_SINGLE_MOVE.value)
-            fen_data.set_en_passant_piece_square(end_square)
-
-        elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value and moving_piece == PiecesEnum.PAWN.value:
-            fen_data.set_en_passant_square(end_square - MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
-            fen_data.set_en_passant_piece_square(end_square)
-
-        elif fen_data.get_en_passant_square() != -1:
-            fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-            fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
         return deleted_piece
 
     def handle_castling_event(self, final_piece_index: int, color: int) -> None:

@@ -21,10 +21,10 @@ class EngineMover:
     @staticmethod
     def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
         """
-
+        Method used to update board with engines move
         :param board:
-        :param computer_move:
-        :return:
+        :param computer_move: Move instance of computer move
+        :return: int value of deleted piece
         """
         moving_piece: int = computer_move.get_moving_piece()
 
