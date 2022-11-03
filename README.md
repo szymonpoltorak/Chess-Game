@@ -28,7 +28,7 @@ scene for party analysis, user profile, login screen, players list, settings and
 
 * First you need to install python for example on linux:
 ```bash
-sudo apt install -y python3
+sudo apt install -y python3.10
 ```
 * If you want to edit and compile sass files you need to install:
 ```bash
@@ -114,7 +114,7 @@ sys.argv = argv
 * **I am getting FileNotFoundError with paths.** 
 
 The problem is you have bad project settings. If you are using pycharm go to run configuration
-and edit `Working Directory` to `<path to Chess-Game>/Chess-Game` and it will fix this issue.
+and edit `Working Directory` to `<path to Chess-Game>/Chess-Game/src/main` and it will fix this issue.
 
 [Return To Table Of Contents](#table-of-contents)
 

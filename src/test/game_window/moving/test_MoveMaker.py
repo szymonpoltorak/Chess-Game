@@ -431,3 +431,46 @@ def test_un_make_promotion_to_knight():
 
     # then
     assert result == expected
+
+
+def test_make_capture_of_rook():
+    # given
+    board: Board = Board()
+    promotion_start_square: int = 9
+    promotion_end_square: int = 0
+    move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
+                      SpecialFlags.PROMOTE_TO_ROOK.value)
+    expected: bool = False
+
+    board.delete_pieces_on_squares(49, 9)
+
+    # when
+    MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
+    result: bool = board.get_fen_data().can_king_castle_queen_side(PiecesEnum.BLACK.value)
+
+    # then
+    assert result == expected
+
+
+def test_un_make_capture_of_rook():
+    # given
+    board: Board = Board()
+    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    promotion_start_square: int = 9
+    promotion_end_square: int = 0
+    move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
+                      SpecialFlags.PROMOTE_TO_ROOK.value)
+    expected: Tuple[int, int, bool] = (PiecesEnum.WHITE.value | PiecesEnum.PAWN.value,
+                                       PiecesEnum.BLACK.value | PiecesEnum.ROOK.value, True)
+
+    board.delete_pieces_on_squares(49, 9)
+
+    # when
+    deleted_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
+    MoveMaker.un_make_move(move, deleted_data, board)
+    can_castle: bool = board.get_fen_data().can_king_castle_queen_side(PiecesEnum.BLACK.value)
+    result: Tuple[int, int, bool] = (board_array[promotion_start_square], board_array[promotion_end_square], can_castle)
+
+    # then
+    assert result == expected
+
