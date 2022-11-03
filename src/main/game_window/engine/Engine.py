@@ -43,7 +43,7 @@ class Engine:
                 break
             deleted_data: MoveData = MoveMaker.make_move(move, color, board)
             evaluation = max(evaluation, -Engine.negamax_search(board, depth - 1, -beta, -alpha,
-                                                                     ColorManager.get_opposite_piece_color(color)))
+                                                                ColorManager.get_opposite_piece_color(color)))
             MoveMaker.un_make_move(move, deleted_data, board)
 
             alpha = max(alpha, evaluation)
