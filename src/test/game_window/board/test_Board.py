@@ -136,12 +136,10 @@ def test_add_piece_to_the_board_piece_proper_add():
 def test_delete_piece_from_board_none_values():
     # given
     board: Board = Board()
-    row: int = None
-    col: int = None
 
     # when
     with pytest.raises(NullArgumentException):
-        result = board.delete_piece_from_board(row, col)
+        result = board.delete_piece_from_board_square(None)
 
     # then
 
@@ -149,12 +147,11 @@ def test_delete_piece_from_board_none_values():
 def test_delete_piece_from_board_values_not_with_bonds():
     # given
     board: Board = Board()
-    row: int = 86
-    col: int = -7
+    square: int = -86
 
     # when
     with pytest.raises(IllegalArgumentException):
-        result = board.delete_piece_from_board(row, col)
+        result = board.delete_piece_from_board_square(square)
 
     # then
 
@@ -182,8 +179,8 @@ def test_castle_king_proper_use():
     rook: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
     king: int = PiecesEnum.WHITE.value | PiecesEnum.KING.value
 
-    board.delete_piece_from_board(6, 5)
-    board.delete_piece_from_board(6, 6)
+    board.delete_piece_from_board_square(53)
+    board.delete_piece_from_board_square(54)
 
     # when
     board.castle_king(PiecesEnum.WHITE.value | PiecesEnum.KING.value, castling_move)
@@ -199,8 +196,8 @@ def test_castle_king_not_a_king():
     board: Board = Board()
     castling_move: Move = Move(60, 62, PiecesEnum.ROOK.value, -1)
 
-    board.delete_piece_from_board(6, 5)
-    board.delete_piece_from_board(6, 6)
+    board.delete_piece_from_board_square(53)
+    board.delete_piece_from_board_square(54)
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -214,8 +211,8 @@ def test_castle_king_not_castling_move():
     board: Board = Board()
     castling_move: Move = Move(60, 62, PiecesEnum.KING.value, -1)
 
-    board.delete_piece_from_board(6, 5)
-    board.delete_piece_from_board(6, 6)
+    board.delete_piece_from_board_square(53)
+    board.delete_piece_from_board_square(54)
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -228,8 +225,8 @@ def test_castle_king_null_arguments():
     # given
     board: Board = Board()
 
-    board.delete_piece_from_board(6, 5)
-    board.delete_piece_from_board(6, 6)
+    board.delete_piece_from_board_square(53)
+    board.delete_piece_from_board_square(54)
 
     # when
     with pytest.raises(NullArgumentException):
@@ -285,8 +282,8 @@ def test_un_castle_king_proper_use():
     rook: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
     king: int = PiecesEnum.WHITE.value | PiecesEnum.KING.value
 
-    board.delete_piece_from_board(6, 5)
-    board.delete_piece_from_board(6, 6)
+    board.delete_piece_from_board_square(53)
+    board.delete_piece_from_board_square(54)
 
     # when
     board.castle_king(PiecesEnum.WHITE.value | PiecesEnum.KING.value, castling_move)

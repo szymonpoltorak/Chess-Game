@@ -59,7 +59,8 @@ def test_make_castling_move_king_side():
     king_pos: int = 62
     expected: Tuple[int, int] = (color | PiecesEnum.ROOK.value, color | PiecesEnum.KING.value)
 
-    board.delete_pieces_on_squares(61, 62)
+    board.delete_piece_from_board_square(61)
+    board.delete_piece_from_board_square(62)
 
     # when
     MoveMaker.make_move(move, color, board)
@@ -79,7 +80,8 @@ def test_un_make_castling_move_king_side():
     king_pos: int = 62
     expected: Tuple[int, int] = (PiecesEnum.NONE.value, PiecesEnum.NONE.value)
 
-    board.delete_pieces_on_squares(61, 62)
+    board.delete_piece_from_board_square(61)
+    board.delete_piece_from_board_square(62)
 
     # when
     deleted_data: MoveData = MoveMaker.make_move(move, color, board)
@@ -97,7 +99,8 @@ def test_does_making_move_return_proper_move_data():
     expected: MoveData = MoveData(PiecesEnum.WHITE.value | PiecesEnum.KING.value, True, True, True, True,
                                   MoveEnum.NONE.value, MoveEnum.NONE.value)
 
-    board.delete_pieces_on_squares(61, 62)
+    board.delete_piece_from_board_square(61)
+    board.delete_piece_from_board_square(62)
 
     # when
     result: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -116,8 +119,9 @@ def test_make_castling_move_queen_side():
     move: Move = Move(60, king_pos, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
     expected: Tuple[int, int] = (color | PiecesEnum.ROOK.value, color | PiecesEnum.KING.value)
 
-    board.delete_piece_from_board(6, 0)
-    board.delete_pieces_on_squares(58, 59)
+    board.delete_piece_from_board_square(48)
+    board.delete_piece_from_board_square(58)
+    board.delete_piece_from_board_square(59)
 
     # when
     MoveMaker.make_move(move, color, board)
@@ -137,8 +141,9 @@ def test_un_make_castling_move_queen_side():
     move: Move = Move(60, king_pos, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
     expected: Tuple[int, int] = (PiecesEnum.NONE.value, PiecesEnum.NONE.value)
 
-    board.delete_piece_from_board(6, 0)
-    board.delete_pieces_on_squares(58, 59)
+    board.delete_piece_from_board_square(48)
+    board.delete_piece_from_board_square(58)
+    board.delete_piece_from_board_square(59)
 
     # when
     deleted_data: MoveData = MoveMaker.make_move(move, color, board)
@@ -161,8 +166,11 @@ def test_make_left_en_passant_move():
     en_passant_pos: int = 19
     move: Move = Move(capturing_pawn_pos, en_passant_pos, PiecesEnum.PAWN.value, SpecialFlags.EN_PASSANT.value)
 
-    board.delete_pieces_on_squares(52, capturing_pawn_pos)
-    board.delete_pieces_on_squares(11, captured_pawn_pos)
+    board.delete_piece_from_board_square(52)
+    board.delete_piece_from_board_square(11)
+    board.delete_piece_from_board_square(capturing_pawn_pos)
+    board.delete_piece_from_board_square(captured_pawn_pos)
+
     board.add_piece_to_the_board(PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, captured_pawn_pos)
     board.add_piece_to_the_board(PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, capturing_pawn_pos)
 
@@ -193,8 +201,11 @@ def test_un_make_left_en_passant_move():
     en_passant_pos: int = 19
     move: Move = Move(capturing_pawn_pos, en_passant_pos, PiecesEnum.PAWN.value, SpecialFlags.EN_PASSANT.value)
 
-    board.delete_pieces_on_squares(52, capturing_pawn_pos)
-    board.delete_pieces_on_squares(11, captured_pawn_pos)
+    board.delete_piece_from_board_square(52)
+    board.delete_piece_from_board_square(11)
+    board.delete_piece_from_board_square(capturing_pawn_pos)
+    board.delete_piece_from_board_square(captured_pawn_pos)
+
     board.add_piece_to_the_board(PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, captured_pawn_pos)
     board.add_piece_to_the_board(PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, capturing_pawn_pos)
 
@@ -225,8 +236,11 @@ def test_make_right_en_passant_move():
     en_passant_pos: int = 21
     move: Move = Move(capturing_pawn_pos, en_passant_pos, PiecesEnum.PAWN.value, SpecialFlags.EN_PASSANT.value)
 
-    board.delete_pieces_on_squares(52, capturing_pawn_pos)
-    board.delete_pieces_on_squares(13, captured_pawn_pos)
+    board.delete_piece_from_board_square(52)
+    board.delete_piece_from_board_square(11)
+    board.delete_piece_from_board_square(capturing_pawn_pos)
+    board.delete_piece_from_board_square(captured_pawn_pos)
+
     board.add_piece_to_the_board(PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, captured_pawn_pos)
     board.add_piece_to_the_board(PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, capturing_pawn_pos)
 
@@ -257,8 +271,11 @@ def test_un_make_right_en_passant_move():
     en_passant_pos: int = 21
     move: Move = Move(capturing_pawn_pos, en_passant_pos, PiecesEnum.PAWN.value, SpecialFlags.EN_PASSANT.value)
 
-    board.delete_pieces_on_squares(52, capturing_pawn_pos)
-    board.delete_pieces_on_squares(13, captured_pawn_pos)
+    board.delete_piece_from_board_square(52)
+    board.delete_piece_from_board_square(11)
+    board.delete_piece_from_board_square(capturing_pawn_pos)
+    board.delete_piece_from_board_square(captured_pawn_pos)
+
     board.add_piece_to_the_board(PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, captured_pawn_pos)
     board.add_piece_to_the_board(PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, capturing_pawn_pos)
     board.update_fen()
@@ -288,8 +305,9 @@ def test_make_promotion_to_queen():
                       SpecialFlags.PROMOTE_TO_QUEEN.value)
     expected: Tuple[int, int] = (PiecesEnum.NONE.value, PiecesEnum.WHITE.value | PiecesEnum.QUEEN.value)
 
-    board.delete_pieces_on_squares(48, 8)
-    board.delete_piece_from_board(0, 0)
+    board.delete_piece_from_board_square(48)
+    board.delete_piece_from_board_square(8)
+    board.delete_piece_from_board_square(0)
 
     # when
     MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -309,8 +327,9 @@ def test_un_make_promotion_to_queen():
                       SpecialFlags.PROMOTE_TO_QUEEN.value)
     expected: Tuple[int, int] = (PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, PiecesEnum.NONE.value)
 
-    board.delete_pieces_on_squares(48, 8)
-    board.delete_piece_from_board(0, 0)
+    board.delete_piece_from_board_square(48)
+    board.delete_piece_from_board_square(8)
+    board.delete_piece_from_board_square(0)
 
     # when
     deleted_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -331,8 +350,9 @@ def test_make_promotion_to_rook():
                       SpecialFlags.PROMOTE_TO_ROOK.value)
     expected: Tuple[int, int] = (PiecesEnum.NONE.value, PiecesEnum.WHITE.value | PiecesEnum.ROOK.value)
 
-    board.delete_pieces_on_squares(48, 8)
-    board.delete_piece_from_board(0, 0)
+    board.delete_piece_from_board_square(48)
+    board.delete_piece_from_board_square(8)
+    board.delete_piece_from_board_square(0)
 
     # when
     MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -352,8 +372,9 @@ def test_un_make_promotion_to_rook():
                       SpecialFlags.PROMOTE_TO_ROOK.value)
     expected: Tuple[int, int] = (PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, PiecesEnum.NONE.value)
 
-    board.delete_pieces_on_squares(48, 8)
-    board.delete_piece_from_board(0, 0)
+    board.delete_piece_from_board_square(48)
+    board.delete_piece_from_board_square(8)
+    board.delete_piece_from_board_square(0)
 
     # when
     deleted_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -374,8 +395,9 @@ def test_make_promotion_to_bishop():
                       SpecialFlags.PROMOTE_TO_BISHOP.value)
     expected: Tuple[int, int] = (PiecesEnum.NONE.value, PiecesEnum.WHITE.value | PiecesEnum.BISHOP.value)
 
-    board.delete_pieces_on_squares(48, 8)
-    board.delete_piece_from_board(0, 0)
+    board.delete_piece_from_board_square(48)
+    board.delete_piece_from_board_square(8)
+    board.delete_piece_from_board_square(0)
 
     # when
     MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -395,8 +417,9 @@ def test_un_make_promotion_to_bishop():
                       SpecialFlags.PROMOTE_TO_BISHOP.value)
     expected: Tuple[int, int] = (PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, PiecesEnum.NONE.value)
 
-    board.delete_pieces_on_squares(48, 8)
-    board.delete_piece_from_board(0, 0)
+    board.delete_piece_from_board_square(48)
+    board.delete_piece_from_board_square(8)
+    board.delete_piece_from_board_square(0)
 
     # when
     deleted_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -417,8 +440,9 @@ def test_make_promotion_to_knight():
                       SpecialFlags.PROMOTE_TO_KNIGHT.value)
     expected: Tuple[int, int] = (PiecesEnum.NONE.value, PiecesEnum.WHITE.value | PiecesEnum.KNIGHT.value)
 
-    board.delete_pieces_on_squares(48, 8)
-    board.delete_piece_from_board(0, 0)
+    board.delete_piece_from_board_square(48)
+    board.delete_piece_from_board_square(8)
+    board.delete_piece_from_board_square(0)
 
     # when
     MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -438,8 +462,9 @@ def test_un_make_promotion_to_knight():
                       SpecialFlags.PROMOTE_TO_KNIGHT.value)
     expected: Tuple[int, int] = (PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, PiecesEnum.NONE.value)
 
-    board.delete_pieces_on_squares(48, 8)
-    board.delete_piece_from_board(0, 0)
+    board.delete_piece_from_board_square(48)
+    board.delete_piece_from_board_square(8)
+    board.delete_piece_from_board_square(0)
 
     # when
     deleted_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -459,7 +484,8 @@ def test_make_capture_of_rook():
                       SpecialFlags.PROMOTE_TO_ROOK.value)
     expected: bool = False
 
-    board.delete_pieces_on_squares(49, 9)
+    board.delete_piece_from_board_square(49)
+    board.delete_piece_from_board_square(9)
 
     # when
     MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -480,7 +506,8 @@ def test_un_make_capture_of_rook():
     expected: Tuple[int, int, bool] = (PiecesEnum.WHITE.value | PiecesEnum.PAWN.value,
                                        PiecesEnum.BLACK.value | PiecesEnum.ROOK.value, True)
 
-    board.delete_pieces_on_squares(49, 9)
+    board.delete_piece_from_board_square(49)
+    board.delete_piece_from_board_square(9)
 
     # when
     deleted_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)

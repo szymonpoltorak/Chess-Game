@@ -111,7 +111,8 @@ def test_is_anything_on_king_side_it_is_not():
     board: Board = Board()
     start_square: int = 60
 
-    board.delete_pieces_on_squares(start_square + 1, start_square + 2)
+    board.delete_piece_from_board_square(start_square + 1)
+    board.delete_piece_from_board_square(start_square + 2)
 
     # when
     result: bool = KingUtil.is_anything_on_king_side(board, start_square)
@@ -139,8 +140,9 @@ def test_is_anything_on_queen_side_it_is_not():
     board: Board = Board()
     start_square: int = 60
 
-    board.delete_pieces_on_squares(start_square - 1, start_square - 2)
-    board.delete_pieces_on_squares(start_square - 3, start_square - 2)
+    board.delete_piece_from_board_square(start_square - 1)
+    board.delete_piece_from_board_square(start_square - 2)
+    board.delete_piece_from_board_square(start_square - 3)
 
     # when
     result: bool = KingUtil.is_anything_on_queen_side(board, start_square)

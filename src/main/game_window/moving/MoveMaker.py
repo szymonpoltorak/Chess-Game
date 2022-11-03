@@ -74,12 +74,11 @@ class MoveMaker:
 
             return move_data
 
-        # TODO en passant here causes player unable to double move pawn
         elif special_flag == SpecialFlags.EN_PASSANT.value:
             deleted_piece = color | moving_piece
             move_data.deleted_piece = deleted_piece
 
-            board.delete_pieces_on_squares(move.get_start_square(), move.get_start_square())
+            board.delete_piece_from_board_square(move.get_start_square())
 
             board.make_en_passant_capture(deleted_piece)
 
@@ -124,7 +123,6 @@ class MoveMaker:
             moved_piece = color | move.get_moving_piece()
             board_array[end_square] = deleted_piece
             board_array[start_square] = moved_piece
-        # TODO REPAIR THIS SPECIAL CASE
         elif special_flag == SpecialFlags.EN_PASSANT.value:
             fen_data.update_fen_data(deleted_data)
             moved_piece: int = board_array[end_square]
@@ -134,13 +132,11 @@ class MoveMaker:
             board_array[fen_data.get_en_passant_square()] = 0
             board_array[fen_data.get_en_passant_piece_square()] = enemy_color | PiecesEnum.PAWN.value
             board_array[start_square] = moved_piece
-
         else:
             fen_data.update_fen_data(deleted_data)
             moved_piece: int = board_array[end_square]
             board_array[end_square] = deleted_piece
             board_array[start_square] = moved_piece
-        board.update_fen()
 
     @staticmethod
     def __update_board_with_movement(board: 'Board', move: Move, color: int) -> int:

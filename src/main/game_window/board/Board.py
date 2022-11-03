@@ -143,42 +143,19 @@ class Board:
         """
         return self.__color_to_move
 
-    def delete_piece_from_board(self, row: int, col: int) -> int:
+    def delete_piece_from_board_square(self, square: int) -> int:
         """
         Deletes piece_square from board and updates fen string.
-        :param row: row int index
-        :param col: col int index
+        :param square:
         :return: deleted piece_square value
         """
-        if row is None or col is None:
-            raise NullArgumentException("ROWS ANC COLS CANNOT BE NULLS!")
-        if row < 0 or col < 0 or row > 7 or col > 7:
-            raise IllegalArgumentException("ROWS ANC COLS CANNOT BE OVER THE BOUNDS OF BOARD!")
+        if square is None:
+            raise NullArgumentException("SQUARE CANNOT BE NULL!")
+        if square < 0 or square > 63:
+            raise IllegalArgumentException("SQUARE CANNOT BE OVER THE BOUNDS OF BOARD!")
 
-        board_index: int = BoardEnum.BOARD_LENGTH.value * row + col
-
-        piece: int = self.__board_array[board_index]
-        self.__board_array[board_index] = 0
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
-
-        return piece
-
-    def delete_pieces_on_squares(self, start_square: int, end_square: int) -> int:
-        """
-        Deletes pieces on squares in computer move
-        :param start_square: a starting square of a moving piece index
-        :param end_square: board array index
-        :return: deleted piece_square value
-        """
-        if start_square is None or end_square is None:
-            raise NullArgumentException("SQUARES CANNOT BE NULLS!")
-        if start_square < 0 or start_square > 63:
-            raise IllegalArgumentException("START SQUARE IS NOT WITHING BONDS!")
-        if end_square < 0 or end_square > 63:
-            raise IllegalArgumentException("START SQUARE IS NOT WITHING BONDS!")
-
-        piece: int = self.__board_array[end_square]
-        self.__board_array[end_square], self.__board_array[start_square] = 0, 0
+        piece: int = self.__board_array[square]
+        self.__board_array[square] = 0
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
         return piece

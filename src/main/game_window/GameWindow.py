@@ -126,7 +126,7 @@ class GameWindow(QWidget):
             self.__current_move.set_end_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
             return
 
-        self.__moving_piece = self.__board.delete_piece_from_board(row, col)
+        self.__moving_piece = self.__board.delete_piece_from_board_square(8 * row + col)
         piece_value: int = self.__moving_piece - ColorManager.get_piece_color(self.__moving_piece)
 
         self.__current_move.set_start_square(row, col)
@@ -150,8 +150,8 @@ class GameWindow(QWidget):
             return
         end_square = self.__current_move.get_end_square()
         fen_data.update_move_counter()
-        deleted_piece: int = self.__board.delete_piece_from_board(row, col)
         final_piece_index: int = 8 * row + col
+        deleted_piece: int = self.__board.delete_piece_from_board_square(final_piece_index)
         color: int = ColorManager.get_piece_color(self.__moving_piece)
 
         FenUtil.disable_castling_if_captured_rook(deleted_piece, color, end_square, self.__board)
