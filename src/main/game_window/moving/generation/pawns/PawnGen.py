@@ -49,10 +49,10 @@ class PawnGen:
         direction: int = 1
         pawn_index_bounds_min: int = 48
         pawn_index_bounds_max: int = 55
-        upper_color: int = board.get_engine_color()
-        down_color: int = ColorManager.get_opposite_piece_color(upper_color)
+        engine_color: int = board.get_engine_color()
+        player_color: int = ColorManager.get_opposite_piece_color(engine_color)
 
-        if color == down_color:
+        if color == player_color:
             if double_move_target < 0 or move_target < 0:
                 return
         else:

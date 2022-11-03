@@ -38,9 +38,25 @@ class MoveMaker:
         board_array: ndarray[int, dtype[int8]] = board.get_board_array()
         move_data: MoveData = MoveMaker.copy_fen_data_to_move_data(board)
         enemy_color: int = ColorManager.get_opposite_piece_color(color)
+        move_length: int = end_square - move.get_start_square()
 
         if board_array[end_square] == enemy_color | PiecesEnum.ROOK.value:
             FenUtil.disable_castling_on_side(enemy_color, end_square, board)
+
+        # TODO HERE STARTS CODE TO DEBUG ENTIRE DOUBLE MOVE BUG
+        if move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value and moving_piece == PiecesEnum.PAWN.value:
+            fen_data.set_en_passant_square(end_square - MoveEnum.PAWN_UP_SINGLE_MOVE.value)
+            fen_data.set_en_passant_piece_square(end_square)
+
+        elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value and moving_piece == PiecesEnum.PAWN.value:
+            fen_data.set_en_passant_square(end_square - MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
+            fen_data.set_en_passant_piece_square(end_square)
+
+        elif moving_piece != PiecesEnum.PAWN.value and fen_data.get_en_passant_square() != -1:
+            fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+            fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
+        # TODO HERE ENDS CODE TO DEBUG ENTIRE DOUBLE MOVE BUG
+
         if moving_piece == PiecesEnum.ROOK.value:
             MoveMaker.__update_move_data_with_deleted_piece(move_data, board, color, move)
             FenUtil.disable_castling_on_side(board.get_engine_color(), move.get_start_square(), board)
@@ -51,14 +67,24 @@ class MoveMaker:
             board_array[end_square] = BoardUtil.get_promotion_piece(color, special_flag)
 
             return move_data
-        elif special_flag in (SpecialFlags.EN_PASSANT.value, SpecialFlags.CASTLING.value):
+        elif special_flag == SpecialFlags.CASTLING.value:
+            deleted_piece = color | moving_piece
+            move_data.deleted_piece = deleted_piece
+            board.castle_king(deleted_piece, move)
+
+            return move_data
+
+        # TODO en passant here causes player unable to double move pawn
+        elif special_flag == SpecialFlags.EN_PASSANT.value:
             deleted_piece = color | moving_piece
             move_data.deleted_piece = deleted_piece
 
-            board.castle_king(deleted_piece, move) if special_flag == SpecialFlags.CASTLING.value else \
-                board.make_en_passant_capture(deleted_piece)
+            board.delete_pieces_on_squares(move.get_start_square(), move.get_start_square())
+
+            board.make_en_passant_capture(deleted_piece)
 
             return move_data
+
         elif moving_piece == PiecesEnum.KING.value:
             MoveMaker.__update_move_data_with_deleted_piece(move_data, board, color, move)
             fen_data.set_castling_king_side(False, board.get_engine_color())
@@ -98,12 +124,23 @@ class MoveMaker:
             moved_piece = color | move.get_moving_piece()
             board_array[end_square] = deleted_piece
             board_array[start_square] = moved_piece
+        # TODO REPAIR THIS SPECIAL CASE
+        elif special_flag == SpecialFlags.EN_PASSANT.value:
+            fen_data.update_fen_data(deleted_data)
+            moved_piece: int = board_array[end_square]
+            friendly_color: int = ColorManager.get_piece_color(moved_piece)
+            enemy_color: int = ColorManager.get_opposite_piece_color(friendly_color)
+
+            board_array[fen_data.get_en_passant_square()] = 0
+            board_array[fen_data.get_en_passant_piece_square()] = enemy_color | PiecesEnum.PAWN.value
+            board_array[start_square] = moved_piece
 
         else:
             fen_data.update_fen_data(deleted_data)
             moved_piece: int = board_array[end_square]
             board_array[end_square] = deleted_piece
             board_array[start_square] = moved_piece
+        board.update_fen()
 
     @staticmethod
     def __update_board_with_movement(board: 'Board', move: Move, color: int) -> int:

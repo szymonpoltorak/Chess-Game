@@ -32,7 +32,7 @@ class Move:
         :param col: int col index of end_square
         :return: None
         """
-        if row == MoveEnum.NONE.value or col == MoveEnum.NONE.value:
+        if MoveEnum.NONE.value in (row, col):
             self.__start_square = MoveEnum.NONE.value
         else:
             self.__start_square = BoardEnum.BOARD_LENGTH.value * row + col
@@ -44,7 +44,7 @@ class Move:
         :param col: int col index of end_square
         :return: None
         """
-        if row == MoveEnum.NONE.value or col == MoveEnum.NONE.value:
+        if MoveEnum.NONE.value in (row, col):
             self.__end_square = MoveEnum.NONE.value
         else:
             self.__end_square = BoardEnum.BOARD_LENGTH.value * row + col

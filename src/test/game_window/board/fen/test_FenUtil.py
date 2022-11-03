@@ -191,7 +191,7 @@ def test_disable_castling_if_deleted_rook_nulls_arguments():
 
     # when
     with pytest.raises(NullArgumentException):
-        FenUtil.disable_castling_if_deleted_rook(None, None, None, None)
+        FenUtil.disable_castling_if_captured_rook(None, None, None, None)
 
     # then
 
@@ -205,7 +205,7 @@ def test_disable_castling_if_deleted_rook_arguments_not_within_bonds():
 
     # when
     with pytest.raises(IllegalArgumentException):
-        FenUtil.disable_castling_if_deleted_rook(deleted_piece, color, square, board)
+        FenUtil.disable_castling_if_captured_rook(deleted_piece, color, square, board)
 
     # then
 
@@ -219,7 +219,7 @@ def test_disable_castling_if_deleted_rook_proper_use():
     expected: bool = False
 
     # when
-    FenUtil.disable_castling_if_deleted_rook(deleted_piece, color, square, board)
+    FenUtil.disable_castling_if_captured_rook(deleted_piece, color, square, board)
     result: bool = board.get_fen_data().can_king_castle_king_side(ColorManager.get_opposite_piece_color(color))
 
     # then

@@ -82,7 +82,7 @@ class MoveGenerator:
 
             if SlidingPiecesGen.is_sliding_piece(piece):
                 SlidingPiecesGen.generate_sliding_piece_moves(piece, square, moves_list, color_to_move, board)
-            elif piece == PiecesEnum.KNIGHT.value or piece == PiecesEnum.KING.value:
+            elif piece in (PiecesEnum.KING.value, PiecesEnum.KNIGHT.value):
                 KingKnightGen.generate_moves_for_knight_and_king(moves_list, piece, color_to_move, board, square)
             elif piece == PiecesEnum.PAWN.value:
                 PawnGen.generate_pawn_moves(moves_list, piece, color_to_move, board, square)

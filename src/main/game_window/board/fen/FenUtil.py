@@ -60,7 +60,7 @@ class FenUtil:
             fen_data.set_castling_king_side(False, color)
 
     @staticmethod
-    def disable_castling_if_deleted_rook(deleted_piece: int, color: int, square: int, board: 'Board') -> None:
+    def disable_castling_if_captured_rook(deleted_piece: int, color: int, square: int, board: 'Board') -> None:
         """
         Method used to disable castling if rook was captured
         :param deleted_piece: int value of deleted piece

@@ -154,7 +154,7 @@ class GameWindow(QWidget):
         final_piece_index: int = 8 * row + col
         color: int = ColorManager.get_piece_color(self.__moving_piece)
 
-        FenUtil.disable_castling_if_deleted_rook(deleted_piece, color, end_square, self.__board)
+        FenUtil.disable_castling_if_captured_rook(deleted_piece, color, end_square, self.__board)
 
         self.handle_castling_event(final_piece_index, color)
 
@@ -264,6 +264,9 @@ class GameWindow(QWidget):
             self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
             return False
         self.__current_move.set_end_square(row, col)
+
+        if start_square == MoveEnum.NONE.value:
+            return False
 
         if not self.__board.is_it_legal_move(self.__current_move) or start_square == end_square:
             self.__board.add_piece_to_the_board(self.__moving_piece, start_square)
