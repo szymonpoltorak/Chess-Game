@@ -5,7 +5,9 @@ from numpy import ndarray
 from numpy import zeros
 from typing import TYPE_CHECKING
 
+from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
+from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
@@ -72,6 +74,11 @@ class BoardUtil:
         :param flag: int value of promotion flag
         :return: int value of piece
         """
+        if color is None or flag is None:
+            raise NullArgumentException("COLOR AND FLAG CANNOT BE NULLS!")
+        if not ColorManager.is_it_valid_color(color) or flag not in SpecialFlags.PROMOTIONS.value:
+            raise IllegalArgumentException("COLOR OR FLAG HAS NOT PROPER VALUES!")
+
         promotion_pieces: Dict[int, int] = {
             SpecialFlags.PROMOTE_TO_QUEEN.value: PiecesEnum.QUEEN.value,
             SpecialFlags.PROMOTE_TO_KNIGHT.value: PiecesEnum.KNIGHT.value,

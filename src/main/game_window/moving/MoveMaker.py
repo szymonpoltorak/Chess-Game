@@ -44,7 +44,7 @@ class MoveMaker:
             return move_data
 
         elif special_flag in SpecialFlags.PROMOTIONS.value:
-            move_data: MoveData = MoveMaker.move_and_copy_move_data(board, move, color)
+            move_data = MoveMaker.move_and_copy_move_data(board, move, color)
             board.get_board_array()[move.get_end_square()] = BoardUtil.get_promotion_piece(color, special_flag)
 
             return move_data
@@ -57,7 +57,7 @@ class MoveMaker:
             return MoveData(deleted_piece, white_king, white_queen, black_king, black_queen, en_square, en_piece)
 
         elif special_flag == SpecialFlags.CASTLING.value:
-            deleted_piece: int = color | moving_piece
+            deleted_piece = color | moving_piece
             white_king, white_queen, black_king, black_queen, en_square, en_piece = fen_data.get_special_move_data()
             board.castle_king(deleted_piece, move)
 
@@ -94,9 +94,9 @@ class MoveMaker:
 
         elif special_flag in SpecialFlags.PROMOTIONS.value:
             fen_data.update_fen_data(deleted_data)
-            color: int = ColorManager.get_piece_color(board_array[end_square])
+            color = ColorManager.get_piece_color(board_array[end_square])
 
-            moved_piece: int = color | move.get_moving_piece()
+            moved_piece = color | move.get_moving_piece()
             board_array[end_square] = deleted_piece
             board_array[start_square] = moved_piece
 
