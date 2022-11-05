@@ -91,14 +91,11 @@ class MoveMakingUtil:
         :return: bool
         """
         special_flag: int = move.get_special_flag_value()
-        moving_piece: int = move.get_moving_piece()
 
         if special_flag == SpecialFlags.EN_PASSANT.value:
-            deleted_piece = color | moving_piece
-            move_data.deleted_piece = deleted_piece
-            board.delete_piece_from_board_square(move.get_start_square())
+            move_data.deleted_piece = board.delete_piece_from_board_square(move.get_start_square())
 
-            board.make_en_passant_capture(deleted_piece)
+            board.make_en_passant_capture(move_data.deleted_piece)
             return True
         return False
 
@@ -150,8 +147,7 @@ class MoveMakingUtil:
         :param move: Move instance
         :return: None
         """
-        deleted_piece = MoveMakingUtil.update_board_with_movement(board, move, color)
-        move_data.deleted_piece = deleted_piece
+        move_data.deleted_piece = MoveMakingUtil.update_board_with_movement(board, move, color)
 
     @staticmethod
     def copy_fen_data_to_move_data(board: 'Board') -> MoveData:
@@ -161,6 +157,5 @@ class MoveMakingUtil:
         :return: MoveData instance without deleted piece value
         """
         fen_data: FenData = board.get_fen_data()
-        white_king, white_queen, black_king, black_queen, en_square, en_piece = fen_data.get_special_move_data()
 
-        return MoveData(MoveEnum.NONE.value, white_king, white_queen, black_king, black_queen, en_square, en_piece)
+        return MoveData(MoveEnum.NONE.value, *fen_data.get_special_move_data())

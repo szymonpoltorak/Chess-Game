@@ -30,7 +30,7 @@ class Board:
         self.__engine_color: int = PiecesEnum.BLACK.value
         self.__player_color: int = PiecesEnum.WHITE.value
         self.__board_array: ndarray[int, dtype[int8]] = BoardInitializer.init_starting_board(self.__engine_color,
-                                                                                self.__player_color)
+                                                                                             self.__player_color)
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__fen_data: FenData = FenData(self.__player_color)
         self.__color_to_move: int = PiecesEnum.WHITE.value
@@ -222,6 +222,7 @@ class Board:
             raise IllegalArgumentException("THIS PIECE CANNOT MAKE AN EN PASSANT CAPTURE!")
         if piece is None:
             raise NullArgumentException("PIECE CANNOT BE NULL!")
+
         self.__board_array[self.__fen_data.get_en_passant_square()] = piece
         self.__board_array[self.__fen_data.get_en_passant_piece_square()] = 0
 

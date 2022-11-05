@@ -103,4 +103,5 @@ class Move:
         Magic method with toString
         :return: string representation of class
         """
-        return f"\tStartSquare : {self.__start_square}\n\tEndSquare : {self.__end_square}\n\tPiece : {self.__piece}\n"
+        return f"\tStartSquare : {self.__start_square}\n\tEndSquare : {self.__end_square}\n\tPiece : {self.__piece}\n" \
+               f"\tSpecialFlag : {self.__special_flag}\n"

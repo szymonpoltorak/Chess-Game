@@ -36,7 +36,8 @@ def test_un_make_move():
     expected: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
     deleted_piece: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
     deleted_data: MoveData = MoveData(deleted_piece, MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value,
-                                      MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value)
+                                      MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value,
+                                      MoveEnum.NONE.value, MoveEnum.NONE.value)
     start_square: int = 63
     end_square: int = 0
     move: Move = Move(start_square, end_square, PiecesEnum.ROOK.value, SpecialFlags.NONE.value)
@@ -97,7 +98,7 @@ def test_does_making_move_return_proper_move_data():
     board: Board = Board()
     move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
     expected: MoveData = MoveData(PiecesEnum.WHITE.value | PiecesEnum.KING.value, True, True, True, True,
-                                  MoveEnum.NONE.value, MoveEnum.NONE.value)
+                                  MoveEnum.NONE.value, MoveEnum.NONE.value, 0, 0)
 
     board.delete_piece_from_board_square(61)
     board.delete_piece_from_board_square(62)
@@ -211,6 +212,8 @@ def test_un_make_left_en_passant_move():
 
     fen_data.set_en_passant_square(en_passant_pos)
     fen_data.set_en_passant_piece_square(captured_pawn_pos)
+    board.update_fen()
+    start_string: str = board.get_fen_string()
 
     # when
     move_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -222,6 +225,7 @@ def test_un_make_left_en_passant_move():
     assert result == expected
     assert fen_data.get_en_passant_square() == en_passant_pos
     assert fen_data.get_en_passant_piece_square() == captured_pawn_pos
+    assert start_string == board.get_fen_string()
 
 
 def test_make_right_en_passant_move():
@@ -278,10 +282,11 @@ def test_un_make_right_en_passant_move():
 
     board.add_piece_to_the_board(PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, captured_pawn_pos)
     board.add_piece_to_the_board(PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, capturing_pawn_pos)
-    board.update_fen()
 
     fen_data.set_en_passant_square(en_passant_pos)
     fen_data.set_en_passant_piece_square(captured_pawn_pos)
+    board.update_fen()
+    start_string: str = board.get_fen_string()
 
     # when
     move_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -293,6 +298,7 @@ def test_un_make_right_en_passant_move():
     assert result == expected
     assert fen_data.get_en_passant_square() == en_passant_pos
     assert fen_data.get_en_passant_piece_square() == captured_pawn_pos
+    assert start_string == board.get_fen_string()
 
 
 def test_make_promotion_to_queen():
@@ -543,6 +549,7 @@ def test_un_make_double_pawn_move():
     move: Move = Move(48, 32, PiecesEnum.PAWN.value, SpecialFlags.NONE.value)
     color: int = PiecesEnum.WHITE.value
     expected: Tuple[int, int, int] = (0, -1, -1)
+    start_string = board.get_fen_string()
 
     # when
     deleted_data: MoveData = MoveMaker.make_move(move, color, board)
@@ -554,3 +561,4 @@ def test_un_make_double_pawn_move():
 
     # then
     assert result == expected
+    assert start_string == board.get_fen_string()

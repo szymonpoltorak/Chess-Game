@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from game_window.ColorManager import ColorManager
+from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
@@ -101,7 +102,6 @@ class PawnGen:
             if PawnUtil.is_attack_target_in_border_bounds(start_square, right_piece_square,
                                                           MoveEnum.PAWN_RANGE.value):
                 PawnGen.add_moves_and_promotions(start_square, right_piece_square, piece, moves_list)
-
         PawnGen.add_en_passant_moves(start_square, piece, color, moves_list, board)
 
     @staticmethod
@@ -131,12 +131,12 @@ class PawnGen:
         :param board: Board instance
         :return: None
         """
-        upper_color: int = board.get_engine_color()
-        en_passant_square: Optional[int] = board.get_fen_data().get_en_passant_square()
-        en_passant_target_left: int = start_square + PawnUtil.get_attack_direction(color, "LEFT", upper_color)
-        en_passant_target_right: int = start_square + PawnUtil.get_attack_direction(color, "RIGHT", upper_color)
+        engine_color: int = board.get_engine_color()
+        en_passant_square: int = board.get_fen_data().get_en_passant_square()
+        en_passant_target_left: int = start_square + PawnUtil.get_attack_direction(color, "LEFT", engine_color)
+        en_passant_target_right: int = start_square + PawnUtil.get_attack_direction(color, "RIGHT", engine_color)
 
-        if en_passant_square == -1:
+        if en_passant_square == -1 or en_passant_square not in BoardEnum.MIDDLE_SQUARES.value:
             return
         if en_passant_square == en_passant_target_left:
             moves_list.append(Move(start_square, en_passant_target_left, piece, SpecialFlags.EN_PASSANT.value))

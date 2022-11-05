@@ -25,3 +25,5 @@ class BoardEnum(Enum):
     CENTER_SIDE_SQUARES: Tuple[int, ...] = (26, 29, 34, 37)
     CENTER_MAIN_SQUARES: Tuple[int, ...] = (27, 28, 35, 36)
     CENTER_SQUARES: Tuple[int, ...] = (26, 27, 28, 29, 34, 35, 36, 37)
+
+    MIDDLE_SQUARES: Tuple[int, ...] = (24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39)

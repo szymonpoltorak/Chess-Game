@@ -1,13 +1,13 @@
-from numpy import ndarray, int8, dtype
 from typing import TYPE_CHECKING
 
-from game_window.board.BoardUtil import BoardUtil
-from game_window.ColorManager import ColorManager
+from numpy import dtype
+from numpy import int8
+from numpy import ndarray
+
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenUtil import FenUtil
-from game_window.enums.MoveEnum import MoveEnum
+from game_window.ColorManager import ColorManager
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.Move import Move
 from game_window.moving.MoveData import MoveData
 from game_window.moving.MoveMakingUtil import MoveMakingUtil
@@ -44,17 +44,22 @@ class MoveMaker:
         FenUtil.update_fen_data_with_double_pawn_movement(move, fen_data)
 
         if MoveMakingUtil.check_and_handle_rook_movement(move, board, color, move_data):
+
             return move_data
         if MoveMakingUtil.check_and_handle_promotion_movement(move, board, color, move_data):
+
             return move_data
         if MoveMakingUtil.check_and_handle_castling_movement(move, board, color, move_data):
+
             return move_data
         if MoveMakingUtil.check_and_handle_en_passant_movement(move, board, color, move_data):
+
             return move_data
         if MoveMakingUtil.check_and_handle_kings_movement(move, board, color, move_data):
+
             return move_data
         MoveMakingUtil.update_move_data_with_deleted_piece(move_data, board, color, move)
-        
+
         return move_data
 
     @staticmethod

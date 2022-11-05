@@ -178,6 +178,11 @@ class FenUtil:
 
     @staticmethod
     def update_fen_data_with_double_pawn_movement(move: Move, fen_data: FenData) -> None:
+        """
+
+        :param move:
+        :param fen_data:
+        """
         end_square: int = move.get_end_square()
         moving_piece: int = move.get_moving_piece()
         move_length: int = end_square - move.get_start_square()

@@ -1,3 +1,4 @@
+from exceptions.IllegalArgumentException import IllegalArgumentException
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 
@@ -27,6 +28,8 @@ class ColorManager:
         :param color: int value of color
         :return: int value of opposite color
         """
+        if color == PiecesEnum.NONE.value:
+            raise IllegalArgumentException("IT IS IMPOSSIBLE TO GET OPPOSITE COLOR OF NONE!")
         return PiecesEnum.WHITE.value if color == PiecesEnum.BLACK.value else PiecesEnum.BLACK.value
 
     @staticmethod

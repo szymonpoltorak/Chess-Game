@@ -64,15 +64,13 @@ class PawnEval:
         if not PawnEval.is_friendly_pawn(board, index, color):
             raise ValueError("IT SHOULD NOT HAPPEN!")
         chain_left_side = []
-        working_index = index
+        working_index: int = index
         distances: ndarray[int, dtype[int8]] = board.get_distances()
 
         while distances[working_index][3] != 0:
             working_index += step_left
 
-            if working_index < 0 or working_index > 63:
-                break
-            if not PawnEval.is_friendly_pawn(board, working_index, color):
+            if working_index < 0 or working_index > 63 or not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_left_side.append(working_index)
         chain_right_side = []
@@ -81,9 +79,7 @@ class PawnEval:
         while distances[working_index][4] != 0:
             working_index += -step_left
 
-            if working_index < 0 or working_index > 63:
-                break
-            if not PawnEval.is_friendly_pawn(board, working_index, color):
+            if working_index < 0 or working_index > 63 or not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_right_side.append(working_index)
         left_leaning_chain = chain_right_side + [index] + chain_left_side
@@ -103,26 +99,22 @@ class PawnEval:
         if not PawnEval.is_friendly_pawn(board, index, color):
             raise ValueError("IT SHOULD NOT HAPPEN!")
         chain_right_side = []
-        working_index = index
+        working_index: int = index
         distances: ndarray[int, dtype[int8]] = board.get_distances()
 
         while distances[working_index][4] != 0:
             working_index += step_right
 
-            if working_index < 0 or working_index > 63:
-                break
-            if not PawnEval.is_friendly_pawn(board, working_index, color):
+            if working_index < 0 or working_index > 63 or not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_right_side.append(working_index)
         chain_left_side = []
         working_index = index
 
         while distances[working_index][3] != 0:
-            working_index += -step_right
+            working_index -= step_right
 
-            if working_index < 0 or working_index > 63:
-                break
-            if not PawnEval.is_friendly_pawn(board, working_index, color):
+            if working_index < 0 or working_index > 63 or not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_left_side.append(working_index)
         right_leaning_chain = chain_right_side + [index] + chain_left_side
@@ -139,8 +131,7 @@ class PawnEval:
         """
         step_left = MoveEnum.TOP_LEFT.value if color == board.get_player_color() else MoveEnum.BOTTOM_LEFT.value
         step_right = MoveEnum.TOP_RIGHT.value if color == board.get_player_color() else MoveEnum.BOTTOM_RIGHT.value
-
-        chain_eval = 0
+        chain_eval: int = 0
 
         for index in range(BoardEnum.BOARD_SIZE.value):
             if not PawnEval.is_friendly_pawn(board, index, color):

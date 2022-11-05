@@ -73,11 +73,16 @@ class Engine:
             deleted_data: MoveData = MoveMaker.make_move(move, board.get_engine_color(), board)
             evaluation: float = -Engine.negamax_search(board, depth, alpha, beta, board.get_player_color())
             MoveMaker.un_make_move(move, deleted_data, board)
+            print("-----------------------------------------------------------------")
             print(f"BestEval : {best_eval}\nEvaluation : {evaluation}\n")
+            print(f"Current Move : \n{move}")
+            print("-----------------------------------------------------------------")
 
             if evaluation > best_eval:
                 best_move = move
                 best_eval = evaluation
-        print(f"Best Eval : {best_eval}\n-----------------------------------------------------------------")
+        print("-----------------------------------------------------------------")
+        print(f"Best Eval : {best_eval}\nBest Move : \n{best_move}\n")
+        print("-----------------------------------------------------------------")
 
         return best_move if best_eval != -inf else None

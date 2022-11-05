@@ -4,6 +4,7 @@ from typing import Tuple
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.ColorManager import ColorManager
+from game_window.enums.BoardEnum import BoardEnum
 from game_window.moving.MoveData import MoveData
 
 
@@ -100,8 +101,8 @@ class FenData:
 
         if to_zero:
             self.__no_sack_and_pawn_count = 0
-            return
-        self.__no_sack_and_pawn_count += 1
+        else:
+            self.__no_sack_and_pawn_count += 1
 
     def set_castling_queen_side(self, can_castle: bool, color: int) -> None:
         """
@@ -112,7 +113,7 @@ class FenData:
         """
         if color is None or can_castle is None:
             raise NullArgumentException("COLOR AND CAN_CASTLE CANNOT BE NULLS!")
-        if color not in (8, 16):
+        if not ColorManager.is_it_valid_color(color):
             raise IllegalArgumentException("WRONG COLOR ARGUMENT!")
 
         if color == self.__player_color:
@@ -130,6 +131,11 @@ class FenData:
             raise NullArgumentException("SQUARE CANNOT BE NULL!")
         if square < -1 or square > 63:
             raise IllegalArgumentException("SQUARE IS NOT WITHIN BONDS!")
+
+        proper_squares: Tuple[int, ...] = (-1, 16, 17, 18, 19, 20, 21, 22, 23, 40, 41, 42, 43, 44, 45, 46, 47)
+
+        if square not in proper_squares:
+            raise IllegalArgumentException("SUCH SQUARE CANNOT BE EN PASSANT SQUARE!")
         self.__en_passant_square = square
 
     def set_en_passant_piece_square(self, piece_square: int) -> None:
@@ -138,6 +144,10 @@ class FenData:
         :param piece_square: int piece end_square value
         :return: None
         """
+        proper_squares: Tuple[int, ...] = (-1, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39)
+
+        if piece_square not in proper_squares:
+            raise IllegalArgumentException("SUCH SQUARE CANNOT BE EN PASSANT PIECE SQUARE!")
         self.__en_passant_piece_square = piece_square
 
     def get_en_passant_square(self) -> int:
@@ -154,13 +164,14 @@ class FenData:
         """
         return self.__en_passant_piece_square
 
-    def get_special_move_data(self) -> Tuple[bool, bool, bool, bool, int, int]:
+    def get_special_move_data(self) -> Tuple[bool, bool, bool, bool, int, int, int, int]:
         """
         Method used to return a tuple of special fen data for making and unmaking moves_list
         :return: tuple
         """
-        return self.__white_castle_king, self.__white_castle_queen, self.__black_castle_king, \
-               self.__black_castle_queen, self.__en_passant_square, self.__en_passant_piece_square
+        return (self.__white_castle_king, self.__white_castle_queen, self.__black_castle_king,
+                self.__black_castle_queen, self.__en_passant_square, self.__en_passant_piece_square,
+                self.__move_counter, self.__no_sack_and_pawn_count)
 
     def update_fen_data(self, prev_fen_data: MoveData) -> None:
         """
@@ -177,6 +188,8 @@ class FenData:
         self.__black_castle_queen = prev_fen_data.black_castle_queen
         self.__en_passant_square = prev_fen_data.en_passant_square
         self.__en_passant_piece_square = prev_fen_data.en_passant_piece_square
+        self.__move_counter = prev_fen_data.move_counter
+        self.__no_sack_and_pawn_count = prev_fen_data.no_sack_and_pawn_count
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, FenData):

@@ -13,3 +13,5 @@ class MoveData:
     black_castle_queen: bool
     en_passant_square: int
     en_passant_piece_square: int
+    move_counter: int
+    no_sack_and_pawn_count: int

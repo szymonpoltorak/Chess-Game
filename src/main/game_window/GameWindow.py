@@ -182,11 +182,11 @@ class GameWindow(QWidget):
             QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
             return
         deleted_piece: int = EngineMover.update_board_with_engine_move(self.__board, computer_move)
+        self.__board.update_fen()
 
         self.play_proper_sound(deleted_piece)
         player_moves: MoveList = MoveGenerator.generate_legal_moves(self.__board.get_color_to_move(), self.__board)
         self.__board.set_legal_moves(player_moves)
-        self.__board.update_fen()
 
         self.__current_move = computer_move
         self.update()
