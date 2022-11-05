@@ -279,3 +279,51 @@ def test_update_fen_data_null_argument():
         fen_data.update_fen_data(None)
 
     # then
+
+
+def test_set_en_passant_square_null_square():
+    # given
+    fen_data = FenData(PiecesEnum.WHITE.value)
+    square: int = None
+
+    # when
+    with pytest.raises(NullArgumentException):
+        fen_data.set_en_passant_square(square)
+
+    # then
+
+
+def test_set_en_passant_square_square_out_of_bonds():
+    # given
+    fen_data = FenData(PiecesEnum.WHITE.value)
+    square: int = 71
+
+    # when
+    with pytest.raises(IllegalArgumentException):
+        fen_data.set_en_passant_square(square)
+
+    # then
+
+
+def test_set_en_passant_square_not_valid_square():
+    # given
+    fen_data = FenData(PiecesEnum.WHITE.value)
+    square: int = 1
+
+    # when
+    with pytest.raises(IllegalArgumentException):
+        fen_data.set_en_passant_square(square)
+
+    # then
+
+
+def test_set_en_passant_piece_square_not_valid_square():
+    # given
+    fen_data = FenData(PiecesEnum.WHITE.value)
+    square: int = 1
+
+    # when
+    with pytest.raises(IllegalArgumentException):
+        fen_data.set_en_passant_piece_square(square)
+
+    # then

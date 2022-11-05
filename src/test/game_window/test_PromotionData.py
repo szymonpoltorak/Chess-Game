@@ -87,3 +87,25 @@ def test_check_user_choice_arguments_are_negatives():
         promotion_data.check_user_choice(rect_size, board, x, y)
 
     # then
+
+
+def test_get_rect_index_null_args():
+    # given
+    promotion_data: PromotionData = PromotionData()
+
+    # when
+    with pytest.raises(NullArgumentException):
+        promotion_data.get_rect_index(None, None)
+
+    # then
+
+
+def test_get_rect_index_illegal_args():
+    # given
+    promotion_data: PromotionData = PromotionData()
+
+    # when
+    with pytest.raises(IllegalArgumentException):
+        promotion_data.get_rect_index(-1, -1)
+
+    # then

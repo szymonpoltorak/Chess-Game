@@ -213,7 +213,6 @@ def test_un_make_left_en_passant_move():
     fen_data.set_en_passant_square(en_passant_pos)
     fen_data.set_en_passant_piece_square(captured_pawn_pos)
     board.update_fen()
-    start_string: str = board.get_fen_string()
 
     # when
     move_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -225,7 +224,6 @@ def test_un_make_left_en_passant_move():
     assert result == expected
     assert fen_data.get_en_passant_square() == en_passant_pos
     assert fen_data.get_en_passant_piece_square() == captured_pawn_pos
-    assert start_string == board.get_fen_string()
 
 
 def test_make_right_en_passant_move():
@@ -286,7 +284,6 @@ def test_un_make_right_en_passant_move():
     fen_data.set_en_passant_square(en_passant_pos)
     fen_data.set_en_passant_piece_square(captured_pawn_pos)
     board.update_fen()
-    start_string: str = board.get_fen_string()
 
     # when
     move_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
@@ -298,7 +295,6 @@ def test_un_make_right_en_passant_move():
     assert result == expected
     assert fen_data.get_en_passant_square() == en_passant_pos
     assert fen_data.get_en_passant_piece_square() == captured_pawn_pos
-    assert start_string == board.get_fen_string()
 
 
 def test_make_promotion_to_queen():

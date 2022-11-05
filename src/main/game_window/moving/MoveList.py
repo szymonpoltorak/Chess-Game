@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from numpy import ndarray, dtype, generic
 from typing import Any
 
+from exceptions.NullArgumentException import NullArgumentException
 from game_window.moving.Move import Move
 
 
@@ -19,6 +20,8 @@ class MoveList:
         Method used to append new move to the MoveList
         :param move: Move instance
         """
+        if move is None:
+            raise NullArgumentException("WHY YOU ADD NULL MOVE TO MOVE LIST ?")
         self.moves[self.free_index] = move
         self.free_index += 1
 

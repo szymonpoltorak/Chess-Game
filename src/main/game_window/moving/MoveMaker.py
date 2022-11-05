@@ -44,19 +44,14 @@ class MoveMaker:
         FenUtil.update_fen_data_with_double_pawn_movement(move, fen_data)
 
         if MoveMakingUtil.check_and_handle_rook_movement(move, board, color, move_data):
-
             return move_data
         if MoveMakingUtil.check_and_handle_promotion_movement(move, board, color, move_data):
-
             return move_data
         if MoveMakingUtil.check_and_handle_castling_movement(move, board, color, move_data):
-
             return move_data
         if MoveMakingUtil.check_and_handle_en_passant_movement(move, board, color, move_data):
-
             return move_data
         if MoveMakingUtil.check_and_handle_kings_movement(move, board, color, move_data):
-
             return move_data
         MoveMakingUtil.update_move_data_with_deleted_piece(move_data, board, color, move)
 

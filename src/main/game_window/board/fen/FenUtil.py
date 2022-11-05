@@ -127,7 +127,7 @@ class FenUtil:
         return letter.upper() if color == PiecesEnum.WHITE.value else letter
 
     @staticmethod
-    def add_castling_letters_to_fen(fen_data: FenData) -> str:
+    def get_castling_letters_to_fen(fen_data: FenData) -> str:
         """
         Method to get proper letters representing castling capabilities of kings
         :param fen_data: FenData instance
@@ -179,9 +179,10 @@ class FenUtil:
     @staticmethod
     def update_fen_data_with_double_pawn_movement(move: Move, fen_data: FenData) -> None:
         """
-
-        :param move:
-        :param fen_data:
+        Method used to validate double pawn movement in terms of fen data
+        :param move: Move instance
+        :param fen_data: FenData instance
+        :return None
         """
         end_square: int = move.get_end_square()
         moving_piece: int = move.get_moving_piece()

@@ -117,7 +117,7 @@ def test_add_castling_letters_to_fen_all_castling_possible():
     expected: str = " KQkq"
 
     # when
-    result: str = FenUtil.add_castling_letters_to_fen(board.get_fen_data())
+    result: str = FenUtil.get_castling_letters_to_fen(board.get_fen_data())
 
     # then
     assert expected == result
@@ -134,7 +134,7 @@ def test_add_castling_letters_to_fen_no_castling():
     board.get_fen_data().set_castling_queen_side(False, PiecesEnum.WHITE.value)
     board.get_fen_data().set_castling_queen_side(False, PiecesEnum.BLACK.value)
 
-    result: str = FenUtil.add_castling_letters_to_fen(board.get_fen_data())
+    result: str = FenUtil.get_castling_letters_to_fen(board.get_fen_data())
 
     # then
     assert expected == result
@@ -234,6 +234,53 @@ def test_convert_square_into_board_double_index_null_square():
         FenUtil.convert_square_into_board_double_index(None)
 
     # then
+
+
+def test_get_castling_letters_to_fen_null():
+    # given
+
+    # when
+    with pytest.raises(NullArgumentException):
+        FenUtil.get_castling_letters_to_fen(None)
+
+    # then
+
+
+def test_get_proper_piece_for_fen_null():
+    # given
+
+    # when
+    with pytest.raises(NullArgumentException):
+        FenUtil.get_proper_piece_for_fen(None, None, None)
+
+    # then
+
+
+def test_get_proper_piece_for_fen_illegal_args():
+    # given
+
+    # when
+    with pytest.raises(IllegalArgumentException):
+        FenUtil.get_proper_piece_for_fen(Board().get_board_array(), -1, 8)
+
+    # then
+
+
+def test_get_castling_letters_to_unable_castlings():
+    # given
+    fen_data: FenData = FenData(PiecesEnum.WHITE.value)
+    expected: str = " -"
+
+    fen_data.set_castling_king_side(False, PiecesEnum.WHITE.value)
+    fen_data.set_castling_king_side(False, PiecesEnum.BLACK.value)
+    fen_data.set_castling_queen_side(False, PiecesEnum.WHITE.value)
+    fen_data.set_castling_queen_side(False, PiecesEnum.BLACK.value)
+
+    # when
+    result: str = FenUtil.get_castling_letters_to_fen(fen_data)
+
+    # then
+    assert result == expected
 
 
 def test_convert_square_into_board_double_index_illegal_arguments():
@@ -344,7 +391,7 @@ def test_add_castling_letters_to_fen_null_argument():
 
     # when
     with pytest.raises(NullArgumentException):
-        FenUtil.add_castling_letters_to_fen(None)
+        FenUtil.get_castling_letters_to_fen(None)
 
     # then
 

@@ -28,7 +28,7 @@ class ColorManager:
         :param color: int value of color
         :return: int value of opposite color
         """
-        if color == PiecesEnum.NONE.value:
+        if not ColorManager.is_it_valid_color(color):
             raise IllegalArgumentException("IT IS IMPOSSIBLE TO GET OPPOSITE COLOR OF NONE!")
         return PiecesEnum.WHITE.value if color == PiecesEnum.BLACK.value else PiecesEnum.BLACK.value
 
@@ -41,6 +41,7 @@ class ColorManager:
         :return: string value of a color
         """
         is_light_color = (row + col) % 2 == 0
+
         return BoardEnum.PRIMARY_BOARD_COLOR.value if is_light_color else BoardEnum.SECONDARY_BOARD_COLOR.value
 
     @staticmethod
@@ -61,3 +62,15 @@ class ColorManager:
         :return: bool
         """
         return color in (PiecesEnum.BLACK.value, PiecesEnum.WHITE.value)
+
+    @staticmethod
+    def get_legal_move_color(row: int, col: int) -> str:
+        """
+        Method used to return a legal move square color
+        :param col: int value of row
+        :param row: int value of col
+        :return: str
+        """
+        is_light_color = (row + col) % 2 == 0
+
+        return BoardEnum.MOVE_SQUARE_LIGHT.value if is_light_color else BoardEnum.MOVE_SQUARE_DARK.value

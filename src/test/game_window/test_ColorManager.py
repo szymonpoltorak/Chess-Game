@@ -1,3 +1,6 @@
+import pytest
+
+from exceptions.IllegalArgumentException import IllegalArgumentException
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
@@ -132,6 +135,30 @@ def test_is_it_valid_color_valid_color():
 
     # when
     result: bool = ColorManager.is_it_valid_color(color)
+
+    # then
+    assert result == expected
+
+
+def test_get_opposite_piece_color_not_valid_color():
+    # given
+    color: int = 0
+
+    # when
+    with pytest.raises(IllegalArgumentException):
+        ColorManager.get_opposite_piece_color(color)
+
+    # then
+
+
+def test_get_legal_move_color():
+    # given
+    row: int = 0
+    col: int = 0
+    expected: str = BoardEnum.MOVE_SQUARE_LIGHT.value
+
+    # when
+    result: str = ColorManager.get_legal_move_color(row, col)
 
     # then
     assert result == expected

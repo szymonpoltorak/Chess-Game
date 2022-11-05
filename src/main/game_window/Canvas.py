@@ -48,7 +48,7 @@ class Canvas(QPainter):
 
         for row in range(BoardEnum.BOARD_LENGTH.value):
             for col in range(BoardEnum.BOARD_LENGTH.value):
-                color = ColorManager.pick_proper_color(row, col)
+                color: str = ColorManager.pick_proper_color(row, col)
                 rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
                 current_square = BoardEnum.BOARD_LENGTH.value * row + col
 
@@ -207,7 +207,7 @@ class Canvas(QPainter):
                         break
                     if self.is_it_frozen_piece_target_square(legal_move, current_square):
                         rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
-                        self.fillRect(rectangle, QColor("#b0272f"))
+                        self.fillRect(rectangle, QColor(ColorManager.get_legal_move_color(row, col)))
                         break
                 current_x += self.__rect_width
             current_y += self.__rect_height
