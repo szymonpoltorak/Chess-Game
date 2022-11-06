@@ -1,4 +1,3 @@
-from numpy import array
 from PyQt5.QtCore import QRect
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
@@ -6,15 +5,17 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QStaticText
+from numpy import array, dtype, ndarray, generic
 
-from game_window.Board import Board
 from game_window.ColorManager import ColorManager
+from game_window.PromotionData import PromotionData
+from game_window.board.Board import Board
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
+from game_window.enums.Paths import Paths
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.moving.Move import Move
-from game_window.PromotionData import PromotionData
 
 
 class Canvas(QPainter):
@@ -24,7 +25,7 @@ class Canvas(QPainter):
     __slots__ = array(["__rect_width", "__rect_height", "__freeze_piece", "__freeze_start", "__freeze_end"],
                       dtype=str)
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(Canvas, self).__init__()
         self.__rect_width = int(CanvasEnum.CANVAS_WIDTH.value / 8)
         self.__rect_height = int(CanvasEnum.CANVAS_HEIGHT.value / 8)
@@ -47,7 +48,7 @@ class Canvas(QPainter):
 
         for row in range(BoardEnum.BOARD_LENGTH.value):
             for col in range(BoardEnum.BOARD_LENGTH.value):
-                color = ColorManager.pick_proper_color(row, col)
+                color: str = ColorManager.pick_proper_color(row, col)
                 rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
                 current_square = BoardEnum.BOARD_LENGTH.value * row + col
 
@@ -77,7 +78,7 @@ class Canvas(QPainter):
         self.paint_possible_moves_for_frozen_piece(board)
         self.__draw_position_from_fen(board)
 
-    def draw_character_on_board(self, character: int or str, position_x: int, position_y: int, color: str) -> None:
+    def draw_character_on_board(self, character: int | str, position_x: int, position_y: int, color: str) -> None:
         """
         Draw characters : number and letters on board edges.
         :param character: characters string which we want to paint on canvas
@@ -128,11 +129,14 @@ class Canvas(QPainter):
         :param color: int value of color
         :return: str
         """
-        letters = array(["q", "b", "n", "r"])
+        letters: ndarray[str, dtype[generic]] = array(["q", "b", "n", "r"], dtype=str)
 
         if color == PiecesEnum.WHITE.value:
-            return letters[index].upper()
-        return letters[index]
+            big_letter: str = letters[index].upper()
+            return big_letter
+        small_letter: str = letters[index]
+
+        return small_letter
 
     def __draw_position_from_fen(self, board: Board) -> None:
         """
@@ -166,7 +170,7 @@ class Canvas(QPainter):
             return current_x
         except ValueError:
             piece = piece_letter.upper()
-            pieces_path = "src/resources/images/pieces/"
+            pieces_path = Paths.PIECES_PATH.value
             extension = ".png"
 
             if piece_letter.isupper():
@@ -198,12 +202,12 @@ class Canvas(QPainter):
                 current_square = BoardEnum.BOARD_LENGTH.value * row + col
                 legal_moves = board.get_legal_moves()
 
-                for legal_move in legal_moves.moves:
+                for legal_move in legal_moves:
                     if legal_move is None:
                         break
                     if self.is_it_frozen_piece_target_square(legal_move, current_square):
                         rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
-                        self.fillRect(rectangle, QColor("#b0272f"))
+                        self.fillRect(rectangle, QColor(ColorManager.get_legal_move_color(row, col)))
                         break
                 current_x += self.__rect_width
             current_y += self.__rect_height

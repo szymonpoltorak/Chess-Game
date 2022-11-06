@@ -1,24 +1,26 @@
-from typing import TYPE_CHECKING
-
-from numba import jit
 from numpy import inf
+from typing import TYPE_CHECKING
 
 from game_window.ColorManager import ColorManager
 from game_window.engine.Evaluator import Evaluator
+from game_window.enums.MoveEnum import MoveEnum
 from game_window.moving.Move import Move
 from game_window.moving.MoveData import MoveData
-from game_window.moving.MoveGenerator import MoveGenerator
 from game_window.moving.MoveList import MoveList
-from game_window.moving.MoveUtil import MoveUtil
+from game_window.moving.MoveMaker import MoveMaker
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class Engine:
+    """
+    Class containing methods to pick best moves for computer
+    """
+
     @staticmethod
-    @jit(forceobj=True)
-    def negamax_search(board: 'Board', depth: int, alpha: int, beta: int, color: int) -> int:
+    def negamax_search(board: 'Board', depth: int, alpha: float, beta: float, color: int) -> float:
         """
         Method used to evaluate positions and find possibly best move for engine
         :param board: Board instance
@@ -34,15 +36,15 @@ class Engine:
 
         if moves_list.moves[0] is None:
             return -inf if color == board.get_engine_color() else inf
-        evaluation: int = -inf
+        evaluation: float = -inf
 
-        for move in moves_list.moves:
+        for move in moves_list:
             if move is None:
                 break
-            deleted_data: MoveData = MoveUtil.make_move(move, color, board)
-            evaluation: int = max(evaluation, -Engine.negamax_search(board, depth - 1, -beta, -alpha,
-                                                                     ColorManager.get_opposite_piece_color(color)))
-            MoveUtil.un_make_move(move, deleted_data, board)
+            deleted_data: MoveData = MoveMaker.make_move(move, color, board)
+            evaluation = max(evaluation, -Engine.negamax_search(board, depth - 1, -beta, -alpha,
+                                                                ColorManager.get_opposite_piece_color(color)))
+            MoveMaker.un_make_move(move, deleted_data, board)
 
             alpha = max(alpha, evaluation)
 
@@ -51,7 +53,6 @@ class Engine:
         return evaluation
 
     @staticmethod
-    @jit(forceobj=True)
     def get_computer_move(board: 'Board') -> Move:
         """
         Method used to return best computer move possible
@@ -60,23 +61,28 @@ class Engine:
         """
         moves_list: MoveList = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
         depth: int = 3
-        best_eval: int = -inf
-        alpha: int = inf
-        beta: int = -inf
-        best_move: Move or None = None
+        best_eval: float = -inf
+        alpha: float = inf
+        beta: float = -inf
+        best_move: Move = Move(MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value)
 
-        for move in moves_list.moves:
+        for move in moves_list:
             if move is None:
                 break
 
-            deleted_data: MoveData = MoveUtil.make_move(move, board.get_engine_color(), board)
-            evaluation: int = -Engine.negamax_search(board, depth, alpha, beta, board.get_player_color())
-            MoveUtil.un_make_move(move, deleted_data, board)
+            deleted_data: MoveData = MoveMaker.make_move(move, board.get_engine_color(), board)
+            evaluation: float = -Engine.negamax_search(board, depth, alpha, beta, board.get_player_color())
+            MoveMaker.un_make_move(move, deleted_data, board)
+            print("-----------------------------------------------------------------")
             print(f"BestEval : {best_eval}\nEvaluation : {evaluation}\n")
+            print(f"Current Move : \n{move}")
+            print("-----------------------------------------------------------------")
 
             if evaluation > best_eval:
-                best_move: Move or None = move
-                best_eval: int = evaluation
-        print(f"Best Eval : {best_eval}\n-----------------------------------------------------------------")
+                best_move = move
+                best_eval = evaluation
+        print("-----------------------------------------------------------------")
+        print(f"Best Eval : {best_eval}\nBest Move : \n{best_move}\n")
+        print("-----------------------------------------------------------------")
 
-        return best_move
+        return best_move if best_eval != -inf else None

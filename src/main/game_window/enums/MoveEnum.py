@@ -1,5 +1,7 @@
 from enum import Enum
 
+from typing import Tuple
+
 
 class MoveEnum(Enum):
     """
@@ -8,14 +10,14 @@ class MoveEnum(Enum):
     START_SQUARE_COLOR: str = "#c9a35e"
     END_SQUARE_COLOR: str = "#a29655"
 
-    BOTTOM_LEFT_S: int = 7
-    BOTTOM_S: int = 8
-    BOTTOM_RIGHT_S: int = 9
-    TOP_LEFT_S: int = -9
-    TOP_RIGHT_S: int = -7
-    TOP_S: int = -8
-    LEFT_S: int = -1
-    RIGHT_S: int = 1
+    BOTTOM_LEFT: int = 7
+    BOTTOM: int = 8
+    BOTTOM_RIGHT: int = 9
+    TOP_LEFT: int = -9
+    TOP_RIGHT: int = -7
+    TOP: int = -8
+    LEFT: int = -1
+    RIGHT: int = 1
 
     BISHOP_START_INDEX: int = 4
     PIECE_START_INDEX: int = 0
@@ -23,17 +25,15 @@ class MoveEnum(Enum):
     PIECE_END_INDEX: int = 8
 
     SLIDING_DIRECTIONS_NUMBER: int = 8
-    SLIDING_DIRECTIONS: tuple[int] = (TOP_LEFT_S, TOP_S, TOP_RIGHT_S, LEFT_S, RIGHT_S, BOTTOM_LEFT_S, BOTTOM_S,
-                                      BOTTOM_RIGHT_S)
+    SLIDING_DIRECTIONS: Tuple[int, ...] = (TOP_LEFT, TOP, TOP_RIGHT, LEFT, RIGHT, BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT)
 
-    KNIGHT_DIRECTIONS: tuple[int] = (-17, -15, -10, -6, 6, 10, 15, 17)
+    KNIGHT_DIRECTIONS: Tuple[int, ...] = (-17, -15, -10, -6, 6, 10, 15, 17)
     MAX_KNIGHT_JUMP: int = 2
 
     KK_DIRECTIONS_NUMBER: int = 8
 
     KING_RANGE: int = 1
-    KING_DIRECTIONS: tuple[int] = (TOP_LEFT_S, TOP_S, TOP_RIGHT_S, LEFT_S, RIGHT_S, BOTTOM_LEFT_S, BOTTOM_S,
-                                   BOTTOM_RIGHT_S)
+    KING_DIRECTIONS: Tuple[int, ...] = (TOP_LEFT, TOP, TOP_RIGHT, LEFT, RIGHT, BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT)
     CASTLE_MOVE: int = 2
     KING_SIDE: int = 2
     QUEEN_SIDE: int = 3
@@ -61,3 +61,5 @@ class MoveEnum(Enum):
     TOP_STEP: int = -8
     LEFT_DIR: int = 3
     LEFT_STEP: int = -1
+
+    NONE: int = -1

@@ -1,49 +1,53 @@
 import math
+
+from numpy import ndarray, int8, dtype
 from typing import TYPE_CHECKING
 
-from numba import jit
-from numpy import ndarray
-
-from game_window.CheckUtil import CheckUtil
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
+from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class KingPressure:
+    """
+    Class containing methods to evaluate king pressure
+    """
+
+    __slots__ = ()
+
     @staticmethod
-    def evaluate_king_pressure(board: 'Board', favor_color: int) -> int:
+    def evaluate_king_pressure(board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate pressure on king.
         :param board: Board instance
-        :param favor_color: int value of color in favor of which we evaluate position
-        :return: int evaluation
+        :param favor_color: float value of color in favor of which we evaluate position
+        :return: float evaluation
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
         pressure_on_enemy_king = KingPressure.evaluate_king_pressure_only_for_color(board, favor_color)
         pressure_on_my_king = KingPressure.evaluate_king_pressure_only_for_color(board, enemy_color)
-        evaluation: int = int(pressure_on_enemy_king - pressure_on_my_king)
+        evaluation: float = int(pressure_on_enemy_king - pressure_on_my_king)
 
         return evaluation
 
     @staticmethod
-    @jit(forceobj=True)
-    def evaluate_king_pressure_only_for_color(board: 'Board', favor_color: int) -> int:
+    def evaluate_king_pressure_only_for_color(board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate distance of pieces to the enemy king
-        :param favor_color: int value of color
+        :param favor_color: float value of color
         :param board: Board instance
-        :return: int value of evaluation
+        :return: float value of evaluation
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
-        board_array: ndarray[int] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
 
-        enemy_king_pos = CheckUtil.find_friendly_king_squares(board_array, enemy_color)
-        enemy_king_x = math.floor(enemy_king_pos / 8)
-        enemy_king_y = enemy_king_pos - 8 * enemy_king_x
-        score_accumulator = 0
+        enemy_king_pos: int = KingUtil.find_friendly_king_squares(board_array, enemy_color)
+        enemy_king_x: int = math.floor(enemy_king_pos / 8)
+        enemy_king_y: int = enemy_king_pos - 8 * enemy_king_x
+        score_accumulator: float = 0
 
         for pos in range(BoardEnum.BOARD_SIZE.value):
             if ColorManager.get_piece_color(board_array[pos]) != favor_color:

@@ -1,32 +1,38 @@
+from numpy import ndarray, int8, dtype
 from typing import TYPE_CHECKING
 
-from numpy import ndarray
-
 from game_window.ColorManager import ColorManager
-from game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
+from game_window.enums.BoardEnum import BoardEnum
+from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 
 if TYPE_CHECKING:
-    from game_window.Board import Board
+    from game_window.board.Board import Board
 
 
 class PawnEval:
+    """
+    Class containing methods to evaluate pawns
+    """
+
+    __slots__ = ()
+
     @staticmethod
-    def evaluate_pawn_chains(board: 'Board', favor_color: int) -> int:
+    def evaluate_pawn_chains(board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate pawn chains on board
         :param board: Board instance
         :param favor_color: int value of color
-        :return: int
+        :return: float
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
 
-        favor_eval: int = PawnEval.get_pawn_chains_eval(board, favor_color)
-        enemy_eval: int = PawnEval.get_pawn_chains_eval(board, enemy_color)
+        favor_eval: float = PawnEval.get_pawn_chains_eval(board, favor_color)
+        enemy_eval: float = PawnEval.get_pawn_chains_eval(board, enemy_color)
 
-        evaluation: int = favor_eval - enemy_eval
+        evaluation: float = favor_eval - enemy_eval
 
-        return StaticEvalUtil.return_proper_evaluation_signed_value(board, evaluation, favor_color)
+        return evaluation
 
     @staticmethod
     def is_friendly_pawn(board: 'Board', square: int, piece_color: int) -> bool:
@@ -57,31 +63,23 @@ class PawnEval:
         """
         if not PawnEval.is_friendly_pawn(board, index, color):
             raise ValueError("IT SHOULD NOT HAPPEN!")
-
         chain_left_side = []
-        working_index = index
-        distances: ndarray[int] = board.get_distances()
-        can_i_go_left = lambda square: distances[square][3] != 0
-        can_i_go_right = lambda square: distances[square][4] != 0
+        working_index: int = index
+        distances: ndarray[int, dtype[int8]] = board.get_distances()
 
-        while can_i_go_left(working_index):
+        while distances[working_index][3] != 0:
             working_index += step_left
 
-            if working_index < 0 or working_index > 63:
-                break
-            if not PawnEval.is_friendly_pawn(board, index, color):
+            if working_index < 0 or working_index > 63 or not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_left_side.append(working_index)
-
         chain_right_side = []
         working_index = index
 
-        while can_i_go_right(working_index):
+        while distances[working_index][4] != 0:
             working_index += -step_left
 
-            if working_index < 0 or working_index > 63:
-                break
-            if not PawnEval.is_friendly_pawn(board, index, color):
+            if working_index < 0 or working_index > 63 or not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_right_side.append(working_index)
         left_leaning_chain = chain_right_side + [index] + chain_left_side
@@ -101,29 +99,22 @@ class PawnEval:
         if not PawnEval.is_friendly_pawn(board, index, color):
             raise ValueError("IT SHOULD NOT HAPPEN!")
         chain_right_side = []
-        working_index = index
+        working_index: int = index
+        distances: ndarray[int, dtype[int8]] = board.get_distances()
 
-        distances: ndarray[int] = board.get_distances()
-        can_i_go_left = lambda square: distances[square][3] != 0
-        can_i_go_right = lambda square: distances[square][4] != 0
-
-        while can_i_go_right(working_index):
+        while distances[working_index][4] != 0:
             working_index += step_right
 
-            if working_index < 0 or working_index > 63:
-                break
-            if not PawnEval.is_friendly_pawn(board, index, color):
+            if working_index < 0 or working_index > 63 or not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_right_side.append(working_index)
         chain_left_side = []
         working_index = index
 
-        while can_i_go_left(working_index):
-            working_index += -step_right
+        while distances[working_index][3] != 0:
+            working_index -= step_right
 
-            if working_index < 0 or working_index > 63:
-                break
-            if not PawnEval.is_friendly_pawn(board, index, color):
+            if working_index < 0 or working_index > 63 or not PawnEval.is_friendly_pawn(board, working_index, color):
                 break
             chain_left_side.append(working_index)
         right_leaning_chain = chain_right_side + [index] + chain_left_side
@@ -131,19 +122,18 @@ class PawnEval:
         return len(right_leaning_chain)
 
     @staticmethod
-    def get_pawn_chains_eval(board: 'Board', color: int) -> int:
+    def get_pawn_chains_eval(board: 'Board', color: int) -> float:
         """
         Method used to evaluate pawn chains for current color
         :param board: Board instance
         :param color: int value of color
-        :return: int
+        :return: float
         """
-        step_left = -9 if color == board.get_player_color() else 7
-        step_right = -7 if color == board.get_player_color() else 9
+        step_left = MoveEnum.TOP_LEFT.value if color == board.get_player_color() else MoveEnum.BOTTOM_LEFT.value
+        step_right = MoveEnum.TOP_RIGHT.value if color == board.get_player_color() else MoveEnum.BOTTOM_RIGHT.value
+        chain_eval: int = 0
 
-        chain_eval = 0
-
-        for index in range(0, 64):
+        for index in range(BoardEnum.BOARD_SIZE.value):
             if not PawnEval.is_friendly_pawn(board, index, color):
                 continue
 

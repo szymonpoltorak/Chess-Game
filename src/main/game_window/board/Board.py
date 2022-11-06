@@ -1,19 +1,22 @@
-from numpy import array
+from numpy import array, int8, dtype
 from numpy import ndarray
 from numpy import sign
 
-from game_window.BoardInitializer import BoardInitializer
+from exceptions.IllegalArgumentException import IllegalArgumentException
+from exceptions.NullArgumentException import NullArgumentException
 from game_window.ColorManager import ColorManager
+from game_window.board.BoardInitializer import BoardInitializer
+from game_window.board.BoardUtil import BoardUtil
+from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenFactory import FenFactory
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.FenData import FenData
-from game_window.FenFactory import FenFactory
+from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.Move import Move
-from game_window.moving.MoveGenerator import MoveGenerator
 from game_window.moving.MoveList import MoveList
-from game_window.moving.MoveUtil import MoveUtil
-from game_window.moving.MoveValidator import MoveValidator
+from game_window.moving.generation.MoveGenerator import MoveGenerator
+from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 
 
 class Board:
@@ -23,15 +26,15 @@ class Board:
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
                        "__fen_data", "__engine_color", "__player_color"], dtype=str)
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.__engine_color: int = PiecesEnum.BLACK.value
         self.__player_color: int = PiecesEnum.WHITE.value
-        self.__board_array: ndarray[int] = BoardInitializer.init_starting_board(self.__engine_color,
-                                                                                self.__player_color)
+        self.__board_array: ndarray[int, dtype[int8]] = BoardInitializer.init_starting_board(self.__engine_color,
+                                                                                             self.__player_color)
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__fen_data: FenData = FenData(self.__player_color)
         self.__color_to_move: int = PiecesEnum.WHITE.value
-        self.__distances_to_borders: ndarray[int] = MoveUtil.calculate_distance_to_borders()
+        self.__distances_to_borders: ndarray[int, dtype[int8]] = BoardUtil.calculate_distance_to_borders()
         self.__legal_moves: MoveList = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
 
     def castle_king(self, piece: int, move: Move) -> None:
@@ -41,13 +44,21 @@ class Board:
         :param move: Move instance
         :return: None
         """
+        if piece is None or move is None:
+            raise NullArgumentException("METHODS ARGUMENTS CANNOT BE NULLS!")
+        color: int = ColorManager.get_piece_color(piece)
+        piece_value = piece - color
+
+        if piece_value != PiecesEnum.KING.value:
+            raise IllegalArgumentException("YOU CANNOT CASTLE PIECE WHICH IS NOT KING!")
+        if move.get_special_flag_value() != SpecialFlags.CASTLING.value:
+            raise IllegalArgumentException("THIS IS NOT CASTLING MOVE!")
+
         start_square: int = move.get_start_square()
         end_square: int = move.get_end_square()
         distance: int = start_square - end_square
-        color: int = ColorManager.get_piece_color(piece)
         is_queen_side: bool = distance > 0
-        rook_position: int = MoveValidator.get_rook_position(color, is_queen_side, self.__engine_color,
-                                                             self.__player_color)
+        rook_position: int = KingUtil.get_rook_position(color, is_queen_side, self.__engine_color, self.__player_color)
 
         self.__board_array[start_square] = PiecesEnum.NONE.value
         self.__board_array[end_square] = piece
@@ -64,12 +75,18 @@ class Board:
         :param color: color value of a king
         :return: None
         """
+        if move is None or color is None:
+            raise NullArgumentException("MOVE AND COLOR CANNOT BE NULLS!")
+        if move.get_special_flag_value() != SpecialFlags.CASTLING.value:
+            raise IllegalArgumentException("IT IS NOT CASTLING MOVE!")
+        if color not in (PiecesEnum.WHITE.value, PiecesEnum.BLACK.value):
+            raise IllegalArgumentException("SUCH COLOR NOT EXISTS!")
+
         start_square: int = move.get_start_square()
         end_square: int = move.get_end_square()
         distance: int = start_square - end_square
         is_queen_side: bool = distance > 0
-        rook_position: int = MoveValidator.get_rook_position(color, is_queen_side, self.__engine_color,
-                                                             self.__player_color)
+        rook_position: int = KingUtil.get_rook_position(color, is_queen_side, self.__engine_color, self.__player_color)
 
         self.__board_array[rook_position] = color | PiecesEnum.ROOK.value
         self.__board_array[move.get_end_square()] = PiecesEnum.NONE.value
@@ -98,14 +115,14 @@ class Board:
         """
         return self.__legal_moves
 
-    def get_distances(self) -> ndarray[int]:
+    def get_distances(self) -> ndarray[int, dtype[int8]]:
         """
         Gives access to distances to borders array
         :return: ndarray of distances
         """
         return self.__distances_to_borders
 
-    def get_board_array(self) -> ndarray[int]:
+    def get_board_array(self) -> ndarray[int, dtype[int8]]:
         """
         Gives access to board int array.
         :return: board int array
@@ -126,30 +143,19 @@ class Board:
         """
         return self.__color_to_move
 
-    def delete_piece_from_board(self, row: int, col: int) -> int:
+    def delete_piece_from_board_square(self, square: int) -> int:
         """
         Deletes piece_square from board and updates fen string.
-        :param row: row int index
-        :param col: col int index
+        :param square:
         :return: deleted piece_square value
         """
-        board_index: int = BoardEnum.BOARD_LENGTH.value * row + col
+        if square is None:
+            raise NullArgumentException("SQUARE CANNOT BE NULL!")
+        if square < 0 or square > 63:
+            raise IllegalArgumentException("SQUARE CANNOT BE OVER THE BOUNDS OF BOARD!")
 
-        piece: int = self.__board_array[board_index]
-        self.__board_array[board_index] = 0
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
-
-        return piece
-
-    def delete_pieces_on_squares(self, start_square: int, end_square: int) -> int:
-        """
-        Deletes pieces on squares in computer move
-        :param start_square: a starting square of a moving piece index
-        :param end_square: board array index
-        :return: deleted piece_square value
-        """
-        piece: int = self.__board_array[end_square]
-        self.__board_array[end_square], self.__board_array[start_square] = 0, 0
+        piece: int = self.__board_array[square]
+        self.__board_array[square] = 0
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
         return piece
@@ -161,6 +167,15 @@ class Board:
         :param square: int index of where to add a piece_square
         :return: None
         """
+        if piece is None or square is None:
+            raise NullArgumentException("ARGUMENTS CANNOT BE NULL ON ADDING!")
+        if square < 0 or square > 63:
+            raise IllegalArgumentException("SQUARE IS NOT WITHING THE BOARD BONDS!")
+        piece_value: int = piece - ColorManager.get_piece_color(piece)
+
+        if piece_value not in PiecesEnum.PIECES_TUPLE.value:
+            raise IllegalArgumentException("SUCH PIECE DOES NOT EXIST")
+
         self.__board_array[square] = piece
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
 
@@ -171,6 +186,11 @@ class Board:
         :param col: int value of col index
         :return: bool value if piece_square should move or not
         """
+        if row is None or col is None:
+            raise NullArgumentException("ROWS ANC COLS CANNOT BE NULLS!")
+
+        if row < 0 or col < 0 or row > 7 or col > 7:
+            raise IllegalArgumentException("ROWS ANC COLS CANNOT BE LESS THAN 0!")
         board_index: int = BoardEnum.BOARD_LENGTH.value * row + col
 
         return ColorManager.get_piece_color(self.__board_array[board_index]) == self.__color_to_move
@@ -181,7 +201,7 @@ class Board:
         :param move: current move player wants to play
         :return: bool value whether move is legal or not
         """
-        return move in self.__legal_moves.moves
+        return move in self.__legal_moves
 
     def update_fen(self) -> None:
         """
@@ -196,6 +216,13 @@ class Board:
         :param piece: int value of piece
         :return: None
         """
+        piece_value: int = piece - ColorManager.get_piece_color(piece)
+
+        if piece_value != PiecesEnum.PAWN.value:
+            raise IllegalArgumentException("THIS PIECE CANNOT MAKE AN EN PASSANT CAPTURE!")
+        if piece is None:
+            raise NullArgumentException("PIECE CANNOT BE NULL!")
+
         self.__board_array[self.__fen_data.get_en_passant_square()] = piece
         self.__board_array[self.__fen_data.get_en_passant_piece_square()] = 0
 
@@ -210,7 +237,7 @@ class Board:
         """
         self.set_opposite_color_sides()
         self.__board_array = BoardInitializer.init_starting_board(self.__engine_color, self.__player_color)
-        self.__fen_data.__init__(self.__player_color)
+        self.__fen_data = FenData(self.__player_color)
         self.__color_to_move = PiecesEnum.WHITE.value
         self.__fen_string = FenFactory.convert_board_array_to_fen(self)
         self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
@@ -244,7 +271,7 @@ class Board:
         """
         return self.__player_color
 
-    def __eq__(self, other):
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, Board):
             return False
         if self.__board_array != other.get_board_array() or self.__player_color != other.get_player_color():
@@ -255,6 +282,7 @@ class Board:
             return False
         return self.__distances_to_borders == other.get_distances() and self.__color_to_move == other.get_color_to_move()
 
-    def __hash__(self):
-        return hash((self.__color_to_move, self.__player_color, self.__engine_color, self.__distances_to_borders.tobytes(),
-                     self.__board_array.tobytes(), self.__fen_string, self.__fen_data))
+    def __hash__(self) -> int:
+        return hash(
+            (self.__color_to_move, self.__player_color, self.__engine_color, self.__distances_to_borders.tobytes(),
+             self.__board_array.tobytes(), self.__fen_string, self.__fen_data))
