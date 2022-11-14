@@ -54,12 +54,13 @@ class StaticEvaluator:
         evaluation: float = 0
         board_array: ndarray[int, dtype[int8]] = board.get_board_array()
 
-        for square in board_array:
-            if square == 0:
+        for square, piece in enumerate(board_array):
+            if piece == 0:
                 continue
-            pieces_color: int = ColorManager.get_piece_color(square)
-            piece_value: int = square - pieces_color
+            pieces_color: int = ColorManager.get_piece_color(piece)
+            piece_value: int = piece - pieces_color
             points: float = StaticEvalUtil.get_piece_point_value(piece_value)
+            points += StaticEvalUtil.get_pieces_square_points(piece_value, pieces_color, square, board)
 
             evaluation += points if pieces_color == board.get_engine_color() else -points
         return evaluation

@@ -11,8 +11,8 @@ class EvalEnum(Enum):
     PAWN: int = 10
     ROOK: int = 40
     KING: int = 15
-    MAIN_CENTER: int = 4
-    SIDE_CENTER: int = 2
+    MAIN_CENTER: int = 6
+    SIDE_CENTER: int = 3
     WALKED: int = 3
 
     BISHOP_PAIR: float = 10

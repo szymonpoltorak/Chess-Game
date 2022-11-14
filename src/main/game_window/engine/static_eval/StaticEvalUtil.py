@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from game_window.enums.EvalEnum import EvalEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.enums.SquaresEval import SquaresEval
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -59,3 +60,33 @@ class StaticEvalUtil:
             PiecesEnum.KING.value: EvalEnum.KING.value
         }
         return pieces_dict[piece_value]
+
+    @staticmethod
+    def get_pieces_square_points(piece_value: int, pieces_color: int, square: int, board: 'Board') -> float:
+        """
+
+        :param board:
+        :param square:
+        :param piece_value:
+        :param pieces_color:
+        :return:
+        """
+        engine_color: int = board.get_engine_color()
+        player_color: int = board.get_player_color()
+
+        if piece_value == PiecesEnum.QUEEN.value:
+            return SquaresEval.QUEEN.value[square]
+        if piece_value == PiecesEnum.KNIGHT.value:
+            return SquaresEval.KNIGHT.value[square]
+
+        squares_dict = {
+            (engine_color, PiecesEnum.KING.value): SquaresEval.ENGINE_KING.value[square],
+            (engine_color, PiecesEnum.ROOK.value): SquaresEval.ENGINE_ROOK.value[square],
+            (engine_color, PiecesEnum.PAWN.value): SquaresEval.ENGINE_PAWN.value[square],
+            (engine_color, PiecesEnum.BISHOP.value): SquaresEval.ENGINE_BISHOP.value[square],
+            (player_color, PiecesEnum.KING.value): SquaresEval.PLAYER_KING.value[square],
+            (player_color, PiecesEnum.ROOK.value): SquaresEval.PLAYER_ROOK.value[square],
+            (player_color, PiecesEnum.PAWN.value): SquaresEval.PLAYER_PAWN.value[square],
+            (player_color, PiecesEnum.BISHOP.value): SquaresEval.PLAYER_BISHOP.value[square]
+        }
+        return squares_dict[pieces_color, piece_value]

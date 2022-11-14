@@ -37,9 +37,9 @@ class Evaluator:
         print(f"\tbishops = {bishops}\n\tfree lines = {free_lines}\n\tpawn chains = {chains}")
 
         total_eval: float = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines + chains + bishops
-        print(f"\tTotal = {total_eval}\n")
+        print(f"\tTotal = {-total_eval if board.get_player_color() == favor_color else total_eval}\n")
 
-        return total_eval if board.get_player_color() else -total_eval
+        return -total_eval if board.get_player_color() == favor_color else total_eval
 
     @staticmethod
     def evaluate_position(board: 'Board', favor_color: int) -> float:
