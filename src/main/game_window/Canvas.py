@@ -1,3 +1,7 @@
+from numpy import array
+from numpy import dtype
+from numpy import generic
+from numpy import ndarray
 from PyQt5.QtCore import QRect
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
@@ -5,17 +9,16 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QStaticText
-from numpy import array, dtype, ndarray, generic
 
-from game_window.ColorManager import ColorManager
-from game_window.PromotionData import PromotionData
 from game_window.board.Board import Board
+from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.Paths import Paths
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.moving.Move import Move
+from game_window.PromotionData import PromotionData
 
 
 class Canvas(QPainter):

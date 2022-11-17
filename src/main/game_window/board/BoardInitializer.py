@@ -1,4 +1,5 @@
-from numpy import array, dtype
+from numpy import array
+from numpy import dtype
 from numpy import int8
 from numpy import ndarray
 from numpy import zeros

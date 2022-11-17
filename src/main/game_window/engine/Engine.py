@@ -1,14 +1,15 @@
-from numpy import inf
 from typing import TYPE_CHECKING
+
+from numpy import inf
 
 from game_window.ColorManager import ColorManager
 from game_window.engine.Evaluator import Evaluator
 from game_window.enums.MoveEnum import MoveEnum
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 from game_window.moving.Move import Move
 from game_window.moving.MoveData import MoveData
 from game_window.moving.MoveList import MoveList
 from game_window.moving.MoveMaker import MoveMaker
-from game_window.moving.generation.MoveGenerator import MoveGenerator
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -37,6 +38,7 @@ class Engine:
         if moves_list.moves[0] is None:
             return -inf if color == board.get_engine_color() else inf
         evaluation: float = -inf
+        moves_list.sort(board)
 
         for move in moves_list:
             if move is None:
@@ -60,11 +62,12 @@ class Engine:
         :return: the best computer Move instance
         """
         moves_list: MoveList = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
-        depth: int = 3
+        depth: int = 5
         best_eval: float = -inf
         alpha: float = inf
         beta: float = -inf
         best_move: Move = Move(MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value)
+        moves_list.sort(board)
 
         for move in moves_list:
             if move is None:

@@ -6,8 +6,8 @@ from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.Board import Board
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.MoveList import MoveList
 from game_window.moving.generation.sliding_piece.SlidingPiecesGen import SlidingPiecesGen
+from game_window.moving.MoveList import MoveList
 
 
 def test_is_sliding_piece_it_is():

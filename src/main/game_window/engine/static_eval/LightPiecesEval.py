@@ -1,7 +1,10 @@
-from numpy import array, dtype
+from typing import Dict
+from typing import TYPE_CHECKING
+
+from numpy import array
+from numpy import dtype
 from numpy import int8
 from numpy import ndarray
-from typing import TYPE_CHECKING, Dict
 
 from game_window.ColorManager import ColorManager
 from game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil

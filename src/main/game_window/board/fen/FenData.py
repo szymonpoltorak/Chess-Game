@@ -1,10 +1,10 @@
-from numpy import array
 from typing import Tuple
+
+from numpy import array
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
 from game_window.moving.MoveData import MoveData
 
 

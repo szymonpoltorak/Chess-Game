@@ -50,7 +50,7 @@ class MoveMakingUtil:
         :param move_data: MoveData instance
         :return: bool
         """
-        special_flag: int = move.get_special_flag_value()
+        special_flag: int = move.get_special_flag()
         board_array: ndarray[int, dtype[int8]] = board.get_board_array()
         end_square: int = move.get_end_square()
 
@@ -70,7 +70,7 @@ class MoveMakingUtil:
         :param move_data: MoveData instance
         :return: bool
         """
-        special_flag: int = move.get_special_flag_value()
+        special_flag: int = move.get_special_flag()
         moving_piece: int = move.get_moving_piece()
 
         if special_flag == SpecialFlags.CASTLING.value:
@@ -90,7 +90,7 @@ class MoveMakingUtil:
         :param move_data: MoveData instance
         :return: bool
         """
-        special_flag: int = move.get_special_flag_value()
+        special_flag: int = move.get_special_flag()
 
         if special_flag == SpecialFlags.EN_PASSANT.value:
             move_data.deleted_piece = board.delete_piece_from_board_square(move.get_start_square())

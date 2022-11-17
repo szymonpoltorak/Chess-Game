@@ -1,9 +1,10 @@
 from typing import Dict
+from typing import TYPE_CHECKING
 
-from numpy import int8, dtype
+from numpy import dtype
+from numpy import int8
 from numpy import ndarray
 from numpy import zeros
-from typing import TYPE_CHECKING
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException

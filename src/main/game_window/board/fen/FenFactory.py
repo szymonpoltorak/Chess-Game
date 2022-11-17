@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING
 
-from game_window.ColorManager import ColorManager
 from game_window.board.fen.FenUtil import FenUtil
+from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 

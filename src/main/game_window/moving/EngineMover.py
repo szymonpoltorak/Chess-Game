@@ -1,12 +1,9 @@
 from typing import TYPE_CHECKING
 
-from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenUtil import FenUtil
-from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.Move import Move
-from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.MoveData import MoveData
 from game_window.moving.MoveMaker import MoveMaker
 
@@ -33,5 +30,5 @@ class EngineMover:
         board.get_fen_data().update_move_counter()
         FenUtil.update_no_sack_and_pawn_counter(board.get_fen_data(), move_data.deleted_piece, moving_piece)
 
-        return PiecesEnum.NONE.value if computer_move.get_special_flag_value() == SpecialFlags.CASTLING.value else \
+        return PiecesEnum.NONE.value if computer_move.get_special_flag() == SpecialFlags.CASTLING.value else \
             move_data.deleted_piece

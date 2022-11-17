@@ -1,22 +1,24 @@
-from numpy import array, int8, dtype
+from numpy import array
+from numpy import dtype
+from numpy import int8
 from numpy import ndarray
 from numpy import sign
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.ColorManager import ColorManager
 from game_window.board.BoardInitializer import BoardInitializer
 from game_window.board.BoardUtil import BoardUtil
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenFactory import FenFactory
+from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 from game_window.moving.Move import Move
 from game_window.moving.MoveList import MoveList
-from game_window.moving.generation.MoveGenerator import MoveGenerator
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 
 
 class Board:
@@ -51,7 +53,7 @@ class Board:
 
         if piece_value != PiecesEnum.KING.value:
             raise IllegalArgumentException("YOU CANNOT CASTLE PIECE WHICH IS NOT KING!")
-        if move.get_special_flag_value() != SpecialFlags.CASTLING.value:
+        if move.get_special_flag() != SpecialFlags.CASTLING.value:
             raise IllegalArgumentException("THIS IS NOT CASTLING MOVE!")
 
         start_square: int = move.get_start_square()
@@ -77,7 +79,7 @@ class Board:
         """
         if move is None or color is None:
             raise NullArgumentException("MOVE AND COLOR CANNOT BE NULLS!")
-        if move.get_special_flag_value() != SpecialFlags.CASTLING.value:
+        if move.get_special_flag() != SpecialFlags.CASTLING.value:
             raise IllegalArgumentException("IT IS NOT CASTLING MOVE!")
         if color not in (PiecesEnum.WHITE.value, PiecesEnum.BLACK.value):
             raise IllegalArgumentException("SUCH COLOR NOT EXISTS!")

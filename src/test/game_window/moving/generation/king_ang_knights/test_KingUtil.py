@@ -1,5 +1,8 @@
 import pytest
-from numpy import array, int8, dtype, ndarray
+from numpy import array
+from numpy import dtype
+from numpy import int8
+from numpy import ndarray
 from numpy import zeros
 
 from exceptions.IllegalArgumentException import IllegalArgumentException

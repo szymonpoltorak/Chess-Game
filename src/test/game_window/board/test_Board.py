@@ -3,11 +3,11 @@ from typing import Tuple
 import pytest
 from numpy import ndarray
 
+from exceptions.IllegalArgumentException import IllegalArgumentException
+from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.Board import Board
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
 from game_window.moving.Move import Move
 
 

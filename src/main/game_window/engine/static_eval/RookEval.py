@@ -1,5 +1,8 @@
-from numpy import ndarray, dtype, int8
 from typing import TYPE_CHECKING
+
+from numpy import dtype
+from numpy import int8
+from numpy import ndarray
 
 from game_window.ColorManager import ColorManager
 from game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil

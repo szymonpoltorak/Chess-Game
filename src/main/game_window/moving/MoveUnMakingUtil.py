@@ -30,7 +30,7 @@ class MoveUnMakingUtil:
         :param color: int value of color
         :return: bool
         """
-        special_flag: int = move.get_special_flag_value()
+        special_flag: int = move.get_special_flag()
         fen_data: FenData = board.get_fen_data()
 
         if special_flag == SpecialFlags.CASTLING.value:
@@ -48,7 +48,7 @@ class MoveUnMakingUtil:
         :param board: Board instance
         :return: bool
         """
-        special_flag: int = move.get_special_flag_value()
+        special_flag: int = move.get_special_flag()
         fen_data: FenData = board.get_fen_data()
         board_array: ndarray[int, dtype[int8]] = board.get_board_array()
         end_square: int = move.get_end_square()
@@ -75,7 +75,7 @@ class MoveUnMakingUtil:
         """
         fen_data: FenData = board.get_fen_data()
         board_array: ndarray[int, dtype[int8]] = board.get_board_array()
-        special_flag: int = move.get_special_flag_value()
+        special_flag: int = move.get_special_flag()
         end_square: int = move.get_end_square()
         start_square: int = move.get_start_square()
 

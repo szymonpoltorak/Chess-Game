@@ -1,18 +1,19 @@
-from numpy import full
 from typing import TYPE_CHECKING
+
+from numpy import full
 
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.MoveData import MoveData
-from game_window.moving.MoveList import MoveList
-from game_window.moving.MoveMaker import MoveMaker
 from game_window.moving.generation.king_and_knights.KingKnightGen import KingKnightGen
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from game_window.moving.generation.pawns.PawnGen import PawnGen
 from game_window.moving.generation.sliding_piece.SlidingPiecesGen import SlidingPiecesGen
+from game_window.moving.MoveData import MoveData
+from game_window.moving.MoveList import MoveList
+from game_window.moving.MoveMaker import MoveMaker
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -34,7 +35,7 @@ class MoveGenerator:
         :return: MoveList
         """
         pseudo_legal_moves: MoveList = MoveGenerator.generate_moves(color_to_move, board)
-        legal_moves: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object), 0)
+        legal_moves: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object))
 
         for move_to_verify in pseudo_legal_moves:
             if move_to_verify is None:
@@ -45,7 +46,7 @@ class MoveGenerator:
             kings_square: int = KingUtil.find_friendly_king_squares(board.get_board_array(), color_to_move)
 
             for move in opponent_moves:
-                special_flag: int = move_to_verify.get_special_flag_value()
+                special_flag: int = move_to_verify.get_special_flag()
 
                 if move is None:
                     break
@@ -71,7 +72,7 @@ class MoveGenerator:
         :param board: Board instance == representation of board
         :return: list of all legal moves
         """
-        moves_list: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object), 0)
+        moves_list: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object))
 
         for square in range(BoardEnum.BOARD_SIZE.value):
             piece_color: int = ColorManager.get_piece_color(board.get_board_array()[square])
