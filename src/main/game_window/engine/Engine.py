@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 class Engine:
     """
-    Class containing methods to pick best moves for computer
+    Class containing methods to pick best __moves for computer
     """
 
     @staticmethod
@@ -35,7 +35,7 @@ class Engine:
             return Evaluator.evaluate_position(board, color)
         moves_list: MoveList = MoveGenerator.generate_legal_moves(color, board)
 
-        if moves_list.moves[0] is None:
+        if moves_list.is_empty():
             return -inf if color == board.get_engine_color() else inf
         evaluation: float = -inf
         moves_list.sort(board)

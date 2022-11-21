@@ -21,7 +21,7 @@ class MoveSortUtil:
     @staticmethod
     def count_moves_score(move: Move, board: 'Board') -> int:
         """
-        Method used to make early evaluation to sort moves so to make search faster
+        Method used to make early evaluation to sort __moves so to make search faster
         :param move: Move to evaluate
         :param board: Board instance
         :return: int value of evaluation

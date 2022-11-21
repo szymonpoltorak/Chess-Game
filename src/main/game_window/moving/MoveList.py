@@ -3,6 +3,7 @@ from dataclasses import field
 from typing import Any
 from typing import TYPE_CHECKING
 
+from numpy import asarray
 from numpy import dtype
 from numpy import generic
 from numpy import ndarray
@@ -20,7 +21,7 @@ class MoveList:
     """
     Class containing the list of item
     """
-    moves: ndarray[Move, dtype[generic]]
+    __moves: ndarray[Move, dtype[generic]]
     __size: int = field(default=0)
 
     def append(self, move: Move) -> None:
@@ -30,7 +31,7 @@ class MoveList:
         """
         if move is None:
             raise NullArgumentException("WHY YOU ADD NULL MOVE TO MOVE LIST ?")
-        self.moves[self.__size] = move
+        self.__moves[self.__size] = move
         self.__size += 1
 
     def is_empty(self) -> bool:
@@ -45,18 +46,12 @@ class MoveList:
         Method used to sort list of item based on
         :return: None
         """
-        sorted_moves: list[Move, ...] = sorted(self.moves, key=lambda item: MoveSortUtil.count_moves_score(item, board),
+        sorted_moves: list[Move, ...] = sorted(self.__moves, key=lambda item: MoveSortUtil.count_moves_score(item, board),
                                                reverse=True)
-        index: int = 0
-
-        for move in sorted_moves:
-            if move is None:
-                break
-            self.moves[index] = move
-            index += 1
+        self.__moves = asarray(sorted_moves, dtype=generic)
 
     def __iter__(self) -> Any:
-        return self.moves.__iter__()
+        return self.__moves.__iter__()
 
     def __contains__(self, move: Move) -> bool:
-        return move in self.moves
+        return move in self.__moves

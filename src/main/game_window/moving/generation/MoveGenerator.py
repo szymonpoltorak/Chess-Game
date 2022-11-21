@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 class MoveGenerator:
     """
-    Class used for generating moves
+    Class used for generating __moves
     """
 
     __slots__ = ()
@@ -29,7 +29,7 @@ class MoveGenerator:
     @staticmethod
     def generate_legal_moves(color_to_move: int, board: 'Board') -> MoveList:
         """
-        Method used to generate legal moves for current position for given player
+        Method used to generate legal __moves for current position for given player
         :param color_to_move: player color int
         :param board: Board instance
         :return: MoveList
@@ -70,7 +70,7 @@ class MoveGenerator:
         Static method used  to generate legal moves_list for pieces of given color
         :param color_to_move: int value of color to be moved
         :param board: Board instance == representation of board
-        :return: list of all legal moves
+        :return: list of all legal __moves
         """
         moves_list: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object))
 

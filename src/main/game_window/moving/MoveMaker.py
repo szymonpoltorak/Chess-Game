@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 class MoveMaker:
     """
-    Class containing methods to make and unmake moves
+    Class containing methods to make and unmake __moves
     """
 
     __slots__ = ()

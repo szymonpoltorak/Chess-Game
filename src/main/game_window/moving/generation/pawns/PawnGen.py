@@ -127,7 +127,7 @@ class PawnGen:
         :param start_square:
         :param piece: int value of piece
         :param color: int value of color
-        :param moves_list: list of moves (MoveList instance)
+        :param moves_list: list of __moves (MoveList instance)
         :param board: Board instance
         :return: None
         """

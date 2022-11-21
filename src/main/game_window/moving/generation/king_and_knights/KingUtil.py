@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 class KingUtil:
     """
-    Class containing util methods for king and knight moves creation
+    Class containing util methods for king and knight __moves creation
     """
 
     __slots__ = ()

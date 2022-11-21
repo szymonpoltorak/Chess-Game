@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 class SlidingPiecesGen:
     """
-    Class used to generate sliding pieces moves
+    Class used to generate sliding pieces __moves
     """
 
     __slots__ = ()

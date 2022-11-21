@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 class KingKnightGen:
     """
-    Class containing methods to generate moves for Knights and Kings
+    Class containing methods to generate __moves for Knights and Kings
     """
 
     __slots__ = ()

@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 class MoveMakingUtil:
     """
-    Utility class for making moves
+    Utility class for making __moves
     """
 
     @staticmethod
@@ -152,7 +152,7 @@ class MoveMakingUtil:
     @staticmethod
     def copy_fen_data_to_move_data(board: 'Board') -> MoveData:
         """
-        Method used to copy fen data for making moves
+        Method used to copy fen data for making __moves
         :param board: Board instance
         :return: MoveData instance without deleted piece value
         """

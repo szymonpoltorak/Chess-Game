@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 class MoveUnMakingUtil:
     """
-    Utility class for un making moves
+    Utility class for un making __moves
     """
 
     @staticmethod
@@ -94,7 +94,7 @@ class MoveUnMakingUtil:
     @staticmethod
     def un_make_basic_move(move: Move, deleted_data: MoveData, board: 'Board') -> None:
         """
-        Method used to un make not special moves
+        Method used to un make not special __moves
         :param move: Move instance
         :param deleted_data: MoveData instance
         :param board: Board instance
