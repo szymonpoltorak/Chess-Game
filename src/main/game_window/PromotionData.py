@@ -54,7 +54,7 @@ class PromotionData:
             return
         pieces = array([PiecesEnum.QUEEN.value, PiecesEnum.BISHOP.value, PiecesEnum.KNIGHT.value,
                         PiecesEnum.ROOK.value], dtype=int8)
-        board.get_board_array()[self.__square] = self.__piece_color | pieces[self.get_rect_index(y, rect_size)]
+        board.board_array()[self.__square] = self.__piece_color | pieces[self.get_rect_index(y, rect_size)]
         board.update_fen()
         self.__is_promoting = False
 

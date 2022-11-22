@@ -48,7 +48,7 @@ class MoveList:
         """
         sorted_moves: list[Move, ...] = sorted(self.__moves, key=lambda item: MoveSortUtil.count_moves_score(item, board),
                                                reverse=True)
-        self.__moves = asarray(sorted_moves, dtype=generic)
+        self.__moves = asarray(sorted_moves)
 
     def __iter__(self) -> Any:
         return self.__moves.__iter__()

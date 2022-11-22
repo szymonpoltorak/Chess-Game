@@ -146,7 +146,7 @@ class Canvas(QPainter):
         Method draws pieces on chess board from fen string representation.
         :return: None
         """
-        fen = board.get_fen_string().replace('/', ' ').split()
+        fen = board.fen_string().replace('/', ' ').split()
         current_x = CanvasEnum.CANVAS_X.value
         current_y = CanvasEnum.CANVAS_Y.value
 
@@ -203,7 +203,7 @@ class Canvas(QPainter):
                 break
             for col in range(BoardEnum.BOARD_LENGTH.value):
                 current_square = BoardEnum.BOARD_LENGTH.value * row + col
-                legal_moves = board.get_legal_moves()
+                legal_moves = board.legal_moves()
 
                 for legal_move in legal_moves:
                     if legal_move is None:

@@ -43,7 +43,7 @@ class MoveGenerator:
             is_it_valid_move: bool = True
             deleted_data: MoveData = MoveMaker.make_move(move_to_verify, color_to_move, board)
             opponent_moves: MoveList = MoveGenerator.generate_moves(ColorManager.get_opposite_piece_color(color_to_move), board)
-            kings_square: int = KingUtil.find_friendly_king_squares(board.get_board_array(), color_to_move)
+            kings_square: int = KingUtil.find_friendly_king_squares(board.board_array(), color_to_move)
 
             for move in opponent_moves:
                 special_flag: int = move_to_verify.get_special_flag()
@@ -75,8 +75,8 @@ class MoveGenerator:
         moves_list: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object))
 
         for square in range(BoardEnum.BOARD_SIZE.value):
-            piece_color: int = ColorManager.get_piece_color(board.get_board_array()[square])
-            piece: int = board.get_board_array()[square] - piece_color
+            piece_color: int = ColorManager.get_piece_color(board.board_array()[square])
+            piece: int = board.board_array()[square] - piece_color
 
             if color_to_move != piece_color:
                 continue

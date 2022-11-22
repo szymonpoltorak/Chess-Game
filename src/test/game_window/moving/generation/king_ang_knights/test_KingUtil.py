@@ -8,6 +8,8 @@ from numpy import zeros
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.Board import Board
+from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
@@ -75,7 +77,7 @@ def test_get_castling_squares_move_distance_less_than_0():
 
 def test_is_anything_on_king_side_start_square_out_of_bonds():
     # given
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     start_square: int = -4
 
     # when
@@ -98,7 +100,7 @@ def test_is_anything_on_king_side_nulls():
 def test_is_anything_on_king_side_it_is():
     # given
     expected: bool = True
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     start_square: int = 60
 
     # when
@@ -111,7 +113,7 @@ def test_is_anything_on_king_side_it_is():
 def test_is_anything_on_king_side_it_is_not():
     # given
     expected: bool = False
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     start_square: int = 60
 
     board.delete_piece_from_board_square(start_square + 1)
@@ -127,7 +129,7 @@ def test_is_anything_on_king_side_it_is_not():
 def test_is_anything_on_queen_side_it_is():
     # given
     expected: bool = True
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     start_square: int = 60
 
     # when
@@ -140,7 +142,7 @@ def test_is_anything_on_queen_side_it_is():
 def test_is_anything_on_queen_side_it_is_not():
     # given
     expected: bool = False
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     start_square: int = 60
 
     board.delete_piece_from_board_square(start_square - 1)
@@ -156,7 +158,7 @@ def test_is_anything_on_queen_side_it_is_not():
 
 def test_is_anything_on_queen_side_start_square_out_of_bonds():
     # given
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     start_square: int = -4
 
     # when
@@ -188,10 +190,11 @@ def test_check_castling_squares_nulls():
 
 def test_check_castling_squares_square_out_of_bonds():
     # given
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(IllegalArgumentException):
-        result: bool = KingUtil.check_castling_squares(1, 8, -1, Board())
+        result: bool = KingUtil.check_castling_squares(1, 8, -1, board)
 
     # then
 
@@ -208,11 +211,11 @@ def test_find_friendly_king_squares_nulls():
 
 def test_find_friendly_king_squares_out_of_bonds():
     # given
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(IllegalArgumentException):
-        result: int = KingUtil.find_friendly_king_squares(board.get_board_array(), -3)
+        result: int = KingUtil.find_friendly_king_squares(board.board_array(), -3)
 
     # then
 

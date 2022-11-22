@@ -13,7 +13,8 @@ from PyQt5.QtWidgets import QWidget
 
 from game_window.board.Board import Board
 from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenUtil import FenUtil
+from game_window.board.fen.FenFactory import FenFactory
+from game_window.board.fen.FenMaker import FenMaker
 from game_window.Canvas import Canvas
 from game_window.ColorManager import ColorManager
 from game_window.engine.Engine import Engine
@@ -26,10 +27,9 @@ from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.GameWindowUi import GameWindowUi
 from game_window.moving.EngineMover import EngineMover
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-from game_window.moving.generation.MoveGenerator import MoveGenerator
 from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.Move import Move
-from game_window.moving.MoveList import MoveList
+from game_window.moving.MoveMakingUtil import MoveMakingUtil
 from game_window.PromotionData import PromotionData
 
 
@@ -45,7 +45,9 @@ class GameWindow(QWidget):
     def __init__(self) -> None:
         super(GameWindow, self).__init__()
 
-        self.__board = Board()
+        fen_factory: FenFactory = FenMaker(FenData(PiecesEnum.WHITE.value))
+
+        self.__board = Board(fen_factory)
         self.__canvas: Canvas = Canvas()
         self.__moving_piece: int = -1
         self.__current_move: Move = Move(MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value,
@@ -120,7 +122,7 @@ class GameWindow(QWidget):
         """
         row, col = self.__start_mouse_events(mouse_press_event)
 
-        if not self.__board.get_legal_moves() or self.__promotion_util.is_this_pawn_promoting():
+        if not self.__board.legal_moves() or self.__promotion_util.is_this_pawn_promoting():
             return
 
         if MoveEnum.NONE.value in (row, col) or not self.__board.should_this_piece_move(row, col):
@@ -146,17 +148,17 @@ class GameWindow(QWidget):
         row, col = self.__start_mouse_events(event)
         start_square: int = self.__current_move.get_start_square()
         end_square: int = self.__current_move.get_end_square()
-        fen_data: FenData = self.__board.get_fen_data()
 
         if not self.check_quit_release_event_functions(start_square, row, col, end_square, event.x(), event.y()):
             return
         end_square = self.__current_move.get_end_square()
-        fen_data.update_move_counter()
+        self.__board.update_move_counter()
+
         final_piece_index: int = 8 * row + col
         deleted_piece: int = self.__board.delete_piece_from_board_square(final_piece_index)
         color: int = ColorManager.get_piece_color(self.__moving_piece)
 
-        FenUtil.disable_castling_if_captured_rook(deleted_piece, color, end_square, self.__board)
+        self.__board.disable_castling_if_captured_rook(deleted_piece, color, end_square)
 
         self.handle_castling_event(final_piece_index, color)
 
@@ -166,7 +168,7 @@ class GameWindow(QWidget):
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__board.set_opposite_move_color()
 
-        FenUtil.update_no_sack_and_pawn_counter(fen_data, deleted_piece, self.__current_move.get_moving_piece())
+        self.__board.update_no_sack_and_pawn_counter(deleted_piece, self.__current_move.get_moving_piece())
         self.update_board_data()
 
     def update_board_data(self) -> None:
@@ -187,8 +189,7 @@ class GameWindow(QWidget):
         self.__board.update_fen()
 
         self.play_proper_sound(deleted_piece)
-        player_moves: MoveList = MoveGenerator.generate_legal_moves(self.__board.get_color_to_move(), self.__board)
-        self.__board.set_legal_moves(player_moves)
+        self.__board.update_legal_moves(self.__board.player_color())
 
         self.__current_move = computer_move
         self.update()
@@ -204,15 +205,13 @@ class GameWindow(QWidget):
         :param deleted_piece: value of deleted piece
         :return: int
         """
-        fen_data: FenData = self.__board.get_fen_data()
-
-        if PawnUtil.is_pawn_promoting(self.__current_move, color, self.__board.get_engine_color()):
+        if PawnUtil.is_pawn_promoting(self.__current_move, color, self.__board.engine_color()):
             self.__promotion_util.set_promotion_data(color, mouse_x, mouse_y, piece_index)
 
         if PawnUtil.was_it_en_passant_move(self.__current_move, self.__board):
-            self.__board.make_en_passant_capture(self.__moving_piece)
+            MoveMakingUtil.make_en_passant_capture(self.__moving_piece, self.__board)
             deleted_piece = 1
-        FenUtil.update_fen_data_with_double_pawn_movement(self.__current_move, fen_data)
+        self.__board.update_fen_data_with_double_pawn_movement(self.__current_move)
 
         return deleted_piece
 
@@ -226,15 +225,15 @@ class GameWindow(QWidget):
         piece: int = self.__current_move.get_moving_piece()
 
         if piece == PiecesEnum.ROOK.value:
-            FenUtil.disable_castling_on_side(color, self.__current_move.get_start_square(), self.__board)
+            self.__board.disable_castling_on_side(color, self.__current_move.get_start_square())
 
         if KingUtil.is_it_castling(self.__current_move):
             self.__current_move.set_special_flag(SpecialFlags.CASTLING.value)
-            self.__board.castle_king(self.__moving_piece, self.__current_move)
+            MoveMakingUtil.castle_king(self.__moving_piece, self.__current_move, self.__board)
 
         elif piece == PiecesEnum.KING.value:
-            self.__board.get_fen_data().set_castling_king_side(False, color)
-            self.__board.get_fen_data().set_castling_queen_side(False, color)
+            self.__board.set_castling_king_side(False, color)
+            self.__board.set_castling_queen_side(False, color)
             self.__board.add_piece_to_the_board(self.__moving_piece, final_piece_index)
         else:
             self.__board.add_piece_to_the_board(self.__moving_piece, final_piece_index)
@@ -280,7 +279,7 @@ class GameWindow(QWidget):
         Method used to reset the game state to the standard one
         :return: None
         """
-        self.__board.__init__()
+        self.__board.__init__(FenMaker(FenData(PiecesEnum.WHITE.value)))
         self.__current_move.set_start_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
         self.__current_move.set_end_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
         self.update()

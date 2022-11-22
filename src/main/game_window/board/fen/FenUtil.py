@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from numpy import array
 from numpy import dtype
 from numpy import int8
@@ -10,77 +8,13 @@ from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.fen.FenData import FenData
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.Move import Move
-
-if TYPE_CHECKING:
-    from game_window.board.Board import Board
 
 
 class FenUtil:
     """
     Class containing fen util methods for managing fen and its dependencies
     """
-
-    @staticmethod
-    def update_no_sack_and_pawn_counter(fen_data: FenData, deleted_piece: int, moving_piece: int) -> None:
-        """
-        Method used to update no sack and pawn move counter
-        :param fen_data: FenData instance
-        :param deleted_piece: int value of a piece
-        :param moving_piece: int value of a moving piece
-        :return: None
-        """
-        if deleted_piece is None or fen_data is None or moving_piece is None:
-            raise NullArgumentException("ARGUMENTS CANNOT BE NULLS!")
-        if deleted_piece < 0 or moving_piece not in PiecesEnum.PIECES_TUPLE.value:
-            raise IllegalArgumentException("IMPOSSIBLE ARGUMENTS GIVEN!")
-
-        if deleted_piece != 0 or moving_piece == PiecesEnum.PAWN.value:
-            fen_data.update_no_sack_and_pawn_count(True)
-        elif deleted_piece == 0 or moving_piece != PiecesEnum.PAWN.value:
-            fen_data.update_no_sack_and_pawn_count(False)
-
-    @staticmethod
-    def disable_castling_on_side(color: int, target_square: int, board: 'Board') -> None:
-        """
-        Disable castling for king on given side
-        :param target_square:
-        :param color: int value of color
-        :param board: Board instance
-        :return: None
-        """
-        if board is None or color is None or target_square is None:
-            raise NullArgumentException("METHOD ARGUMENTS CANNOT BE NULLS!")
-        if target_square < 0 or target_square > 63 or not ColorManager.is_it_valid_color(color):
-            raise IllegalArgumentException("ARGUMENTS ARE NOT WITHIN ACCEPTABLE BONDS!")
-
-        fen_data: FenData = board.get_fen_data()
-
-        if target_square in (MoveEnum.TOP_ROOK_QUEEN.value, MoveEnum.BOTTOM_ROOK_QUEEN.value):
-            fen_data.set_castling_queen_side(False, color)
-        elif target_square in (MoveEnum.TOP_ROOK_KING.value, MoveEnum.BOTTOM_ROOK_KING.value):
-            fen_data.set_castling_king_side(False, color)
-
-    @staticmethod
-    def disable_castling_if_captured_rook(deleted_piece: int, color: int, square: int, board: 'Board') -> None:
-        """
-        Method used to disable castling if rook was captured
-        :param deleted_piece: int value of deleted piece
-        :param color: int value of friendly color
-        :param square: int index of rook square
-        :param board: Board instance
-        :return: None
-        """
-        if deleted_piece is None or color is None or square is None or board is None:
-            raise NullArgumentException("GIVEN ARGUMENTS CANNOT BE NULLS!")
-        if square < 0 or square > 63 or not ColorManager.is_it_valid_color(color):
-            raise IllegalArgumentException("WRONG PARAMETERS GIVEN!")
-        enemy_color: int = ColorManager.get_opposite_piece_color(color)
-
-        if deleted_piece == enemy_color | PiecesEnum.ROOK.value:
-            FenUtil.disable_castling_on_side(enemy_color, square, board)
 
     @staticmethod
     def convert_square_into_board_double_index(square: int) -> str:
@@ -178,27 +112,3 @@ class FenUtil:
             color_value | PiecesEnum.ROOK.value: "r"
         }
         return FenUtil.get_proper_letter_size(color_value, piece_letters[piece])
-
-    @staticmethod
-    def update_fen_data_with_double_pawn_movement(move: Move, fen_data: FenData) -> None:
-        """
-        Method used to validate double pawn movement in terms of fen data
-        :param move: Move instance
-        :param fen_data: FenData instance
-        :return None
-        """
-        end_square: int = move.get_end_square()
-        moving_piece: int = move.get_moving_piece()
-        move_length: int = end_square - move.get_start_square()
-
-        if move_length == MoveEnum.PAWN_UP_DOUBLE_MOVE.value and moving_piece == PiecesEnum.PAWN.value:
-            fen_data.set_en_passant_square(end_square - MoveEnum.PAWN_UP_SINGLE_MOVE.value)
-            fen_data.set_en_passant_piece_square(end_square)
-
-        elif move_length == MoveEnum.PAWN_DOWN_DOUBLE_MOVE.value and moving_piece == PiecesEnum.PAWN.value:
-            fen_data.set_en_passant_square(end_square - MoveEnum.PAWN_DOWN_SINGLE_MOVE.value)
-            fen_data.set_en_passant_piece_square(end_square)
-
-        elif moving_piece != PiecesEnum.PAWN.value and fen_data.get_en_passant_square() != -1:
-            fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-            fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)

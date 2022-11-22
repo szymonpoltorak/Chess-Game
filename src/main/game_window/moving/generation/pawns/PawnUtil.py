@@ -8,7 +8,6 @@ from numpy import ndarray
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.fen.FenData import FenData
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
@@ -37,14 +36,13 @@ class PawnUtil:
         """
         if None in (move, board):
             raise NullArgumentException("CANNOT WORK WITH NULLS!")
-        fen_data: FenData = board.get_fen_data()
 
-        if move.get_moving_piece() != PiecesEnum.PAWN.value or fen_data.get_en_passant_square() == -1:
+        if move.get_moving_piece() != PiecesEnum.PAWN.value or board.en_passant_square() == -1:
             return False
-        if fen_data.get_en_passant_piece_square() == -1:
+        if board.en_passant_piece_square() == -1:
             return False
 
-        return move.get_end_square() == fen_data.get_en_passant_square()
+        return move.get_end_square() == board.en_passant_square()
 
     @staticmethod
     def get_attack_direction(color: int, direction: str, engine_color: int) -> int:
@@ -112,8 +110,8 @@ class PawnUtil:
             raise NullArgumentException("CANNOT WORK ON NULLS!")
         if double_move_target < 0 or double_move_target > 63 or start_square < 0 or start_square > 63:
             raise IllegalArgumentException("SQUARES OUT OF BOARD BOUNDS!")
-        piece_single_up: int = board.get_board_array()[start_square + step]
-        piece_double_up: int = board.get_board_array()[double_move_target]
+        piece_single_up: int = board.board_array()[start_square + step]
+        piece_double_up: int = board.board_array()[double_move_target]
 
         return piece_double_up == 0 and piece_single_up == 0
 

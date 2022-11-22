@@ -31,9 +31,9 @@ class LightPiecesEval:
         :return: float value of evaluation
         """
         evaluation: float = 0
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
-        engine_color: int = board.get_engine_color()
-        player_color: int = board.get_player_color()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        engine_color: int = board.engine_color()
+        player_color: int = board.player_color()
         engine_bishops: int = 0
         player_bishops: int = 0
 
@@ -60,7 +60,7 @@ class LightPiecesEval:
         :return: float value of evaluation
         """
         pieces = array([PiecesEnum.KNIGHT.value, PiecesEnum.BISHOP.value, PiecesEnum.BISHOP.value, PiecesEnum.KNIGHT.value])
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
         favorable_accumulator: float = 0
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
         unfavorable_accumulator: float = 0
@@ -68,8 +68,8 @@ class LightPiecesEval:
         un_favor_light_walked: int = 0
 
         light_pieces_positions: Dict[int, ndarray[int, dtype[int8]]] = {
-            board.get_engine_color(): array([1, 2, 5, 6], dtype=int8),
-            board.get_player_color(): array([57, 58, 61, 62], dtype=int8),
+            board.engine_color(): array([1, 2, 5, 6], dtype=int8),
+            board.player_color(): array([57, 58, 61, 62], dtype=int8),
         }
 
         for i in range(0, 4):

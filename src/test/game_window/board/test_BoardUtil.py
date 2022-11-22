@@ -4,13 +4,15 @@ from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.Board import Board
 from game_window.board.BoardUtil import BoardUtil
+from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 
 
 def test_is_board_inverted_board_is_inverted():
     # given
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: bool = True
 
     # when
@@ -23,7 +25,7 @@ def test_is_board_inverted_board_is_inverted():
 
 def test_is_board_inverted_board_is_not_inverted():
     # given
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: bool = False
 
     # when

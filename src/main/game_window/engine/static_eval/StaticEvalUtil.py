@@ -24,7 +24,7 @@ class StaticEvalUtil:
         :param evaluation: int value of evaluation
         :return: int value with proper sign
         """
-        return evaluation if favor_color == board.get_engine_color() else -evaluation
+        return evaluation if favor_color == board.engine_color() else -evaluation
 
     @staticmethod
     def is_queen_on_start_position(color: int, board: 'Board') -> bool:
@@ -35,11 +35,11 @@ class StaticEvalUtil:
         :return: bool
         """
         start_positions = {
-            board.get_engine_color(): 3,
-            board.get_player_color(): 59
+            board.engine_color(): 3,
+            board.player_color(): 59
         }
 
-        for square, piece in enumerate(board.get_board_array()):
+        for square, piece in enumerate(board.board_array()):
             if piece == color | PiecesEnum.QUEEN.value and start_positions[color] == square:
                 return True
         return False
@@ -71,8 +71,8 @@ class StaticEvalUtil:
         :param pieces_color:
         :return:
         """
-        engine_color: int = board.get_engine_color()
-        player_color: int = board.get_player_color()
+        engine_color: int = board.engine_color()
+        player_color: int = board.player_color()
 
         if piece_value == PiecesEnum.QUEEN.value:
             return SquaresEval.QUEEN.value[square]

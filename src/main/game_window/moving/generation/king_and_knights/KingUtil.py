@@ -79,7 +79,7 @@ class KingUtil:
 
             if index > 63 or index < 0:
                 break
-            if board.get_board_array()[start_square + step * i] != 0:
+            if board.board_array()[start_square + step * i] != 0:
                 return True
         return False
 

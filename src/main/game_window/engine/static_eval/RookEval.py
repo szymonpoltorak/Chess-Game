@@ -28,7 +28,7 @@ class RookEval:
         :param board: Board instance
         :return: float value of evaluation
         """
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
         evaluation: float = 0
 
         for square, piece in enumerate(board_array):
@@ -50,8 +50,8 @@ class RookEval:
         """
         left_step: int = -1
         right_step: int = 1
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
-        distances: ndarray[int, dtype[int8]] = board.get_distances()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        distances: ndarray[int, dtype[int8]] = board.distances()
         distance_to_left: int = distances[start_square][3]
         distance_to_right: int = distances[start_square][4]
         left_border: int = start_square + left_step * distance_to_left - 1
@@ -82,8 +82,8 @@ class RookEval:
         """
         top_step: int = -8
         bottom_step: int = 8
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
-        distances: ndarray[int, dtype[int8]] = board.get_distances()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        distances: ndarray[int, dtype[int8]] = board.distances()
         distance_to_top: int = distances[start_square][1]
         distance_to_bottom: int = distances[start_square][6]
         top_border: int = start_square + top_step * distance_to_top - 1

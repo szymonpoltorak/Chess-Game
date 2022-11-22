@@ -46,7 +46,7 @@ class PawnEval:
         :param piece_color: int value of color
         :return: bool
         """
-        piece: int = board.get_board_array()[square]
+        piece: int = board.board_array()[square]
         current_piece_color: int = ColorManager.get_piece_color(piece)
         piece_value: int = piece - current_piece_color
 
@@ -68,7 +68,7 @@ class PawnEval:
             raise ValueError("IT SHOULD NOT HAPPEN!")
         chain_left_side = []
         working_index: int = index
-        distances: ndarray[int, dtype[int8]] = board.get_distances()
+        distances: ndarray[int, dtype[int8]] = board.distances()
 
         while distances[working_index][3] != 0:
             working_index += step_left
@@ -103,7 +103,7 @@ class PawnEval:
             raise ValueError("IT SHOULD NOT HAPPEN!")
         chain_right_side = []
         working_index: int = index
-        distances: ndarray[int, dtype[int8]] = board.get_distances()
+        distances: ndarray[int, dtype[int8]] = board.distances()
 
         while distances[working_index][4] != 0:
             working_index += step_right
@@ -132,8 +132,8 @@ class PawnEval:
         :param color: int value of color
         :return: float
         """
-        step_left = MoveEnum.TOP_LEFT.value if color == board.get_player_color() else MoveEnum.BOTTOM_LEFT.value
-        step_right = MoveEnum.TOP_RIGHT.value if color == board.get_player_color() else MoveEnum.BOTTOM_RIGHT.value
+        step_left = MoveEnum.TOP_LEFT.value if color == board.player_color() else MoveEnum.BOTTOM_LEFT.value
+        step_right = MoveEnum.TOP_RIGHT.value if color == board.player_color() else MoveEnum.BOTTOM_RIGHT.value
         chain_eval: int = 0
 
         for index in range(BoardEnum.BOARD_SIZE.value):

@@ -36,7 +36,7 @@ class Engine:
         moves_list: MoveList = MoveGenerator.generate_legal_moves(color, board)
 
         if moves_list.is_empty():
-            return -inf if color == board.get_engine_color() else inf
+            return -inf if color == board.engine_color() else inf
         evaluation: float = -inf
         moves_list.sort(board)
 
@@ -61,7 +61,7 @@ class Engine:
         :param board: Board instance
         :return: the best computer Move instance
         """
-        moves_list: MoveList = MoveGenerator.generate_legal_moves(board.get_engine_color(), board)
+        moves_list: MoveList = MoveGenerator.generate_legal_moves(board.engine_color(), board)
         depth: int = 5
         best_eval: float = -inf
         alpha: float = inf
@@ -73,8 +73,8 @@ class Engine:
             if move is None:
                 break
 
-            deleted_data: MoveData = MoveMaker.make_move(move, board.get_engine_color(), board)
-            evaluation: float = -Engine.negamax_search(board, depth, alpha, beta, board.get_player_color())
+            deleted_data: MoveData = MoveMaker.make_move(move, board.engine_color(), board)
+            evaluation: float = -Engine.negamax_search(board, depth, alpha, beta, board.player_color())
             MoveMaker.un_make_move(move, deleted_data, board)
             print("-----------------------------------------------------------------")
             print(f"BestEval : {best_eval}\nEvaluation : {evaluation}\n")

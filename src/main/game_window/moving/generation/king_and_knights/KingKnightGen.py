@@ -2,7 +2,6 @@ from typing import Tuple
 from typing import TYPE_CHECKING
 
 from game_window.board.BoardUtil import BoardUtil
-from game_window.board.fen.FenData import FenData
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
@@ -51,7 +50,7 @@ class KingKnightGen:
 
             if not PawnUtil.is_attack_target_in_border_bounds(start_square, move_target, piece_range):
                 continue
-            piece_on_move_target: int = board.get_board_array()[move_target]
+            piece_on_move_target: int = board.board_array()[move_target]
 
             if ColorManager.get_piece_color(piece_on_move_target) == color:
                 continue
@@ -72,18 +71,14 @@ class KingKnightGen:
         :param start_square: start end_square index
         :return: None
         """
-        fen_data: FenData = board.get_fen_data()
-
-        if not KingUtil.is_anything_on_king_side(board, start_square) and fen_data.can_king_castle_king_side(
-                color):
+        if not KingUtil.is_anything_on_king_side(board, start_square) and board.can_king_castle_king_side(color):
             if not BoardUtil.is_board_inverted(board):
                 move_target: int = start_square + MoveEnum.CASTLE_MOVE.value
             else:
                 move_target = start_square - MoveEnum.CASTLE_MOVE.value
             moves_list.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
 
-        if not KingUtil.is_anything_on_queen_side(board, start_square) and fen_data.can_king_castle_queen_side(
-                color):
+        if not KingUtil.is_anything_on_queen_side(board, start_square) and board.can_king_castle_queen_side(color):
             if not BoardUtil.is_board_inverted(board):
                 move_target = start_square - MoveEnum.CASTLE_MOVE.value
             else:

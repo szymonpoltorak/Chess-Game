@@ -3,6 +3,8 @@ import pytest
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.Board import Board
+from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.PromotionData import PromotionData
 
@@ -80,7 +82,7 @@ def test_check_user_choice_arguments_are_negatives():
     rect_size: int = -1
     y: int = -2
     x: int = -3
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(IllegalArgumentException):

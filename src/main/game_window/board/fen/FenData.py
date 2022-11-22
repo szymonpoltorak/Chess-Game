@@ -150,14 +150,14 @@ class FenData:
             raise IllegalArgumentException("SUCH SQUARE CANNOT BE EN PASSANT PIECE SQUARE!")
         self.__en_passant_piece_square = piece_square
 
-    def get_en_passant_square(self) -> int:
+    def en_passant_square(self) -> int:
         """
         Gives access to an en passant end_square value
         :return: int value of en passant square
         """
         return self.__en_passant_square
 
-    def get_en_passant_piece_square(self) -> int:
+    def en_passant_piece_square(self) -> int:
         """
         Gives access to an en passant piece end_square value
         :return: int value of an en passant target square

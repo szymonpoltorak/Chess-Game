@@ -4,6 +4,8 @@ from numpy import full
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.Board import Board
+from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.moving.generation.sliding_piece.SlidingPiecesGen import SlidingPiecesGen
@@ -155,7 +157,7 @@ def test_is_it_sliding_piece_move_not_sliding_piece_direction():
 
 def test_generate_sliding_piece_moves_not_sliding_piece():
     # given
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     move_list: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object), 0)
     piece: int = PiecesEnum.KING.value
     color: int = PiecesEnum.BLACK.value
@@ -170,7 +172,7 @@ def test_generate_sliding_piece_moves_not_sliding_piece():
 
 def test_generate_sliding_piece_moves_empty_list():
     # given
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     move_list: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object), 0)
     piece: int = PiecesEnum.BISHOP.value
     color: int = PiecesEnum.BLACK.value
@@ -197,7 +199,7 @@ def test_generate_sliding_piece_moves_null_args():
 
 def test_generate_sliding_piece_moves_illegal_arguments():
     # given
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     move_list: MoveList = MoveList(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object), 0)
     piece: int = -1
     color: int = 2

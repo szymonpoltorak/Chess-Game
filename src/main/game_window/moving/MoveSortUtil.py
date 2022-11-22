@@ -31,7 +31,7 @@ class MoveSortUtil:
 
         score: int = 0
         target_square: int = move.get_end_square()
-        target_piece: int = board.get_board_array()[target_square]
+        target_piece: int = board.board_array()[target_square]
         target_color: int = ColorManager.get_piece_color(target_piece)
         target_piece_value: int = target_piece - target_color
         special_flag: int = move.get_special_flag()

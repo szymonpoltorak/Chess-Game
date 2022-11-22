@@ -38,11 +38,11 @@ class SlidingPiecesGen:
             raise IllegalArgumentException("GIVEN ARGS ARE NOT WITHIN BONDS!")
 
         for direction in range(MoveEnum.SLIDING_DIRECTIONS_NUMBER.value):
-            for direction_step in range(board.get_distances()[start_square][direction]):
+            for direction_step in range(board.distances()[start_square][direction]):
                 if not SlidingPiecesGen.is_it_sliding_piece_move(piece, MoveEnum.SLIDING_DIRECTIONS.value[direction]):
                     continue
                 move_target: int = start_square + MoveEnum.SLIDING_DIRECTIONS.value[direction] * (direction_step + 1)
-                piece_on_move_target: int = board.get_board_array()[move_target]
+                piece_on_move_target: int = board.board_array()[move_target]
 
                 if ColorManager.get_piece_color(piece_on_move_target) == color:
                     break

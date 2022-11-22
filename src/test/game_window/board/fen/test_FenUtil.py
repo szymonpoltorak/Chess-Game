@@ -4,6 +4,7 @@ from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.Board import Board
 from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenMaker import FenMaker
 from game_window.board.fen.FenUtil import FenUtil
 from game_window.ColorManager import ColorManager
 from game_window.enums.PiecesEnum import PiecesEnum
@@ -87,11 +88,11 @@ def test_get_proper_piece_for_fen_white_pawn():
     # given
     color: int = PiecesEnum.WHITE.value
     index: int = 55
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: str = "P"
 
     # when
-    result: str = FenUtil.get_proper_piece_for_fen(board.get_board_array(), index, color)
+    result: str = FenUtil.get_proper_piece_for_fen(board.board_array(), index, color)
 
     # then
     assert expected == result
@@ -101,11 +102,11 @@ def test_get_proper_piece_for_fen_black_rook():
     # given
     color: int = PiecesEnum.BLACK.value
     index: int = 0
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: str = "r"
 
     # when
-    result: str = FenUtil.get_proper_piece_for_fen(board.get_board_array(), index, color)
+    result: str = FenUtil.get_proper_piece_for_fen(board.board_array(), index, color)
 
     # then
     assert expected == result
@@ -113,11 +114,11 @@ def test_get_proper_piece_for_fen_black_rook():
 
 def test_add_castling_letters_to_fen_all_castling_possible():
     # given
-    board: Board = Board()
+    fen_data: FenData = FenData(PiecesEnum.WHITE.value)
     expected: str = " KQkq"
 
     # when
-    result: str = FenUtil.get_castling_letters_to_fen(board.get_fen_data())
+    result: str = FenUtil.get_castling_letters_to_fen(fen_data)
 
     # then
     assert expected == result
@@ -125,16 +126,16 @@ def test_add_castling_letters_to_fen_all_castling_possible():
 
 def test_add_castling_letters_to_fen_no_castling():
     # given
-    board: Board = Board()
+    fen_data: FenData = FenData(PiecesEnum.WHITE.value)
     expected: str = " -"
 
     # when
-    board.get_fen_data().set_castling_king_side(False, PiecesEnum.WHITE.value)
-    board.get_fen_data().set_castling_king_side(False, PiecesEnum.BLACK.value)
-    board.get_fen_data().set_castling_queen_side(False, PiecesEnum.WHITE.value)
-    board.get_fen_data().set_castling_queen_side(False, PiecesEnum.BLACK.value)
+    fen_data.set_castling_king_side(False, PiecesEnum.WHITE.value)
+    fen_data.set_castling_king_side(False, PiecesEnum.BLACK.value)
+    fen_data.set_castling_queen_side(False, PiecesEnum.WHITE.value)
+    fen_data.set_castling_queen_side(False, PiecesEnum.BLACK.value)
 
-    result: str = FenUtil.get_castling_letters_to_fen(board.get_fen_data())
+    result: str = FenUtil.get_castling_letters_to_fen(fen_data)
 
     # then
     assert expected == result
@@ -142,10 +143,11 @@ def test_add_castling_letters_to_fen_no_castling():
 
 def test_update_no_sack_and_pawn_counter_nulls():
     # given
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(NullArgumentException):
-        FenUtil.update_no_sack_and_pawn_counter(None, None, None)
+        board.update_no_sack_and_pawn_counter(None, None)
 
     # then
 
@@ -154,21 +156,22 @@ def test_update_no_sack_and_pawn_counter_out_of_bonds_arguments():
     # given
     deleted_piece: int = -1
     moving_piece: int = 98
-    fen_data: FenData = FenData(PiecesEnum.WHITE.value)
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(IllegalArgumentException):
-        FenUtil.update_no_sack_and_pawn_counter(fen_data, deleted_piece, moving_piece)
+        board.update_no_sack_and_pawn_counter(deleted_piece, moving_piece)
 
     # then
 
 
 def test_disable_castling_on_side_nulls():
     # given
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(NullArgumentException):
-        FenUtil.disable_castling_on_side(None, None, None)
+        board.disable_castling_on_side(None, None)
 
     # then
 
@@ -177,21 +180,22 @@ def test_disable_castling_on_side_out_of_bonds_arguments():
     # given
     color: int = -1
     target_square: int = 98
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(IllegalArgumentException):
-        FenUtil.disable_castling_on_side(color, target_square, board)
+        board.disable_castling_on_side(color, target_square)
 
     # then
 
 
 def test_disable_castling_if_deleted_rook_nulls_arguments():
     # given
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(NullArgumentException):
-        FenUtil.disable_castling_if_captured_rook(None, None, None, None)
+        board.disable_castling_if_captured_rook(None, None, None)
 
     # then
 
@@ -201,11 +205,11 @@ def test_disable_castling_if_deleted_rook_arguments_not_within_bonds():
     deleted_piece: int = 13
     color: int = 90
     square: int = -1
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(IllegalArgumentException):
-        FenUtil.disable_castling_if_captured_rook(deleted_piece, color, square, board)
+        board.disable_castling_if_captured_rook(deleted_piece, color, square)
 
     # then
 
@@ -215,12 +219,12 @@ def test_disable_castling_if_deleted_rook_proper_use():
     color: int = PiecesEnum.WHITE.value
     deleted_piece: int = PiecesEnum.BLACK.value | PiecesEnum.ROOK.value
     square: int = 7
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: bool = False
 
     # when
-    FenUtil.disable_castling_if_captured_rook(deleted_piece, color, square, board)
-    result: bool = board.get_fen_data().can_king_castle_king_side(ColorManager.get_opposite_piece_color(color))
+    board.disable_castling_if_captured_rook(deleted_piece, color, square)
+    result: bool = board.can_king_castle_king_side(ColorManager.get_opposite_piece_color(color))
 
     # then
     assert result == expected
@@ -261,7 +265,7 @@ def test_get_proper_piece_for_fen_illegal_args():
 
     # when
     with pytest.raises(IllegalArgumentException):
-        FenUtil.get_proper_piece_for_fen(Board().get_board_array(), -1, 8)
+        FenUtil.get_proper_piece_for_fen(Board(FenMaker(FenData(PiecesEnum.WHITE.value))).board_array(), -1, 8)
 
     # then
 
@@ -408,12 +412,12 @@ def test_get_proper_piece_for_fen_nulls():
 
 def test_get_proper_piece_for_fen_illegal_args():
     # given
-    board: Board = Board()
+    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     index: int = -1
     color: int = PiecesEnum.WHITE.value
 
     # when
     with pytest.raises(IllegalArgumentException):
-        FenUtil.get_proper_piece_for_fen(board.get_board_array(), index, color)
+        FenUtil.get_proper_piece_for_fen(board.board_array(), index, color)
 
     # then

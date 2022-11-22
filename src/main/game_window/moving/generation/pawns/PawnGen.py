@@ -50,7 +50,7 @@ class PawnGen:
         direction: int = 1
         pawn_index_bounds_min: int = 48
         pawn_index_bounds_max: int = 55
-        engine_color: int = board.get_engine_color()
+        engine_color: int = board.engine_color()
         player_color: int = ColorManager.get_opposite_piece_color(engine_color)
 
         if color == player_color:
@@ -70,7 +70,7 @@ class PawnGen:
                 double_move_target, start_square, board,
                 direction * MoveEnum.PAWN_UP_SINGLE_MOVE.value):
             moves_list.append(Move(start_square, double_move_target, piece, SpecialFlags.NONE.value))
-        if board.get_board_array()[move_target] == 0:
+        if board.board_array()[move_target] == 0:
             PawnGen.add_moves_and_promotions(start_square, move_target, piece, moves_list)
 
     @staticmethod
@@ -84,14 +84,14 @@ class PawnGen:
         :param board: Board instance
         :return: None
         """
-        engine_color: int = board.get_engine_color()
+        engine_color: int = board.engine_color()
         left_piece_square: int = start_square + PawnUtil.get_attack_direction(color, "LEFT", engine_color)
         right_piece_square: int = start_square + PawnUtil.get_attack_direction(color, "RIGHT", engine_color)
 
         if left_piece_square < 0 or left_piece_square > 63 or right_piece_square < 0 or right_piece_square > 63:
             return
-        left_piece: int = board.get_board_array()[left_piece_square]
-        right_piece: int = board.get_board_array()[right_piece_square]
+        left_piece: int = board.board_array()[left_piece_square]
+        right_piece: int = board.board_array()[right_piece_square]
 
         if color != ColorManager.get_piece_color(left_piece) and left_piece != PiecesEnum.NONE.value:
             if PawnUtil.is_attack_target_in_border_bounds(start_square, left_piece_square,
@@ -131,8 +131,8 @@ class PawnGen:
         :param board: Board instance
         :return: None
         """
-        engine_color: int = board.get_engine_color()
-        en_passant_square: int = board.get_fen_data().get_en_passant_square()
+        engine_color: int = board.engine_color()
+        en_passant_square: int = board.en_passant_square()
         en_passant_target_left: int = start_square + PawnUtil.get_attack_direction(color, "LEFT", engine_color)
         en_passant_target_right: int = start_square + PawnUtil.get_attack_direction(color, "RIGHT", engine_color)
 

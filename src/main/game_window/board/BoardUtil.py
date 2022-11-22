@@ -65,7 +65,7 @@ class BoardUtil:
         """
         if board is None:
             raise NullArgumentException("BOARD CANNOT BE NULL!")
-        return board.get_engine_color() == PiecesEnum.WHITE.value
+        return board.engine_color() == PiecesEnum.WHITE.value
 
     @staticmethod
     def get_promotion_piece(color: int, flag: int) -> int:

@@ -55,7 +55,7 @@ class StaticEvaluator:
         :return: float value of evaluation
         """
         evaluation: float = 0
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
 
         for square, piece in enumerate(board_array):
             if piece == 0:
@@ -65,7 +65,7 @@ class StaticEvaluator:
             points: float = StaticEvalUtil.get_piece_point_value(piece_value)
             points += StaticEvalUtil.get_pieces_square_points(piece_value, pieces_color, square, board)
 
-            evaluation += points if pieces_color == board.get_engine_color() else -points
+            evaluation += points if pieces_color == board.engine_color() else -points
         return evaluation
 
     @staticmethod
@@ -77,7 +77,7 @@ class StaticEvaluator:
         :return: float value of evaluation
         """
         evaluation: float = 0
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
 
         for center_square in BoardEnum.CENTER_SQUARES.value:
             piece: int = board_array[center_square]

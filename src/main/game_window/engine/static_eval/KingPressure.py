@@ -44,7 +44,7 @@ class KingPressure:
         :return: float value of evaluation
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
 
         enemy_king_pos: int = KingUtil.find_friendly_king_squares(board_array, enemy_color)
         enemy_king_x: int = math.floor(enemy_king_pos / 8)
