@@ -13,7 +13,7 @@ class SquaresEval(Enum):
     LEVEL_5: int = 10
     LEVEL_6: int = 15
 
-    QUEEN: list[int, ...] = [
+    QUEEN: list[int] = [
         LEVEL_0, LEVEL_3, LEVEL_3, LEVEL_4, LEVEL_4, LEVEL_3, LEVEL_3, LEVEL_0,
         LEVEL_2, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_2,
         LEVEL_2, LEVEL_4, LEVEL_6, LEVEL_6, LEVEL_6, LEVEL_6, LEVEL_4, LEVEL_2,
@@ -24,7 +24,7 @@ class SquaresEval(Enum):
         LEVEL_0, LEVEL_3, LEVEL_3, LEVEL_4, LEVEL_4, LEVEL_3, LEVEL_3, LEVEL_0
     ]
 
-    KNIGHT: list[int, ...] = [
+    KNIGHT: list[int] = [
         LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_1, LEVEL_0,
         LEVEL_1, LEVEL_3, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_3, LEVEL_1,
         LEVEL_2, LEVEL_4, LEVEL_5, LEVEL_6, LEVEL_6, LEVEL_5, LEVEL_4, LEVEL_2,
@@ -35,7 +35,7 @@ class SquaresEval(Enum):
         LEVEL_0, LEVEL_1, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_1, LEVEL_0
     ]
 
-    PLAYER_ROOK: list[int, ...] = [
+    PLAYER_ROOK: list[int] = [
         LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3,
         LEVEL_4, LEVEL_6, LEVEL_6, LEVEL_6, LEVEL_6, LEVEL_6, LEVEL_6, LEVEL_4,
         LEVEL_0, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_0,
@@ -46,7 +46,7 @@ class SquaresEval(Enum):
         LEVEL_2, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_4, LEVEL_3, LEVEL_2, LEVEL_2
     ]
 
-    ENGINE_ROOK: list[int, ...] = [
+    ENGINE_ROOK: list[int] = [
         LEVEL_2, LEVEL_2, LEVEL_3, LEVEL_4, LEVEL_4, LEVEL_3, LEVEL_2, LEVEL_2,
         LEVEL_0, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_0,
         LEVEL_0, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_2, LEVEL_0,
@@ -57,7 +57,7 @@ class SquaresEval(Enum):
         LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3
     ]
 
-    PLAYER_KING: list[int, ...] = [
+    PLAYER_KING: list[int] = [
         LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_0, LEVEL_0, LEVEL_1, LEVEL_1, LEVEL_1,
         LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_0, LEVEL_0, LEVEL_1, LEVEL_1, LEVEL_1,
         LEVEL_2, LEVEL_1, LEVEL_1, LEVEL_0, LEVEL_0, LEVEL_1, LEVEL_1, LEVEL_2,
@@ -68,7 +68,7 @@ class SquaresEval(Enum):
         LEVEL_4, LEVEL_6, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_6, LEVEL_4
     ]
 
-    ENGINE_KING: list[int, ...] = [
+    ENGINE_KING: list[int] = [
         LEVEL_4, LEVEL_6, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_6, LEVEL_4,
         LEVEL_4, LEVEL_4, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_4, LEVEL_4,
         LEVEL_4, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_4,
@@ -79,7 +79,7 @@ class SquaresEval(Enum):
         LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_0, LEVEL_0, LEVEL_1, LEVEL_1, LEVEL_1
     ]
 
-    PLAYER_BISHOP: list[int, ...] = [
+    PLAYER_BISHOP: list[int] = [
         LEVEL_0, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_0,
         LEVEL_1, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_1,
         LEVEL_1, LEVEL_3, LEVEL_4, LEVEL_5, LEVEL_5, LEVEL_4, LEVEL_3, LEVEL_1,
@@ -90,7 +90,7 @@ class SquaresEval(Enum):
         LEVEL_3, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_3
     ]
 
-    ENGINE_BISHOP: list[int, ...] = [
+    ENGINE_BISHOP: list[int] = [
         LEVEL_0, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_0,
         LEVEL_1, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_3, LEVEL_1,
         LEVEL_1, LEVEL_3, LEVEL_4, LEVEL_5, LEVEL_5, LEVEL_4, LEVEL_3, LEVEL_1,
@@ -101,7 +101,7 @@ class SquaresEval(Enum):
         LEVEL_3, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_3
     ]
 
-    PLAYER_PAWN: list[int, ...] = [
+    PLAYER_PAWN: list[int] = [
         LEVEL_0, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_0,
         LEVEL_1, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_1,
         LEVEL_1, LEVEL_4, LEVEL_5, LEVEL_6, LEVEL_6, LEVEL_5, LEVEL_4, LEVEL_1,
@@ -112,7 +112,7 @@ class SquaresEval(Enum):
         LEVEL_4, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_4
     ]
 
-    ENGINE_PAWN: list[int, ...] = [
+    ENGINE_PAWN: list[int] = [
         LEVEL_4, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_1, LEVEL_4,
         LEVEL_1, LEVEL_5, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_4, LEVEL_5, LEVEL_1,
         LEVEL_1, LEVEL_5, LEVEL_5, LEVEL_5, LEVEL_5, LEVEL_5, LEVEL_5, LEVEL_1,

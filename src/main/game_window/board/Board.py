@@ -15,10 +15,11 @@ from game_window.board.fen.FenMaker import FenMaker
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.moving.generation.Generator import Generator
 from game_window.moving.generation.MoveGenerator import MoveGenerator
-from game_window.moving.Move import Move
-from game_window.moving.MoveData import MoveData
-from game_window.moving.MoveList import MoveList
+from game_window.moving.generation.data.MoveList import MoveList
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveData import MoveData
 
 
 class Board:
@@ -26,18 +27,20 @@ class Board:
     Class to hold and manage board representation.
     """
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
-                       "__engine_color", "__player_color", "__fen_factory"], dtype=str)
+                       "__engine_color", "__player_color", "__fen_factory", "__generator"], dtype=str)
 
     def __init__(self, fen_factory: FenFactory) -> None:
         self.__engine_color: int = PiecesEnum.BLACK.value
         self.__player_color: int = PiecesEnum.WHITE.value
-        self.__board_array: ndarray[int, dtype[int8]] = BoardInitializer.init_starting_board(self.__engine_color,
-                                                                                             self.__player_color)
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__fen_factory: FenFactory = fen_factory
         self.__color_to_move: int = PiecesEnum.WHITE.value
+
+        self.__generator: Generator = MoveGenerator()
+        self.__board_array: ndarray[int, dtype[int8]] = BoardInitializer.init_starting_board(self.__engine_color,
+                                                                                             self.__player_color)
         self.__distances_to_borders: ndarray[int, dtype[int8]] = BoardUtil.calculate_distance_to_borders()
-        self.__legal_moves: MoveList = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
+        self.__legal_moves: MoveList = self.__generator.generate_legal_moves(self.__color_to_move, self)
 
     def delete_piece_from_board_square(self, square: int) -> int:
         """
@@ -97,14 +100,15 @@ class Board:
         :param color: int value of color
         :return: None
         """
-        self.__legal_moves = MoveGenerator.generate_legal_moves(color, self)
+        self.__legal_moves = self.__generator.generate_legal_moves(color, self)
 
     def set_opposite_move_color(self) -> None:
         """
         Method used to change the color of players pieces which is turn.
         :return: None
         """
-        self.__color_to_move = PiecesEnum.WHITE.value if self.__color_to_move == PiecesEnum.BLACK.value else PiecesEnum.BLACK.value
+        self.__color_to_move = PiecesEnum.WHITE.value if self.__color_to_move == PiecesEnum.BLACK.value else\
+            PiecesEnum.BLACK.value
 
     def legal_moves(self) -> MoveList:
         """
@@ -156,7 +160,7 @@ class Board:
         """
         self.__fen_string = self.__fen_factory.convert_board_array_to_fen(self)
 
-    def disable_castling_if_captured_rook(self, deleted_piece, color, square) -> None:
+    def disable_castling_if_captured_rook(self, deleted_piece: int, color: int, square: int) -> None:
         """
         Method used to disable castling if rook was captured
         :param deleted_piece: int value of deleted piece
@@ -173,10 +177,10 @@ class Board:
         """
         self.set_opposite_color_sides()
         self.__board_array = BoardInitializer.init_starting_board(self.__engine_color, self.__player_color)
-        self.__fen_factory: FenFactory = FenMaker(FenData(self.__player_color))
+        self.__fen_factory = FenMaker(FenData(self.__player_color))
         self.__color_to_move = PiecesEnum.WHITE.value
         self.update_fen()
-        self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
+        self.update_legal_moves(self.__color_to_move)
 
     def set_opposite_color_sides(self) -> None:
         """

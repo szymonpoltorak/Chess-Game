@@ -8,7 +8,7 @@ from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.Move import Move
+from game_window.moving.generation.data.Move import Move
 from game_window.moving.MoveMakingUtil import MoveMakingUtil
 from game_window.moving.MoveUnMakingUtil import MoveUnMakingUtil
 

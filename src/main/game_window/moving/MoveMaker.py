@@ -6,8 +6,8 @@ from numpy import ndarray
 
 from game_window.ColorManager import ColorManager
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.Move import Move
-from game_window.moving.MoveData import MoveData
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveData import MoveData
 from game_window.moving.MoveMakingUtil import MoveMakingUtil
 from game_window.moving.MoveUnMakingUtil import MoveUnMakingUtil
 

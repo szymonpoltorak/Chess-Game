@@ -1,13 +1,14 @@
 import sys
 
 from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QWidget
 
 from game_window.GameWindow import GameWindow
 
 
 def main() -> None:
-    app = QApplication(sys.argv)
-    window = GameWindow()
+    app: QApplication = QApplication(sys.argv)
+    window: QWidget = GameWindow()
     window.show()
 
     sys.exit(app.exec_())

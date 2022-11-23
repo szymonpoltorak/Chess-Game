@@ -6,8 +6,8 @@ from game_window.ColorManager import ColorManager
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.Move import Move
-from game_window.moving.MoveList import MoveList
+from game_window.moving.generation.data.MoveList import MoveList
+from game_window.moving.generation.data.Move import Move
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -61,7 +61,7 @@ class SlidingPiecesGen:
         """
         if piece is None or direction is None:
             raise NullArgumentException("ARGUMENTS CANNOT BE NULLS!")
-        if not SlidingPiecesGen.is_sliding_piece(piece) or direction not in MoveEnum.SLIDING_DIRECTIONS.value:
+        if not SlidingPiecesGen.is_it_sliding_piece(piece) or direction not in MoveEnum.SLIDING_DIRECTIONS.value:
             raise IllegalArgumentException("WRONG ARGUMENTS GIVEN TO METHOD!")
         diagonal_pieces: tuple[int, int] = (PiecesEnum.BISHOP.value, PiecesEnum.QUEEN.value)
         diagonal_directions: tuple[int, int, int, int] = (MoveEnum.TOP_LEFT.value, MoveEnum.TOP_RIGHT.value,
@@ -76,7 +76,7 @@ class SlidingPiecesGen:
         return piece in line_pieces and direction in line_directions
 
     @staticmethod
-    def is_sliding_piece(piece: int) -> bool:
+    def is_it_sliding_piece(piece: int) -> bool:
         """
         Static method used to check if piece_square is a sliding piece_square.
         :param piece: int value of piece_square

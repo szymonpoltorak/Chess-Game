@@ -14,7 +14,7 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-from game_window.moving.Move import Move
+from game_window.moving.generation.data.Move import Move
 
 
 def test_find_friendly_king_squares_only_enemy_king():

@@ -7,7 +7,7 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.EvalEnum import EvalEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.Move import Move
+from game_window.moving.generation.data.Move import Move
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -35,6 +35,7 @@ class MoveSortUtil:
         target_color: int = ColorManager.get_piece_color(target_piece)
         target_piece_value: int = target_piece - target_color
         special_flag: int = move.get_special_flag()
+        piece: int = move.get_moving_piece()
 
         if special_flag == SpecialFlags.CASTLING.value:
             score += 50
@@ -50,9 +51,12 @@ class MoveSortUtil:
 
             score += StaticEvalUtil.get_piece_point_value(piece_value)
 
+        if piece in (PiecesEnum.KNIGHT.value, PiecesEnum.BISHOP.value):
+            score += StaticEvalUtil.get_piece_point_value(piece)
+
         if target_piece != 0:
             target_eval: int = StaticEvalUtil.get_piece_point_value(target_piece_value)
-            friendly_eval: int = StaticEvalUtil.get_piece_point_value(move.get_moving_piece())
+            friendly_eval: int = StaticEvalUtil.get_piece_point_value(piece)
 
             score += 3 * target_eval - friendly_eval
         return score

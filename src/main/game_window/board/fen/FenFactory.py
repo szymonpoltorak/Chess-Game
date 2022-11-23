@@ -3,8 +3,8 @@ from abc import abstractmethod
 from typing import Tuple
 from typing import TYPE_CHECKING
 
-from game_window.moving.Move import Move
-from game_window.moving.MoveData import MoveData
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveData import MoveData
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board

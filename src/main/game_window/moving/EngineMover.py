@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.Move import Move
-from game_window.moving.MoveData import MoveData
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveData import MoveData
 from game_window.moving.MoveMaker import MoveMaker
 
 if TYPE_CHECKING:

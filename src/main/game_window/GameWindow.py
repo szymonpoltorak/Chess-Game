@@ -18,6 +18,7 @@ from game_window.board.fen.FenMaker import FenMaker
 from game_window.Canvas import Canvas
 from game_window.ColorManager import ColorManager
 from game_window.engine.Engine import Engine
+from game_window.engine.EnginePlayer import EnginePlayer
 from game_window.engine.Evaluator import Evaluator
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
@@ -28,7 +29,7 @@ from game_window.GameWindowUi import GameWindowUi
 from game_window.moving.EngineMover import EngineMover
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from game_window.moving.generation.pawns.PawnUtil import PawnUtil
-from game_window.moving.Move import Move
+from game_window.moving.generation.data.Move import Move
 from game_window.moving.MoveMakingUtil import MoveMakingUtil
 from game_window.PromotionData import PromotionData
 
@@ -37,8 +38,8 @@ class GameWindow(QWidget):
     """
     Covers play game window.
     """
-    __slots__ = array(["__ui", "__canvas", "__moving_piece", "__current_move", "__promotion_util", "__board"],
-                      dtype=str)
+    __slots__ = array(["__ui", "__canvas", "__moving_piece", "__current_move", "__promotion_util", "__board",
+                       "__engine"], dtype=str)
 
     keyPressed = QtCore.pyqtSignal(int)
 
@@ -47,6 +48,7 @@ class GameWindow(QWidget):
 
         fen_factory: FenFactory = FenMaker(FenData(PiecesEnum.WHITE.value))
 
+        self.__engine: Engine = EnginePlayer()
         self.__board = Board(fen_factory)
         self.__canvas: Canvas = Canvas()
         self.__moving_piece: int = -1
@@ -57,8 +59,8 @@ class GameWindow(QWidget):
         with open(Paths.GAME_WINDOW_CSS.value, "r", encoding="utf-8") as style:
             self.__ui: GameWindowUi = GameWindowUi(self)
             self.setStyleSheet(style.read())
-            self.__ui.get_new_game_button().clicked.connect(self.reset_game)
-            self.__ui.get_switch_side_button().clicked.connect(self.switch_sides)
+            self.__ui.get_new_game_button().clicked.connect(self.__reset_game)
+            self.__ui.get_switch_side_button().clicked.connect(self.__switch_sides)
 
     def keyPressEvent(self, event: QKeyEvent) -> None:
         """
@@ -83,36 +85,6 @@ class GameWindow(QWidget):
         if self.__promotion_util.is_this_pawn_promoting():
             self.__canvas.paint_promotion_window(self.__promotion_util, self.__current_move.get_end_square())
         self.__canvas.end()
-
-    def get_ui(self) -> GameWindowUi:
-        """
-        Gives access to PyQt5 Ui.
-        :return: GameWindowUi instance
-        """
-        return self.__ui
-
-    def __start_mouse_events(self, mouse_event: QMouseEvent) -> Tuple[int, int]:
-        """
-        Prepares row and col indexes for mouse press and release events
-        :param mouse_event: QMouseEvent
-        :return: row and col indexes if everything is good or None, None
-        """
-        if mouse_event.button() != Qt.LeftButton:
-            return MoveEnum.NONE.value, MoveEnum.NONE.value
-
-        canvas_width: int = CanvasEnum.CANVAS_WIDTH.value
-        canvas_height: int = CanvasEnum.CANVAS_HEIGHT.value
-        current_position_x: int = mouse_event.x() - CanvasEnum.CANVAS_X.value
-        current_position_y: int = mouse_event.y() - CanvasEnum.CANVAS_Y.value
-
-        if current_position_x < 0 or current_position_x > canvas_width or current_position_y < 0 \
-                or current_position_y > canvas_height:
-            return MoveEnum.NONE.value, MoveEnum.NONE.value
-
-        col: int = (current_position_x / self.__canvas.get_rect_width()).__floor__()
-        row: int = (current_position_y / self.__canvas.get_rect_height()).__floor__()
-
-        return row, col
 
     def mousePressEvent(self, mouse_press_event: QMouseEvent) -> None:
         """
@@ -149,7 +121,7 @@ class GameWindow(QWidget):
         start_square: int = self.__current_move.get_start_square()
         end_square: int = self.__current_move.get_end_square()
 
-        if not self.check_quit_release_event_functions(start_square, row, col, end_square, event.x(), event.y()):
+        if not self.__check_quit_release_event_functions(start_square, row, col, end_square, event.x(), event.y()):
             return
         end_square = self.__current_move.get_end_square()
         self.__board.update_move_counter()
@@ -160,18 +132,18 @@ class GameWindow(QWidget):
 
         self.__board.disable_castling_if_captured_rook(deleted_piece, color, end_square)
 
-        self.handle_castling_event(final_piece_index, color)
+        self.__handle_castling_event(final_piece_index, color)
 
-        deleted_piece = self.handle_pawn_special_events(color, final_piece_index, deleted_piece, event.x(), event.y())
+        deleted_piece = self.__handle_pawn_special_events(color, final_piece_index, deleted_piece, event.x(), event.y())
 
-        self.play_proper_sound(deleted_piece)
+        self.__play_proper_sound(deleted_piece)
         self.setCursor(QCursor(Qt.CursorShape.ArrowCursor))
         self.__board.set_opposite_move_color()
 
         self.__board.update_no_sack_and_pawn_counter(deleted_piece, self.__current_move.get_moving_piece())
-        self.update_board_data()
+        self.__update_board_data()
 
-    def update_board_data(self) -> None:
+    def __update_board_data(self) -> None:
         """
         Method used to update board data
         :return: None
@@ -180,22 +152,45 @@ class GameWindow(QWidget):
 
         if self.__promotion_util.is_this_pawn_promoting():
             return
-        computer_move: Move = Engine.get_computer_move(self.__board)
+        computer_move: Move = self.__engine.get_computer_move(self.__board)
 
-        if computer_move is None:
+        if computer_move == Move(MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value):
             QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
             return
         deleted_piece: int = EngineMover.update_board_with_engine_move(self.__board, computer_move)
         self.__board.update_fen()
 
-        self.play_proper_sound(deleted_piece)
+        self.__play_proper_sound(deleted_piece)
         self.__board.update_legal_moves(self.__board.player_color())
 
         self.__current_move = computer_move
         self.update()
 
-    def handle_pawn_special_events(self, color: int, piece_index: int, deleted_piece: int, mouse_x: int,
-                                   mouse_y: int) -> int:
+    def __start_mouse_events(self, mouse_event: QMouseEvent) -> Tuple[int, int]:
+        """
+        Prepares row and col indexes for mouse press and release events
+        :param mouse_event: QMouseEvent
+        :return: row and col indexes if everything is good or None, None
+        """
+        if mouse_event.button() != Qt.LeftButton:
+            return MoveEnum.NONE.value, MoveEnum.NONE.value
+
+        canvas_width: int = CanvasEnum.CANVAS_WIDTH.value
+        canvas_height: int = CanvasEnum.CANVAS_HEIGHT.value
+        current_position_x: int = mouse_event.x() - CanvasEnum.CANVAS_X.value
+        current_position_y: int = mouse_event.y() - CanvasEnum.CANVAS_Y.value
+
+        if current_position_x < 0 or current_position_x > canvas_width or current_position_y < 0 \
+                or current_position_y > canvas_height:
+            return MoveEnum.NONE.value, MoveEnum.NONE.value
+
+        col: int = (current_position_x / self.__canvas.get_rect_width()).__floor__()
+        row: int = (current_position_y / self.__canvas.get_rect_height()).__floor__()
+
+        return row, col
+
+    def __handle_pawn_special_events(self, color: int, piece_index: int, deleted_piece: int, mouse_x: int,
+                                     mouse_y: int) -> int:
         """
         Method used to handle every pawn special events
         :param mouse_y: mouse x position int
@@ -215,7 +210,7 @@ class GameWindow(QWidget):
 
         return deleted_piece
 
-    def handle_castling_event(self, final_piece_index: int, color: int) -> None:
+    def __handle_castling_event(self, final_piece_index: int, color: int) -> None:
         """
         Method used to handle castling movements
         :param final_piece_index: int value of piece index
@@ -238,14 +233,14 @@ class GameWindow(QWidget):
         else:
             self.__board.add_piece_to_the_board(self.__moving_piece, final_piece_index)
 
-    def check_quit_release_event_functions(self, start_square: int, row: int, col: int, end_square: int, x: int,
-                                           y: int) -> bool:
+    def __check_quit_release_event_functions(self, start_square: int, row: int, col: int, end_square: int, x: int,
+                                             y: int) -> bool:
         """
         Method used to check conditions to end mouse event.
         """
         if self.__promotion_util.is_this_pawn_promoting():
             self.__promotion_util.check_user_choice(self.__canvas.get_rect_height(), self.__board, x, y)
-            self.update_board_data()
+            self.__update_board_data()
             return False
 
         if start_square is None or MoveEnum.NONE.value in (row, col):
@@ -266,7 +261,7 @@ class GameWindow(QWidget):
             return False
         return True
 
-    def play_proper_sound(self, deleted_piece: int) -> None:
+    def __play_proper_sound(self, deleted_piece: int) -> None:
         """
         Plays proper sound effect based on deleted piece_square value
         :param deleted_piece: int value of piece_square
@@ -274,7 +269,7 @@ class GameWindow(QWidget):
         """
         playsound(Paths.MOVE_SOUND.value) if deleted_piece == 0 else playsound(Paths.CAPTURE_SOUND.value)
 
-    def reset_game(self) -> None:
+    def __reset_game(self) -> None:
         """
         Method used to reset the game state to the standard one
         :return: None
@@ -284,7 +279,7 @@ class GameWindow(QWidget):
         self.__current_move.set_end_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
         self.update()
 
-    def switch_sides(self) -> None:
+    def __switch_sides(self) -> None:
         """
         Method used to switch sides of player and engine (colors)
         :return: None

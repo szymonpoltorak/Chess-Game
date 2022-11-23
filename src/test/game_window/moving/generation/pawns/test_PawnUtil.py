@@ -8,7 +8,7 @@ from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.generation.pawns.PawnUtil import PawnUtil
-from game_window.moving.Move import Move
+from game_window.moving.generation.data.Move import Move
 
 
 def test_get_attack_direction_left_white():

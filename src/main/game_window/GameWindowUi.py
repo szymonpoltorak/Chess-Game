@@ -168,13 +168,13 @@ class GameWindowUi:
         :return: None
         """
         _translate = QtCore.QCoreApplication.translate
-        game_window.setWindowTitle(_translate("game_window", "Chess Engine"))
+        game_window.setWindowTitle(_translate("game_window", "Chess EnginePlayer"))
         self.__new_game_button.setText(_translate("game_window", "New Game"))
         self.__prev_move_button.setText(_translate("game_window", "<"))
         self.__next_move_button.setText(_translate("game_window", ">"))
         self.__switch_side_button.setText(_translate("game_window", "Switch Colors"))
         self.__user_name.setText(_translate("game_window", "User"))
-        self.__engine_name.setText(_translate("game_window", "Engine"))
+        self.__engine_name.setText(_translate("game_window", "EnginePlayer"))
 
     def get_sidebar(self) -> Sidebar:
         """

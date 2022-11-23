@@ -5,7 +5,7 @@ from numpy import array
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.ColorManager import ColorManager
-from game_window.moving.MoveData import MoveData
+from game_window.moving.generation.data.MoveData import MoveData
 
 
 class FenData:

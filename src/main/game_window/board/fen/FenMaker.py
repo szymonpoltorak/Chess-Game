@@ -10,8 +10,8 @@ from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.Move import Move
-from game_window.moving.MoveData import MoveData
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveData import MoveData
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
