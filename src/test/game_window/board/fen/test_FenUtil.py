@@ -10,7 +10,7 @@ from game_window.ColorManager import ColorManager
 from game_window.enums.PiecesEnum import PiecesEnum
 
 
-def test_convert_square_into_board_double_index_square_equals_negative_one():
+def test_convert_square_into_board_double_index_square_equals_negative_one() -> None:
     # given
     square: int = -1
     expected: str = " -"
@@ -22,7 +22,7 @@ def test_convert_square_into_board_double_index_square_equals_negative_one():
     assert expected == result
 
 
-def test_convert_square_into_board_double_index_square_equals_seven():
+def test_convert_square_into_board_double_index_square_equals_seven() -> None:
     # given
     square: int = 7
     expected: str = " h8"
@@ -34,7 +34,7 @@ def test_convert_square_into_board_double_index_square_equals_seven():
     assert expected == result
 
 
-def test_get_proper_letter_size_white_color():
+def test_get_proper_letter_size_white_color() -> None:
     # given
     expected: str = "Q"
     letter: str = "q"
@@ -47,7 +47,7 @@ def test_get_proper_letter_size_white_color():
     assert expected == result
 
 
-def test_get_proper_letter_size_black_color():
+def test_get_proper_letter_size_black_color() -> None:
     # given
     expected: str = "q"
     letter: str = "q"
@@ -60,7 +60,7 @@ def test_get_proper_letter_size_black_color():
     assert expected == result
 
 
-def test_get_color_to_move_fen_letter_white_color():
+def test_get_color_to_move_fen_letter_white_color() -> None:
     # given
     color: int = PiecesEnum.WHITE.value
     expected: str = " w"
@@ -72,7 +72,7 @@ def test_get_color_to_move_fen_letter_white_color():
     assert expected == result
 
 
-def test_get_color_to_move_fen_letter_black_color():
+def test_get_color_to_move_fen_letter_black_color() -> None:
     # given
     color: int = PiecesEnum.BLACK.value
     expected: str = " b"
@@ -84,7 +84,7 @@ def test_get_color_to_move_fen_letter_black_color():
     assert expected == result
 
 
-def test_get_proper_piece_for_fen_white_pawn():
+def test_get_proper_piece_for_fen_white_pawn() -> None:
     # given
     color: int = PiecesEnum.WHITE.value
     index: int = 55
@@ -98,7 +98,7 @@ def test_get_proper_piece_for_fen_white_pawn():
     assert expected == result
 
 
-def test_get_proper_piece_for_fen_black_rook():
+def test_get_proper_piece_for_fen_black_rook() -> None:
     # given
     color: int = PiecesEnum.BLACK.value
     index: int = 0
@@ -112,7 +112,7 @@ def test_get_proper_piece_for_fen_black_rook():
     assert expected == result
 
 
-def test_add_castling_letters_to_fen_all_castling_possible():
+def test_add_castling_letters_to_fen_all_castling_possible() -> None:
     # given
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
     expected: str = " KQkq"
@@ -124,7 +124,7 @@ def test_add_castling_letters_to_fen_all_castling_possible():
     assert expected == result
 
 
-def test_add_castling_letters_to_fen_no_castling():
+def test_add_castling_letters_to_fen_no_castling() -> None:
     # given
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
     expected: str = " -"
@@ -141,7 +141,7 @@ def test_add_castling_letters_to_fen_no_castling():
     assert expected == result
 
 
-def test_update_no_sack_and_pawn_counter_nulls():
+def test_update_no_sack_and_pawn_counter_nulls() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
@@ -152,7 +152,7 @@ def test_update_no_sack_and_pawn_counter_nulls():
     # then
 
 
-def test_update_no_sack_and_pawn_counter_out_of_bonds_arguments():
+def test_update_no_sack_and_pawn_counter_out_of_bonds_arguments() -> None:
     # given
     deleted_piece: int = -1
     moving_piece: int = 98
@@ -165,7 +165,7 @@ def test_update_no_sack_and_pawn_counter_out_of_bonds_arguments():
     # then
 
 
-def test_disable_castling_on_side_nulls():
+def test_disable_castling_on_side_nulls() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
@@ -176,7 +176,7 @@ def test_disable_castling_on_side_nulls():
     # then
 
 
-def test_disable_castling_on_side_out_of_bonds_arguments():
+def test_disable_castling_on_side_out_of_bonds_arguments() -> None:
     # given
     color: int = -1
     target_square: int = 98
@@ -189,7 +189,7 @@ def test_disable_castling_on_side_out_of_bonds_arguments():
     # then
 
 
-def test_disable_castling_if_deleted_rook_nulls_arguments():
+def test_disable_castling_if_deleted_rook_nulls_arguments() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
@@ -200,7 +200,7 @@ def test_disable_castling_if_deleted_rook_nulls_arguments():
     # then
 
 
-def test_disable_castling_if_deleted_rook_arguments_not_within_bonds():
+def test_disable_castling_if_deleted_rook_arguments_not_within_bonds() -> None:
     # given
     deleted_piece: int = 13
     color: int = 90
@@ -214,7 +214,7 @@ def test_disable_castling_if_deleted_rook_arguments_not_within_bonds():
     # then
 
 
-def test_disable_castling_if_deleted_rook_proper_use():
+def test_disable_castling_if_deleted_rook_proper_use() -> None:
     # given
     color: int = PiecesEnum.WHITE.value
     deleted_piece: int = PiecesEnum.BLACK.value | PiecesEnum.ROOK.value
@@ -230,7 +230,7 @@ def test_disable_castling_if_deleted_rook_proper_use():
     assert result == expected
 
 
-def test_convert_square_into_board_double_index_null_square():
+def test_convert_square_into_board_double_index_null_square() -> None:
     # given
 
     # when
@@ -240,7 +240,7 @@ def test_convert_square_into_board_double_index_null_square():
     # then
 
 
-def test_get_castling_letters_to_fen_null():
+def test_get_castling_letters_to_fen_null() -> None:
     # given
 
     # when
@@ -250,7 +250,7 @@ def test_get_castling_letters_to_fen_null():
     # then
 
 
-def test_get_proper_piece_for_fen_null():
+def test_get_proper_piece_for_fen_null() -> None:
     # given
 
     # when
@@ -260,7 +260,7 @@ def test_get_proper_piece_for_fen_null():
     # then
 
 
-def test_get_proper_piece_for_fen_illegal_args():
+def test_get_proper_piece_for_fen_illegal_args() -> None:
     # given
 
     # when
@@ -270,7 +270,7 @@ def test_get_proper_piece_for_fen_illegal_args():
     # then
 
 
-def test_get_castling_letters_to_unable_castlings():
+def test_get_castling_letters_to_unable_castlings() -> None:
     # given
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
     expected: str = " -"
@@ -287,7 +287,7 @@ def test_get_castling_letters_to_unable_castlings():
     assert result == expected
 
 
-def test_convert_square_into_board_double_index_illegal_arguments():
+def test_convert_square_into_board_double_index_illegal_arguments() -> None:
     # given
     square: int = -9
 
@@ -298,7 +298,7 @@ def test_convert_square_into_board_double_index_illegal_arguments():
     # then
 
 
-def test_convert_square_into_board_double_index_square_is_negative_one():
+def test_convert_square_into_board_double_index_square_is_negative_one() -> None:
     # given
     square: int = -1
     expected: str = " -"
@@ -310,7 +310,7 @@ def test_convert_square_into_board_double_index_square_is_negative_one():
     assert result == expected
 
 
-def test_convert_square_into_board_double_index_square_equal_to_zero():
+def test_convert_square_into_board_double_index_square_equal_to_zero() -> None:
     # given
     square: int = 0
     expected: str = " a8"
@@ -322,7 +322,7 @@ def test_convert_square_into_board_double_index_square_equal_to_zero():
     assert result == expected
 
 
-def test_get_color_to_move_fen_letter_null_argument():
+def test_get_color_to_move_fen_letter_null_argument() -> None:
     # given
 
     # when
@@ -332,7 +332,7 @@ def test_get_color_to_move_fen_letter_null_argument():
     # then
 
 
-def test_get_color_to_move_fen_letter_illegal_argument():
+def test_get_color_to_move_fen_letter_illegal_argument() -> None:
     # given
     color: int = -9
 
@@ -343,7 +343,7 @@ def test_get_color_to_move_fen_letter_illegal_argument():
     # then
 
 
-def test_get_color_to_move_fen_letter_proper_use():
+def test_get_color_to_move_fen_letter_proper_use() -> None:
     # given
     color: int = PiecesEnum.WHITE.value
     expected: str = " w"
@@ -355,7 +355,7 @@ def test_get_color_to_move_fen_letter_proper_use():
     assert result == expected
 
 
-def test_get_proper_letter_size_null_argument():
+def test_get_proper_letter_size_null_argument() -> None:
     # given
 
     # when
@@ -365,7 +365,7 @@ def test_get_proper_letter_size_null_argument():
     # then
 
 
-def test_get_proper_letter_size_illegal_argument():
+def test_get_proper_letter_size_illegal_argument() -> None:
     # given
     color: int = -9
     letter: str = "w"
@@ -377,7 +377,7 @@ def test_get_proper_letter_size_illegal_argument():
     # then
 
 
-def test_get_proper_letter_size_proper_use():
+def test_get_proper_letter_size_proper_use() -> None:
     # given
     color: int = PiecesEnum.WHITE.value
     letter: str = "w"
@@ -390,7 +390,7 @@ def test_get_proper_letter_size_proper_use():
     assert result == expected
 
 
-def test_add_castling_letters_to_fen_null_argument():
+def test_add_castling_letters_to_fen_null_argument() -> None:
     # given
 
     # when
@@ -400,7 +400,7 @@ def test_add_castling_letters_to_fen_null_argument():
     # then
 
 
-def test_get_proper_piece_for_fen_nulls():
+def test_get_proper_piece_for_fen_nulls() -> None:
     # given
 
     # when
@@ -410,7 +410,7 @@ def test_get_proper_piece_for_fen_nulls():
     # then
 
 
-def test_get_proper_piece_for_fen_illegal_args():
+def test_get_proper_piece_for_fen_illegal_args() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     index: int = -1

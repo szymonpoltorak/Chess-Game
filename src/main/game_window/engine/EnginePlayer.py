@@ -4,6 +4,7 @@ from numpy import inf
 
 from game_window.ColorManager import ColorManager
 from game_window.engine.Engine import Engine
+from game_window.engine.Evaluation import Evaluation
 from game_window.engine.Evaluator import Evaluator
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.moving.generation.Generator import Generator
@@ -22,10 +23,11 @@ class EnginePlayer(Engine):
     Class containing methods to pick best __moves for computer
     """
 
-    __slots__ = "__generator"
+    __slots__ = ("__generator", "__evaluator")
 
     def __init__(self) -> None:
         self.__generator: Generator = MoveGenerator()
+        self.__evaluator: Evaluation = Evaluator()
 
     def get_computer_move(self, board: 'Board') -> Move:
         """
@@ -73,7 +75,7 @@ class EnginePlayer(Engine):
         :return: int value of best move evaluation
         """
         if depth == 0:
-            return Evaluator.evaluate_position(board, color)
+            return self.__evaluator.evaluate_position(board, color)
         moves_list: MoveList = self.__generator.generate_legal_moves(color, board)
 
         if moves_list.is_empty():

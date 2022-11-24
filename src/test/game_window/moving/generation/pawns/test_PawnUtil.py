@@ -11,7 +11,7 @@ from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.generation.data.Move import Move
 
 
-def test_get_attack_direction_left_white():
+def test_get_attack_direction_left_white() -> None:
     # given
     expected: int = -9
     direction: str = "LEFT"
@@ -24,7 +24,7 @@ def test_get_attack_direction_left_white():
     assert expected == result
 
 
-def test_get_attack_direction_right_black():
+def test_get_attack_direction_right_black() -> None:
     # given
     expected: int = 9
     direction: str = "RIGHT"
@@ -37,7 +37,7 @@ def test_get_attack_direction_right_black():
     assert expected == result
 
 
-def test_get_attack_direction_null_args():
+def test_get_attack_direction_null_args() -> None:
     # given
 
     # when
@@ -47,7 +47,7 @@ def test_get_attack_direction_null_args():
     # then
 
 
-def test_get_attack_direction_illegal_colors():
+def test_get_attack_direction_illegal_colors() -> None:
     # given
     color: int = 0
     engine_color: int = 7
@@ -60,7 +60,7 @@ def test_get_attack_direction_illegal_colors():
     # then
 
 
-def test_get_attack_direction_illegal_direction():
+def test_get_attack_direction_illegal_direction() -> None:
     # given
     color: int = 8
     engine_color: int = 16
@@ -73,7 +73,7 @@ def test_get_attack_direction_illegal_direction():
     # then
 
 
-def test_is_pawn_promoting_white_pawn_is_promoting():
+def test_is_pawn_promoting_white_pawn_is_promoting() -> None:
     # given
     start_square: int = 8
     end_square: int = 0
@@ -88,7 +88,7 @@ def test_is_pawn_promoting_white_pawn_is_promoting():
     assert expected == result
 
 
-def test_is_pawn_promoting_it_is_not_pawn():
+def test_is_pawn_promoting_it_is_not_pawn() -> None:
     # given
     start_square: int = 8
     end_square: int = 0
@@ -103,7 +103,7 @@ def test_is_pawn_promoting_it_is_not_pawn():
     assert expected == result
 
 
-def test_is_pawn_promoting_black_pawn_is_promoting():
+def test_is_pawn_promoting_black_pawn_is_promoting() -> None:
     # given
     start_square: int = 56
     end_square: int = 63
@@ -118,7 +118,7 @@ def test_is_pawn_promoting_black_pawn_is_promoting():
     assert expected == result
 
 
-def test_is_pawn_promoting_null_args():
+def test_is_pawn_promoting_null_args() -> None:
     # given
 
     # when
@@ -128,7 +128,7 @@ def test_is_pawn_promoting_null_args():
     # then
 
 
-def test_is_pawn_promoting_illegal_colors():
+def test_is_pawn_promoting_illegal_colors() -> None:
     # given
     move: Move = Move(50, 42, PiecesEnum.PAWN.value, SpecialFlags.NONE.value)
     color: int = 0
@@ -141,7 +141,7 @@ def test_is_pawn_promoting_illegal_colors():
     # then
 
 
-def test_was_it_en_passant_move_nulls():
+def test_was_it_en_passant_move_nulls() -> None:
     # given
 
     # when
@@ -151,7 +151,7 @@ def test_was_it_en_passant_move_nulls():
     # then
 
 
-def test_no_piece_in_pawns_way_nulls():
+def test_no_piece_in_pawns_way_nulls() -> None:
     # given
 
     # when
@@ -161,7 +161,7 @@ def test_no_piece_in_pawns_way_nulls():
     # then
 
 
-def test_no_piece_in_pawns_way_illegal_args():
+def test_no_piece_in_pawns_way_illegal_args() -> None:
     # given
     double_move_target: int = -1
     start_square: int = 52
@@ -175,7 +175,7 @@ def test_no_piece_in_pawns_way_illegal_args():
     # then
 
 
-def test_no_piece_in_pawns_way_proper_use():
+def test_no_piece_in_pawns_way_proper_use() -> None:
     # given
     double_move_target: int = 36
     start_square: int = 52
@@ -190,7 +190,7 @@ def test_no_piece_in_pawns_way_proper_use():
     assert result == expected
 
 
-def test_is_it_a_promotion_null_flag():
+def test_is_it_a_promotion_null_flag() -> None:
     # given
 
     # when
@@ -200,7 +200,7 @@ def test_is_it_a_promotion_null_flag():
     # then
 
 
-def test_is_it_a_promotion_it_is_promotion():
+def test_is_it_a_promotion_it_is_promotion() -> None:
     # given
     expected: bool = True
 
@@ -211,7 +211,7 @@ def test_is_it_a_promotion_it_is_promotion():
     assert result == expected
 
 
-def test_is_attack_target_in_border_bounds_nulls():
+def test_is_attack_target_in_border_bounds_nulls() -> None:
     # given
 
     # when
@@ -221,7 +221,7 @@ def test_is_attack_target_in_border_bounds_nulls():
     # then
 
 
-def test_is_attack_target_in_border_bounds_squares_out_of_bonds():
+def test_is_attack_target_in_border_bounds_squares_out_of_bonds() -> None:
     # given
 
     # when

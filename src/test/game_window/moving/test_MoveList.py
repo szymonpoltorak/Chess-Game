@@ -6,7 +6,7 @@ from game_window.enums.MoveEnum import MoveEnum
 from game_window.moving.generation.data.Moves import Moves
 
 
-def test_append_null_move():
+def test_append_null_move() -> None:
     # given
     move_list: Moves = Moves(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object), 0)
 
@@ -17,7 +17,7 @@ def test_append_null_move():
     # then
 
 
-def test_is_empty_list_is_empty():
+def test_is_empty_list_is_empty() -> None:
     # given
     expected: bool = True
     move_list: Moves = Moves(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object), 0)

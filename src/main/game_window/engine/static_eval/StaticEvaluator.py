@@ -9,6 +9,7 @@ from game_window.engine.static_eval.KingPressure import KingPressure
 from game_window.engine.static_eval.LightPiecesEval import LightPiecesEval
 from game_window.engine.static_eval.PawnEval import PawnEval
 from game_window.engine.static_eval.RookEval import RookEval
+from game_window.engine.static_eval.StaticEvaluation import StaticEvaluation
 from game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.EvalEnum import EvalEnum
@@ -18,36 +19,34 @@ if TYPE_CHECKING:
     from game_window.board.Board import Board
 
 
-class StaticEvaluator:
+class StaticEvaluator(StaticEvaluation):
     """
     Class containing methods for static evaluation
     """
 
     __slots__ = ()
 
-    @staticmethod
-    def evaluate_static_position(board: 'Board', favor_color: int) -> float:
+    def evaluate_static_position(self, board: 'Board', favor_color: int) -> float:
         """
         Method used to return an evaluation of starting position
         :param board: Board instance
         :param favor_color: float value of color in favor of which we evaluate position
         :return: float evaluation
         """
-        material_eval: float = StaticEvaluator.evaluate_pieces_on_board(board, favor_color)
-        center_possession_eval: float = StaticEvaluator.evaluate_center_possession(board, favor_color)
+        material_eval: float = self.evaluate_pieces_on_board(board, favor_color)
+        center_possession_eval: float = self.evaluate_center_possession(board, favor_color)
         light_dev_eval: float = LightPiecesEval.evaluate_light_pieces_walked(board, favor_color)
         king_pressure: float = KingPressure.evaluate_king_pressure(board, favor_color)
         bishops: float = LightPiecesEval.evaluate_bishops(board, favor_color)
         free_lines: float = RookEval.evaluate_free_lines_for_rooks(board, favor_color)
         chains: float = PawnEval.evaluate_pawn_chains(board, favor_color)
 
-        static_eval: float = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines + bishops
-        static_eval += chains
+        static_eval: float = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines
+        static_eval += chains + bishops
 
         return static_eval
 
-    @staticmethod
-    def evaluate_pieces_on_board(board: 'Board', favor_color: int) -> float:
+    def evaluate_pieces_on_board(self, board: 'Board', favor_color: int) -> float:
         """
         Method used to sum value of pieces on board and return this sum as evaluation
         :param favor_color:
@@ -68,8 +67,7 @@ class StaticEvaluator:
             evaluation += points if pieces_color == board.engine_color() else -points
         return evaluation
 
-    @staticmethod
-    def evaluate_center_possession(board: 'Board', favor_color: int) -> float:
+    def evaluate_center_possession(self, board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate a center possession
         :param favor_color: float value of color

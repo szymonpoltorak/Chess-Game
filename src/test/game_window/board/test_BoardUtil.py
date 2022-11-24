@@ -10,7 +10,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 
 
-def test_is_board_inverted_board_is_inverted():
+def test_is_board_inverted_board_is_inverted() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: bool = True
@@ -23,7 +23,7 @@ def test_is_board_inverted_board_is_inverted():
     assert expected == result
 
 
-def test_is_board_inverted_board_is_not_inverted():
+def test_is_board_inverted_board_is_not_inverted() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: bool = False
@@ -35,7 +35,7 @@ def test_is_board_inverted_board_is_not_inverted():
     assert expected == result
 
 
-def test_is_board_inverted_board_is_null():
+def test_is_board_inverted_board_is_null() -> None:
     # given
     board: Board = None
 
@@ -46,7 +46,7 @@ def test_is_board_inverted_board_is_null():
     # then
 
 
-def test_get_promotion_piece_nulls():
+def test_get_promotion_piece_nulls() -> None:
     # given
 
     # when
@@ -56,7 +56,7 @@ def test_get_promotion_piece_nulls():
     # then
 
 
-def test_get_promotion_piece_illegal_color():
+def test_get_promotion_piece_illegal_color() -> None:
     # given
     color: int = -1
     flag: int = SpecialFlags.PROMOTE_TO_KNIGHT.value
@@ -68,7 +68,7 @@ def test_get_promotion_piece_illegal_color():
     # then
 
 
-def test_get_promotion_piece_illegal_flag():
+def test_get_promotion_piece_illegal_flag() -> None:
     # given
     color: int = PiecesEnum.WHITE.value
     flag: int = SpecialFlags.EN_PASSANT.value
@@ -80,7 +80,7 @@ def test_get_promotion_piece_illegal_flag():
     # then
 
 
-def test_get_promotion_piece_get_white_queen_value():
+def test_get_promotion_piece_get_white_queen_value() -> None:
     # given
     color: int = PiecesEnum.WHITE.value
     flag: int = SpecialFlags.PROMOTE_TO_QUEEN.value

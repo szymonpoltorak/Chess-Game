@@ -21,6 +21,19 @@ class RookEval:
     __slots__ = ()
 
     @staticmethod
+    def get_free_line_eval(board: 'Board', start_square: int) -> float:
+        """
+        Method used to get free lines evals
+        :param board: Board instance
+        :param start_square: int starting square of a rook
+        :return: float
+        """
+        horizontal_eval: float = RookEval.get_horizontal_eval(start_square, board)
+        vertical_eval: float = RookEval.get_vertical_eval(start_square, board)
+
+        return horizontal_eval + vertical_eval
+
+    @staticmethod
     def evaluate_free_lines_for_rooks(board: 'Board', favor_color: int) -> float:
         """
         Methods used to evaluate free lines for rooks
@@ -103,16 +116,3 @@ class RookEval:
             if board_array[index] != PiecesEnum.NONE.value:
                 return 0
         return EvalEnum.FREE_LINE.value
-
-    @staticmethod
-    def get_free_line_eval(board: 'Board', start_square: int) -> float:
-        """
-        Method used to get free lines evals
-        :param board: Board instance
-        :param start_square: int starting square of a rook
-        :return: float
-        """
-        horizontal_eval: float = RookEval.get_horizontal_eval(start_square, board)
-        vertical_eval: float = RookEval.get_vertical_eval(start_square, board)
-
-        return horizontal_eval + vertical_eval

@@ -13,7 +13,7 @@ from game_window.moving.MoveMakingUtil import MoveMakingUtil
 from game_window.moving.MoveUnMakingUtil import MoveUnMakingUtil
 
 
-def test_un_castle_king_null_arguments():
+def test_un_castle_king_null_arguments() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
@@ -24,7 +24,7 @@ def test_un_castle_king_null_arguments():
     # then
 
 
-def test_un_castle_king_not_castling_move():
+def test_un_castle_king_not_castling_move() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     color: int = PiecesEnum.WHITE.value
@@ -37,7 +37,7 @@ def test_un_castle_king_not_castling_move():
     # then
 
 
-def test_un_castle_king_not_existing_color():
+def test_un_castle_king_not_existing_color() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     color: int = 81
@@ -50,7 +50,7 @@ def test_un_castle_king_not_existing_color():
     # then
 
 
-def test_un_castle_king_proper_use():
+def test_un_castle_king_proper_use() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int] = board.board_array()

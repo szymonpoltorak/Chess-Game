@@ -5,7 +5,7 @@ from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.PiecesEnum import PiecesEnum
 
 
-def test_convert_board_array_to_fen():
+def test_convert_board_array_to_fen() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     fen_factory: FenFactory = FenMaker(FenData(PiecesEnum.WHITE.value))

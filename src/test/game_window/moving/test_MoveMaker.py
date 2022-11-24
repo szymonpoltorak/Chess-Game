@@ -15,7 +15,7 @@ from game_window.moving.generation.data.MoveData import MoveData
 from game_window.moving.MoveMaker import MoveMaker
 
 
-def test_make_move():
+def test_make_move() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: int = PiecesEnum.BLACK.value | PiecesEnum.ROOK.value
@@ -31,7 +31,7 @@ def test_make_move():
     assert expected == result.deleted_piece
 
 
-def test_un_make_move():
+def test_un_make_move() -> None:
     # given
     board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
@@ -51,7 +51,7 @@ def test_un_make_move():
     assert expected == result
 
 
-def test_make_castling_move_king_side():
+def test_make_castling_move_king_side() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -72,7 +72,7 @@ def test_make_castling_move_king_side():
     assert result == expected
 
 
-def test_un_make_castling_move_king_side():
+def test_un_make_castling_move_king_side() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -94,7 +94,7 @@ def test_un_make_castling_move_king_side():
     assert result == expected
 
 
-def test_does_making_move_return_proper_move_data():
+def test_does_making_move_return_proper_move_data() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
@@ -111,7 +111,7 @@ def test_does_making_move_return_proper_move_data():
     assert result == expected
 
 
-def test_make_castling_move_queen_side():
+def test_make_castling_move_queen_side() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -133,7 +133,7 @@ def test_make_castling_move_queen_side():
     assert result == expected
 
 
-def test_un_make_castling_move_queen_side():
+def test_un_make_castling_move_queen_side() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -156,7 +156,7 @@ def test_un_make_castling_move_queen_side():
     assert result == expected
 
 
-def test_make_left_en_passant_move():
+def test_make_left_en_passant_move() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -190,7 +190,7 @@ def test_make_left_en_passant_move():
     assert board.en_passant_piece_square() == -1
 
 
-def test_un_make_left_en_passant_move():
+def test_un_make_left_en_passant_move() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -225,7 +225,7 @@ def test_un_make_left_en_passant_move():
     assert board.en_passant_piece_square() == captured_pawn_pos
 
 
-def test_make_right_en_passant_move():
+def test_make_right_en_passant_move() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -259,7 +259,7 @@ def test_make_right_en_passant_move():
     assert board.en_passant_piece_square() == -1
 
 
-def test_un_make_right_en_passant_move():
+def test_un_make_right_en_passant_move() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -294,7 +294,7 @@ def test_un_make_right_en_passant_move():
     assert board.en_passant_piece_square() == captured_pawn_pos
 
 
-def test_make_promotion_to_queen():
+def test_make_promotion_to_queen() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -316,7 +316,7 @@ def test_make_promotion_to_queen():
     assert result == expected
 
 
-def test_un_make_promotion_to_queen():
+def test_un_make_promotion_to_queen() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -339,7 +339,7 @@ def test_un_make_promotion_to_queen():
     assert result == expected
 
 
-def test_make_promotion_to_rook():
+def test_make_promotion_to_rook() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -361,7 +361,7 @@ def test_make_promotion_to_rook():
     assert result == expected
 
 
-def test_un_make_promotion_to_rook():
+def test_un_make_promotion_to_rook() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -384,7 +384,7 @@ def test_un_make_promotion_to_rook():
     assert result == expected
 
 
-def test_make_promotion_to_bishop():
+def test_make_promotion_to_bishop() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -406,7 +406,7 @@ def test_make_promotion_to_bishop():
     assert result == expected
 
 
-def test_un_make_promotion_to_bishop():
+def test_un_make_promotion_to_bishop() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -429,7 +429,7 @@ def test_un_make_promotion_to_bishop():
     assert result == expected
 
 
-def test_make_promotion_to_knight():
+def test_make_promotion_to_knight() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -451,7 +451,7 @@ def test_make_promotion_to_knight():
     assert result == expected
 
 
-def test_un_make_promotion_to_knight():
+def test_un_make_promotion_to_knight() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -474,7 +474,7 @@ def test_un_make_promotion_to_knight():
     assert result == expected
 
 
-def test_make_capture_of_rook():
+def test_make_capture_of_rook() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     promotion_start_square: int = 9
@@ -494,7 +494,7 @@ def test_make_capture_of_rook():
     assert result == expected
 
 
-def test_un_make_capture_of_rook():
+def test_un_make_capture_of_rook() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -518,7 +518,7 @@ def test_un_make_capture_of_rook():
     assert result == expected
 
 
-def test_make_double_pawn_move():
+def test_make_double_pawn_move() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     move: Move = Move(48, 32, PiecesEnum.PAWN.value, SpecialFlags.NONE.value)
@@ -536,7 +536,7 @@ def test_make_double_pawn_move():
     assert result == expected
 
 
-def test_un_make_double_pawn_move():
+def test_un_make_double_pawn_move() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     move: Move = Move(48, 32, PiecesEnum.PAWN.value, SpecialFlags.NONE.value)

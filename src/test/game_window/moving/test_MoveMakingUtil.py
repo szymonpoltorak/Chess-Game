@@ -12,7 +12,7 @@ from game_window.moving.generation.data.Move import Move
 from game_window.moving.MoveMakingUtil import MoveMakingUtil
 
 
-def test_castle_king_proper_use():
+def test_castle_king_proper_use() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array: ndarray[int] = board.board_array()
@@ -34,7 +34,7 @@ def test_castle_king_proper_use():
     assert rook == result_piece_on_rook_pos and king == result_piece_on_king_pos
 
 
-def test_castle_king_not_a_king():
+def test_castle_king_not_a_king() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     castling_move: Move = Move(60, 62, PiecesEnum.ROOK.value, -1)
@@ -49,7 +49,7 @@ def test_castle_king_not_a_king():
     # then
 
 
-def test_castle_king_not_castling_move():
+def test_castle_king_not_castling_move() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
     castling_move: Move = Move(60, 62, PiecesEnum.KING.value, -1)
@@ -64,7 +64,7 @@ def test_castle_king_not_castling_move():
     # then
 
 
-def test_castle_king_null_arguments():
+def test_castle_king_null_arguments() -> None:
     # given
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
 

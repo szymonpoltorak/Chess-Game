@@ -13,7 +13,7 @@ from game_window.moving.generation.sliding_piece.SlidingPiecesGen import Sliding
 from game_window.moving.generation.data.Moves import Moves
 
 
-def test_generate_sliding_piece_moves_not_sliding_piece():
+def test_generate_sliding_piece_moves_not_sliding_piece() -> None:
     # given
     sliding_gen: SlidingGenerator = SlidingPiecesGen()
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
@@ -29,7 +29,7 @@ def test_generate_sliding_piece_moves_not_sliding_piece():
     # then
 
 
-def test_generate_sliding_piece_moves_empty_list():
+def test_generate_sliding_piece_moves_empty_list() -> None:
     # given
     sliding_gen: SlidingGenerator = SlidingPiecesGen()
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
@@ -47,7 +47,7 @@ def test_generate_sliding_piece_moves_empty_list():
     assert result == expected
 
 
-def test_generate_sliding_piece_moves_null_args():
+def test_generate_sliding_piece_moves_null_args() -> None:
     # given
     sliding_gen: SlidingGenerator = SlidingPiecesGen()
 
@@ -58,7 +58,7 @@ def test_generate_sliding_piece_moves_null_args():
     # then
 
 
-def test_generate_sliding_piece_moves_illegal_arguments():
+def test_generate_sliding_piece_moves_illegal_arguments() -> None:
     # given
     sliding_gen: SlidingGenerator = SlidingPiecesGen()
     board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))

@@ -9,7 +9,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.PromotionData import PromotionData
 
 
-def test_get_rect_index_arguments_are_nulls():
+def test_get_rect_index_arguments_are_nulls() -> None:
     # given
     promotion_data: PromotionData = PromotionData()
 
@@ -20,7 +20,7 @@ def test_get_rect_index_arguments_are_nulls():
     # then
 
 
-def test_get_rect_index_arguments_are_negatives():
+def test_get_rect_index_arguments_are_negatives() -> None:
     # given
     promotion_data: PromotionData = PromotionData()
     rect_size: int = -1
@@ -33,7 +33,7 @@ def test_get_rect_index_arguments_are_negatives():
     # then
 
 
-def test_get_rect_index_arguments_returns_rect_index():
+def test_get_rect_index_arguments_returns_rect_index() -> None:
     # given
     promotion_data: PromotionData = PromotionData()
     promotion_data.set_promotion_data(PiecesEnum.WHITE.value, 10, 10, 31)
@@ -49,7 +49,7 @@ def test_get_rect_index_arguments_returns_rect_index():
     assert result == expected
 
 
-def test_get_rect_index_arguments_returns_negative_one():
+def test_get_rect_index_arguments_returns_negative_one() -> None:
     # given
     promotion_data: PromotionData = PromotionData()
     promotion_data.set_promotion_data(PiecesEnum.WHITE.value, 30, 80, 31)
@@ -65,7 +65,7 @@ def test_get_rect_index_arguments_returns_negative_one():
     assert result == expected
 
 
-def test_check_user_choice_null_args():
+def test_check_user_choice_null_args() -> None:
     # given
     promotion_data: PromotionData = PromotionData()
 
@@ -76,7 +76,7 @@ def test_check_user_choice_null_args():
     # then
 
 
-def test_check_user_choice_arguments_are_negatives():
+def test_check_user_choice_arguments_are_negatives() -> None:
     # given
     promotion_data: PromotionData = PromotionData()
     rect_size: int = -1
@@ -91,7 +91,7 @@ def test_check_user_choice_arguments_are_negatives():
     # then
 
 
-def test_get_rect_index_null_args():
+def test_get_rect_index_null_args() -> None:
     # given
     promotion_data: PromotionData = PromotionData()
 
@@ -102,7 +102,7 @@ def test_get_rect_index_null_args():
     # then
 
 
-def test_get_rect_index_illegal_args():
+def test_get_rect_index_illegal_args() -> None:
     # given
     promotion_data: PromotionData = PromotionData()
 

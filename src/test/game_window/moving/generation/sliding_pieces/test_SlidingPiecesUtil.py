@@ -7,7 +7,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
 
 
-def test_is_sliding_piece_it_is():
+def test_is_sliding_piece_it_is() -> None:
     # given
     piece: int = PiecesEnum.QUEEN.value
     expected: bool = True
@@ -19,7 +19,7 @@ def test_is_sliding_piece_it_is():
     assert expected == result
 
 
-def test_is_sliding_piece_it_is_not():
+def test_is_sliding_piece_it_is_not() -> None:
     # given
     piece: int = PiecesEnum.KING.value
     expected : bool= False
@@ -31,7 +31,7 @@ def test_is_sliding_piece_it_is_not():
     assert expected == result
 
 
-def test_is_sliding_piece_null_piece():
+def test_is_sliding_piece_null_piece() -> None:
     # given
 
     # when
@@ -41,7 +41,7 @@ def test_is_sliding_piece_null_piece():
     # then
 
 
-def test_is_it_sliding_piece_move_bishop_not_diagonal_direction():
+def test_is_it_sliding_piece_move_bishop_not_diagonal_direction() -> None:
     # given
     piece: int = PiecesEnum.BISHOP.value
     expected: bool = False
@@ -54,7 +54,7 @@ def test_is_it_sliding_piece_move_bishop_not_diagonal_direction():
     assert expected == result
 
 
-def test_is_it_sliding_piece_move_bishop_diagonal_direction():
+def test_is_it_sliding_piece_move_bishop_diagonal_direction() -> None:
     # given
     piece: int = PiecesEnum.BISHOP.value
     expected = True
@@ -67,7 +67,7 @@ def test_is_it_sliding_piece_move_bishop_diagonal_direction():
     assert expected == result
 
 
-def test_is_it_sliding_piece_move_rook_diagonal_direction():
+def test_is_it_sliding_piece_move_rook_diagonal_direction() -> None:
     # given
     piece: int = PiecesEnum.ROOK.value
     expected: bool = False
@@ -80,7 +80,7 @@ def test_is_it_sliding_piece_move_rook_diagonal_direction():
     assert expected == result
 
 
-def test_is_it_sliding_piece_move_rook_not_diagonal_direction():
+def test_is_it_sliding_piece_move_rook_not_diagonal_direction() -> None:
     # given
     piece: int = PiecesEnum.ROOK.value
     direction: int = MoveEnum.LEFT.value
@@ -93,7 +93,7 @@ def test_is_it_sliding_piece_move_rook_not_diagonal_direction():
     assert expected == result
 
 
-def test_is_it_sliding_piece_move_queen_not_diagonal_direction():
+def test_is_it_sliding_piece_move_queen_not_diagonal_direction() -> None:
     # given
     piece: int = PiecesEnum.QUEEN.value
     expected: bool = True
@@ -106,7 +106,7 @@ def test_is_it_sliding_piece_move_queen_not_diagonal_direction():
     assert expected == result
 
 
-def test_is_it_sliding_piece_move_queen_diagonal_direction():
+def test_is_it_sliding_piece_move_queen_diagonal_direction() -> None:
     # given
     piece: int = PiecesEnum.QUEEN.value
     expected: bool = True
@@ -119,7 +119,7 @@ def test_is_it_sliding_piece_move_queen_diagonal_direction():
     assert expected == result
 
 
-def test_is_it_sliding_piece_move_null_arguments():
+def test_is_it_sliding_piece_move_null_arguments() -> None:
     # given
 
     # when
@@ -129,7 +129,7 @@ def test_is_it_sliding_piece_move_null_arguments():
     # then
 
 
-def test_is_it_sliding_piece_move_not_sliding_piece():
+def test_is_it_sliding_piece_move_not_sliding_piece() -> None:
     # given
 
     # when
@@ -139,7 +139,7 @@ def test_is_it_sliding_piece_move_not_sliding_piece():
     # then
 
 
-def test_is_it_sliding_piece_move_not_sliding_piece_direction():
+def test_is_it_sliding_piece_move_not_sliding_piece_direction() -> None:
     # given
     direction: int = 41
 
