@@ -9,13 +9,17 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.generation.Generator import Generator
 from game_window.moving.generation.king_and_knights.KingKnightGen import KingKnightGen
+from game_window.moving.generation.king_and_knights.KingKnightGenerator import KingKnightGenerator
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from game_window.moving.generation.pawns.PawnGen import PawnGen
+from game_window.moving.generation.pawns.PawnGenerator import PawnGenerator
+from game_window.moving.generation.sliding_piece.SlidingGenerator import SlidingGenerator
 from game_window.moving.generation.sliding_piece.SlidingPiecesGen import SlidingPiecesGen
 from game_window.moving.generation.data.MoveList import MoveList
 from game_window.moving.generation.data.Move import Move
 from game_window.moving.generation.data.MoveData import MoveData
 from game_window.moving.generation.data.Moves import Moves
+from game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
 from game_window.moving.MoveMaker import MoveMaker
 
 if TYPE_CHECKING:
@@ -27,7 +31,12 @@ class MoveGenerator(Generator):
     Class used for generating __moves
     """
 
-    __slots__ = ()
+    __slots__ = ("__pawn_gen", "__king_knight", "__sliding_gen")
+
+    def __init__(self) -> None:
+        self.__pawn_gen: PawnGenerator = PawnGen()
+        self.__king_knight: KingKnightGenerator = KingKnightGen()
+        self.__sliding_gen: SlidingGenerator = SlidingPiecesGen()
 
     def generate_legal_moves(self, color_to_move: int, board: 'Board') -> MoveList:
         """
@@ -79,10 +88,10 @@ class MoveGenerator(Generator):
             if color_to_move != piece_color:
                 continue
 
-            if SlidingPiecesGen.is_it_sliding_piece(piece):
-                SlidingPiecesGen.generate_sliding_piece_moves(piece, square, moves_list, color_to_move, board)
+            if SlidingPiecesUtil.is_it_sliding_piece(piece):
+                self.__sliding_gen.generate_sliding_piece_moves(piece, square, moves_list, color_to_move, board)
             elif piece in (PiecesEnum.KING.value, PiecesEnum.KNIGHT.value):
-                KingKnightGen.generate_moves_for_knight_and_king(moves_list, piece, color_to_move, board, square)
+                self.__king_knight.generate_moves_for_knight_and_king(moves_list, piece, color_to_move, board, square)
             elif piece == PiecesEnum.PAWN.value:
-                PawnGen.generate_pawn_moves(moves_list, piece, color_to_move, board, square)
+                self.__pawn_gen.generate_pawn_moves(moves_list, piece, color_to_move, board, square)
         return moves_list

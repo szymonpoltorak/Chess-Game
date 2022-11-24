@@ -5,6 +5,7 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.moving.generation.pawns.PawnGenerator import PawnGenerator
 from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.generation.data.MoveList import MoveList
 from game_window.moving.generation.data.Move import Move
@@ -13,15 +14,14 @@ if TYPE_CHECKING:
     from game_window.board.Board import Board
 
 
-class PawnGen:
+class PawnGen(PawnGenerator):
     """
     Class containing methods for pawn move generation
     """
 
     __slots__ = ()
 
-    @staticmethod
-    def generate_pawn_moves(moves_list: MoveList, piece: int, color: int, board: 'Board', start_square: int) -> None:
+    def generate_pawn_moves(self, moves_list: MoveList, piece: int, color: int, board: 'Board', start_square: int) -> None:
         """
         Static method to generate moves_list for pawns
         :param moves_list: list of moves_list (MoveList instance)
@@ -31,11 +31,10 @@ class PawnGen:
         :param start_square: start end_square index
         :return: None
         """
-        PawnGen.add_pawn_moves(start_square, piece, color, moves_list, board)
-        PawnGen.add_pawn_attacks(start_square, piece, color, moves_list, board)
+        self.__add_pawn_moves(start_square, piece, color, moves_list, board)
+        self.__add_pawn_attacks(start_square, piece, color, moves_list, board)
 
-    @staticmethod
-    def add_pawn_moves(start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
+    def __add_pawn_moves(self, start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
         """
         Adds possible pawn movements
         :param start_square: int index of starting end_square
@@ -71,10 +70,9 @@ class PawnGen:
                 direction * MoveEnum.PAWN_UP_SINGLE_MOVE.value):
             moves_list.append(Move(start_square, double_move_target, piece, SpecialFlags.NONE.value))
         if board.board_array()[move_target] == 0:
-            PawnGen.add_moves_and_promotions(start_square, move_target, piece, moves_list)
+            self.__add_moves_and_promotions(start_square, move_target, piece, moves_list)
 
-    @staticmethod
-    def add_pawn_attacks(start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
+    def __add_pawn_attacks(self, start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
         """
         Static method used to add pawn attacks
         :param start_square: int index of starting end_square
@@ -96,16 +94,15 @@ class PawnGen:
         if color != ColorManager.get_piece_color(left_piece) and left_piece != PiecesEnum.NONE.value:
             if PawnUtil.is_attack_target_in_border_bounds(start_square, left_piece_square,
                                                           MoveEnum.PAWN_RANGE.value):
-                PawnGen.add_moves_and_promotions(start_square, left_piece_square, piece, moves_list)
+                self.__add_moves_and_promotions(start_square, left_piece_square, piece, moves_list)
 
         if color != ColorManager.get_piece_color(right_piece) and right_piece != PiecesEnum.NONE.value:
             if PawnUtil.is_attack_target_in_border_bounds(start_square, right_piece_square,
                                                           MoveEnum.PAWN_RANGE.value):
-                PawnGen.add_moves_and_promotions(start_square, right_piece_square, piece, moves_list)
-        PawnGen.add_en_passant_moves(start_square, piece, color, moves_list, board)
+                self.__add_moves_and_promotions(start_square, right_piece_square, piece, moves_list)
+        self.__add_en_passant_moves(start_square, piece, color, moves_list, board)
 
-    @staticmethod
-    def add_moves_and_promotions(start_square: int, move_target: int, piece: int, moves_list: MoveList) -> None:
+    def __add_moves_and_promotions(self, start_square: int, move_target: int, piece: int, moves_list: MoveList) -> None:
         """
         Checks if move is a promotion or not and add move to the list
         :param move_target: int target end_square of the move
@@ -120,8 +117,7 @@ class PawnGen:
         else:
             moves_list.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
 
-    @staticmethod
-    def add_en_passant_moves(start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
+    def __add_en_passant_moves(self, start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
         """
         Checks if there is an en passant movement and add it to list
         :param start_square:

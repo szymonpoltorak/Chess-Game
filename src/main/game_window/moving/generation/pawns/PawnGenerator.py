@@ -1,0 +1,28 @@
+from abc import ABC
+from abc import abstractmethod
+from typing import TYPE_CHECKING
+
+from game_window.moving.generation.data.MoveList import MoveList
+
+if TYPE_CHECKING:
+    from game_window.board.Board import Board
+
+
+class PawnGenerator(ABC):
+    """
+    Abstract class for Pawn Generation classes
+    """
+
+    @abstractmethod
+    def generate_pawn_moves(self, moves_list: MoveList, piece: int, color: int, board: 'Board', start_square: int) \
+            -> None:
+        """
+        Static method to generate moves_list for pawns
+        :param moves_list: list of moves_list (MoveList instance)
+        :param piece: int value of a piece_square
+        :param color: int value of color to move
+        :param board: Board instance
+        :param start_square: start end_square index
+        :return: None
+        """
+        pass

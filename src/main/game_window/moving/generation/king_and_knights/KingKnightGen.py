@@ -7,6 +7,7 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.moving.generation.king_and_knights.KingKnightGenerator import KingKnightGenerator
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.generation.data.MoveList import MoveList
@@ -16,15 +17,14 @@ if TYPE_CHECKING:
     from game_window.board.Board import Board
 
 
-class KingKnightGen:
+class KingKnightGen(KingKnightGenerator):
     """
     Class containing methods to generate __moves for Knights and Kings
     """
 
     __slots__ = ()
 
-    @staticmethod
-    def generate_moves_for_knight_and_king(moves_list: MoveList, piece: int, color: int, board: 'Board',
+    def generate_moves_for_knight_and_king(self, moves_list: MoveList, piece: int, color: int, board: 'Board',
                                            start_square: int) -> None:
         """
         Static method used to generate moves_list for knights and kings
@@ -57,11 +57,10 @@ class KingKnightGen:
             moves_list.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
 
         if piece == PiecesEnum.KING.value:
-            KingKnightGen.generate_castling_moves(moves_list, piece, color, board, start_square)
+            self.__generate_castling_moves(moves_list, piece, color, board, start_square)
 
-    @staticmethod
-    def generate_castling_moves(moves_list: MoveList, piece: int, color: int, board: 'Board',
-                                start_square: int) -> None:
+    def __generate_castling_moves(self, moves_list: MoveList, piece: int, color: int, board: 'Board',
+                                  start_square: int) -> None:
         """
         Static method to generate castling moves_list
         :param moves_list: list of moves_list (MoveList instance)
