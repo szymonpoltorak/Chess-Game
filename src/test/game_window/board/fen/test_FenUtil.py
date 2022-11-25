@@ -2,7 +2,7 @@ import pytest
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.Board import Board
+from game_window.board.GameBoard import GameBoard
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenMaker import FenMaker
 from game_window.board.fen.FenUtil import FenUtil
@@ -88,7 +88,7 @@ def test_get_proper_piece_for_fen_white_pawn() -> None:
     # given
     color: int = PiecesEnum.WHITE.value
     index: int = 55
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: str = "P"
 
     # when
@@ -102,7 +102,7 @@ def test_get_proper_piece_for_fen_black_rook() -> None:
     # given
     color: int = PiecesEnum.BLACK.value
     index: int = 0
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: str = "r"
 
     # when
@@ -143,7 +143,7 @@ def test_add_castling_letters_to_fen_no_castling() -> None:
 
 def test_update_no_sack_and_pawn_counter_nulls() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(NullArgumentException):
@@ -156,7 +156,7 @@ def test_update_no_sack_and_pawn_counter_out_of_bonds_arguments() -> None:
     # given
     deleted_piece: int = -1
     moving_piece: int = 98
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -167,7 +167,7 @@ def test_update_no_sack_and_pawn_counter_out_of_bonds_arguments() -> None:
 
 def test_disable_castling_on_side_nulls() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(NullArgumentException):
@@ -180,7 +180,7 @@ def test_disable_castling_on_side_out_of_bonds_arguments() -> None:
     # given
     color: int = -1
     target_square: int = 98
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -191,7 +191,7 @@ def test_disable_castling_on_side_out_of_bonds_arguments() -> None:
 
 def test_disable_castling_if_deleted_rook_nulls_arguments() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(NullArgumentException):
@@ -205,7 +205,7 @@ def test_disable_castling_if_deleted_rook_arguments_not_within_bonds() -> None:
     deleted_piece: int = 13
     color: int = 90
     square: int = -1
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -219,7 +219,7 @@ def test_disable_castling_if_deleted_rook_proper_use() -> None:
     color: int = PiecesEnum.WHITE.value
     deleted_piece: int = PiecesEnum.BLACK.value | PiecesEnum.ROOK.value
     square: int = 7
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: bool = False
 
     # when
@@ -265,7 +265,7 @@ def test_get_proper_piece_for_fen_illegal_args() -> None:
 
     # when
     with pytest.raises(IllegalArgumentException):
-        FenUtil.get_proper_piece_for_fen(Board(FenMaker(FenData(PiecesEnum.WHITE.value))).board_array(), -1, 8)
+        FenUtil.get_proper_piece_for_fen(GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value))).board_array(), -1, 8)
 
     # then
 
@@ -412,7 +412,7 @@ def test_get_proper_piece_for_fen_nulls() -> None:
 
 def test_get_proper_piece_for_fen_illegal_args() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     index: int = -1
     color: int = PiecesEnum.WHITE.value
 

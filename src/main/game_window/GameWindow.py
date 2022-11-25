@@ -15,6 +15,7 @@ from game_window.board.Board import Board
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenFactory import FenFactory
 from game_window.board.fen.FenMaker import FenMaker
+from game_window.board.GameBoard import GameBoard
 from game_window.Canvas import Canvas
 from game_window.ColorManager import ColorManager
 from game_window.engine.Engine import Engine
@@ -32,6 +33,7 @@ from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.generation.data.Move import Move
 from game_window.moving.MoveMakingUtil import MoveMakingUtil
 from game_window.PromotionData import PromotionData
+from Promoter import Promoter
 
 
 class GameWindow(QWidget):
@@ -49,12 +51,12 @@ class GameWindow(QWidget):
         fen_factory: FenFactory = FenMaker(FenData(PiecesEnum.WHITE.value))
 
         self.__engine: Engine = EnginePlayer()
-        self.__board = Board(fen_factory)
+        self.__board: Board = GameBoard(fen_factory)
         self.__canvas: Canvas = Canvas()
         self.__moving_piece: int = -1
         self.__current_move: Move = Move(MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value,
                                          MoveEnum.NONE.value)
-        self.__promotion_util: PromotionData = PromotionData()
+        self.__promotion_util: Promoter = PromotionData()
 
         with open(Paths.GAME_WINDOW_CSS.value, "r", encoding="utf-8") as style:
             self.__ui: GameWindowUi = GameWindowUi(self)
@@ -274,7 +276,7 @@ class GameWindow(QWidget):
         Method used to reset the game state to the standard one
         :return: None
         """
-        self.__board.__init__(FenMaker(FenData(PiecesEnum.WHITE.value)))
+        self.__board = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
         self.__current_move.set_start_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
         self.__current_move.set_end_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
         self.update()

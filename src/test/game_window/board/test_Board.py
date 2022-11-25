@@ -4,7 +4,7 @@ import pytest
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.Board import Board
+from game_window.board.GameBoard import GameBoard
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.PiecesEnum import PiecesEnum
@@ -12,7 +12,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 def test_should_this_piece_move_white_color_piece_should_move() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: bool = True
     row: int = 7
     col = 0
@@ -26,7 +26,7 @@ def test_should_this_piece_move_white_color_piece_should_move() -> None:
 
 def test_should_this_piece_move_black_color_piece_should_not_move() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: bool = False
     row: int = 0
     col: int = 0
@@ -40,7 +40,7 @@ def test_should_this_piece_move_black_color_piece_should_not_move() -> None:
 
 def test_should_this_piece_move_white_color_negative_values() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     row: int = -7
     col: int = -1
 
@@ -53,7 +53,7 @@ def test_should_this_piece_move_white_color_negative_values() -> None:
 
 def test_should_this_piece_move_white_color_none_values() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     row: int = None
     col: int = None
 
@@ -66,7 +66,7 @@ def test_should_this_piece_move_white_color_none_values() -> None:
 
 def test_add_piece_to_the_board_negative_values() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     piece: int = -7
     square: int = -1
 
@@ -79,7 +79,7 @@ def test_add_piece_to_the_board_negative_values() -> None:
 
 def test_add_piece_to_the_board_square_value_not_in_bonds() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     square: int = -8
     piece: int = 8
 
@@ -92,7 +92,7 @@ def test_add_piece_to_the_board_square_value_not_in_bonds() -> None:
 
 def test_add_piece_to_the_board_piece_and_square_are_none() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     piece: int = None
     square: int = None
 
@@ -105,7 +105,7 @@ def test_add_piece_to_the_board_piece_and_square_are_none() -> None:
 
 def test_add_piece_to_the_board_piece_not_exists() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     square: int = 8
     piece: int = 48
 
@@ -118,7 +118,7 @@ def test_add_piece_to_the_board_piece_not_exists() -> None:
 
 def test_add_piece_to_the_board_piece_proper_add() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     board_array = board.board_array()
     square: int = 8
     piece: int = 18
@@ -134,7 +134,7 @@ def test_add_piece_to_the_board_piece_proper_add() -> None:
 
 def test_delete_piece_from_board_none_values() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
 
     # when
     with pytest.raises(NullArgumentException):
@@ -145,7 +145,7 @@ def test_delete_piece_from_board_none_values() -> None:
 
 def test_delete_piece_from_board_values_not_with_bonds() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     square: int = -86
 
     # when
@@ -157,11 +157,11 @@ def test_delete_piece_from_board_values_not_with_bonds() -> None:
 
 def test_set_opposite_color_sides() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: Tuple[int, int] = (PiecesEnum.BLACK.value, PiecesEnum.WHITE.value)
 
     # when
-    board.set_opposite_color_sides()
+    board.__set_opposite_color_sides()
     result: Tuple[int, int] = board.player_color(), board.engine_color()
 
     # then

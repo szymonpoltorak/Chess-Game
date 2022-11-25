@@ -64,12 +64,12 @@ class StaticEvalUtil:
     @staticmethod
     def get_pieces_square_points(piece_value: int, pieces_color: int, square: int, board: 'Board') -> float:
         """
-
-        :param board:
-        :param square:
-        :param piece_value:
-        :param pieces_color:
-        :return:
+        Method used to get an eval value of current square for given piece
+        :param board: Board instance
+        :param square: int value of current square
+        :param piece_value: int value of piece
+        :param pieces_color: int value of pieces color
+        :return: float value of eval
         """
         engine_color: int = board.engine_color()
         player_color: int = board.player_color()

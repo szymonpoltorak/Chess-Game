@@ -10,7 +10,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 
 class BoardInitializer:
     """
-    Class used to initialize Board array
+    Class used to initialize GameBoard array
     """
     __slots__ = ()
 

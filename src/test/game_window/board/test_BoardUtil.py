@@ -2,7 +2,7 @@ import pytest
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.Board import Board
+from game_window.board.GameBoard import GameBoard
 from game_window.board.BoardUtil import BoardUtil
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenMaker import FenMaker
@@ -12,11 +12,12 @@ from game_window.enums.SpecialFlags import SpecialFlags
 
 def test_is_board_inverted_board_is_inverted() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: bool = True
 
     # when
-    board.set_opposite_color_sides()
+    #board.set_opposite_color_sides()
+    board.switch_colors()
     result: bool = BoardUtil.is_board_inverted(board)
 
     # then
@@ -25,7 +26,7 @@ def test_is_board_inverted_board_is_inverted() -> None:
 
 def test_is_board_inverted_board_is_not_inverted() -> None:
     # given
-    board: Board = Board(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
     expected: bool = False
 
     # when
@@ -37,7 +38,7 @@ def test_is_board_inverted_board_is_not_inverted() -> None:
 
 def test_is_board_inverted_board_is_null() -> None:
     # given
-    board: Board = None
+    board: GameBoard = None
 
     # when
     with pytest.raises(NullArgumentException):
