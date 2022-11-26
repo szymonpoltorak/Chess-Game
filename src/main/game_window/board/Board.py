@@ -131,7 +131,7 @@ class Board(ABC):
         pass
 
     @abstractmethod
-    def switch_colors(self) -> None:
+    def switch_sides(self) -> None:
         """
         Method used to switch sides of board
         :return: None

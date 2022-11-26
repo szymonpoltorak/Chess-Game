@@ -7,11 +7,11 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveList import MoveList
 from game_window.moving.generation.king_and_knights.KingKnightGenerator import KingKnightGenerator
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from game_window.moving.generation.pawns.PawnUtil import PawnUtil
-from game_window.moving.generation.data.MoveList import MoveList
-from game_window.moving.generation.data.Move import Move
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board

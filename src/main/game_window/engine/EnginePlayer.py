@@ -5,13 +5,11 @@ from numpy import inf
 from game_window.ColorManager import ColorManager
 from game_window.engine.Engine import Engine
 from game_window.engine.Evaluation import Evaluation
-from game_window.engine.Evaluator import Evaluator
 from game_window.enums.MoveEnum import MoveEnum
-from game_window.moving.generation.Generator import Generator
-from game_window.moving.generation.MoveGenerator import MoveGenerator
-from game_window.moving.generation.data.MoveList import MoveList
 from game_window.moving.generation.data.Move import Move
 from game_window.moving.generation.data.MoveData import MoveData
+from game_window.moving.generation.data.MoveList import MoveList
+from game_window.moving.generation.Generator import Generator
 from game_window.moving.MoveMaker import MoveMaker
 
 if TYPE_CHECKING:
@@ -25,9 +23,9 @@ class EnginePlayer(Engine):
 
     __slots__ = ("__generator", "__evaluator")
 
-    def __init__(self) -> None:
-        self.__generator: Generator = MoveGenerator()
-        self.__evaluator: Evaluation = Evaluator()
+    def __init__(self, generator: Generator, evaluator: Evaluation) -> None:
+        self.__generator: Generator = generator
+        self.__evaluator: Evaluation = evaluator
 
     def get_computer_move(self, board: 'Board') -> Move:
         """

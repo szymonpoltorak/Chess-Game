@@ -2,13 +2,14 @@ import pytest
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.GameBoard import GameBoard
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenMaker import FenMaker
+from game_window.board.GameBoard import GameBoard
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.MoveGenerator import MoveGenerator
+from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 
 
 def test_get_attack_direction_left_white() -> None:
@@ -166,7 +167,7 @@ def test_no_piece_in_pawns_way_illegal_args() -> None:
     double_move_target: int = -1
     start_square: int = 52
     step: int = -8
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -180,7 +181,7 @@ def test_no_piece_in_pawns_way_proper_use() -> None:
     double_move_target: int = 36
     start_square: int = 52
     step: int = -8
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     expected: bool = True
 
     # when

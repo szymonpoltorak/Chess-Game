@@ -6,8 +6,8 @@ from game_window.ColorManager import ColorManager
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.data.MoveList import MoveList
 from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveList import MoveList
 from game_window.moving.generation.sliding_piece.SlidingGenerator import SlidingGenerator
 from game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
 

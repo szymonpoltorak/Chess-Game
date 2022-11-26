@@ -12,12 +12,13 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.generation.data.Move import Move
 from game_window.moving.generation.data.MoveData import MoveData
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 from game_window.moving.MoveMaker import MoveMaker
 
 
 def test_make_move() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     expected: int = PiecesEnum.BLACK.value | PiecesEnum.ROOK.value
     color: int = PiecesEnum.WHITE.value
     start_square: int = 63
@@ -33,7 +34,7 @@ def test_make_move() -> None:
 
 def test_un_make_move() -> None:
     # given
-    board = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     expected: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
     deleted_piece: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
     deleted_data: MoveData = MoveData(deleted_piece, MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value,
@@ -53,7 +54,7 @@ def test_un_make_move() -> None:
 
 def test_make_castling_move_king_side() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     color: int = PiecesEnum.WHITE.value
     move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
@@ -74,7 +75,7 @@ def test_make_castling_move_king_side() -> None:
 
 def test_un_make_castling_move_king_side() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     color: int = PiecesEnum.WHITE.value
     move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
@@ -96,7 +97,7 @@ def test_un_make_castling_move_king_side() -> None:
 
 def test_does_making_move_return_proper_move_data() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
     expected: MoveData = MoveData(PiecesEnum.WHITE.value | PiecesEnum.KING.value, True, True, True, True,
                                   MoveEnum.NONE.value, MoveEnum.NONE.value, 0, 0)
@@ -113,7 +114,7 @@ def test_does_making_move_return_proper_move_data() -> None:
 
 def test_make_castling_move_queen_side() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     color: int = PiecesEnum.WHITE.value
     rook_pos: int = 59
@@ -135,7 +136,7 @@ def test_make_castling_move_queen_side() -> None:
 
 def test_un_make_castling_move_queen_side() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     color: int = PiecesEnum.WHITE.value
     rook_pos: int = 59
@@ -158,7 +159,7 @@ def test_un_make_castling_move_queen_side() -> None:
 
 def test_make_left_en_passant_move() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     expected: Tuple[int, int, int] = (PiecesEnum.NONE.value, PiecesEnum.WHITE.value | PiecesEnum.PAWN.value,
                                       PiecesEnum.NONE.value)
@@ -192,7 +193,7 @@ def test_make_left_en_passant_move() -> None:
 
 def test_un_make_left_en_passant_move() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     expected: Tuple[int, int, int] = (PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, PiecesEnum.NONE.value,
                                       PiecesEnum.WHITE.value | PiecesEnum.PAWN.value)
@@ -227,7 +228,7 @@ def test_un_make_left_en_passant_move() -> None:
 
 def test_make_right_en_passant_move() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     expected: Tuple[int, int, int] = (PiecesEnum.NONE.value, PiecesEnum.WHITE.value | PiecesEnum.PAWN.value,
                                       PiecesEnum.NONE.value)
@@ -261,7 +262,7 @@ def test_make_right_en_passant_move() -> None:
 
 def test_un_make_right_en_passant_move() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     expected: Tuple[int, int, int] = (PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, PiecesEnum.NONE.value,
                                       PiecesEnum.WHITE.value | PiecesEnum.PAWN.value)
@@ -296,7 +297,7 @@ def test_un_make_right_en_passant_move() -> None:
 
 def test_make_promotion_to_queen() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
@@ -318,7 +319,7 @@ def test_make_promotion_to_queen() -> None:
 
 def test_un_make_promotion_to_queen() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
@@ -341,7 +342,7 @@ def test_un_make_promotion_to_queen() -> None:
 
 def test_make_promotion_to_rook() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
@@ -363,7 +364,7 @@ def test_make_promotion_to_rook() -> None:
 
 def test_un_make_promotion_to_rook() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
@@ -386,7 +387,7 @@ def test_un_make_promotion_to_rook() -> None:
 
 def test_make_promotion_to_bishop() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
@@ -408,7 +409,7 @@ def test_make_promotion_to_bishop() -> None:
 
 def test_un_make_promotion_to_bishop() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
@@ -431,7 +432,7 @@ def test_un_make_promotion_to_bishop() -> None:
 
 def test_make_promotion_to_knight() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
@@ -453,7 +454,7 @@ def test_make_promotion_to_knight() -> None:
 
 def test_un_make_promotion_to_knight() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
@@ -476,7 +477,7 @@ def test_un_make_promotion_to_knight() -> None:
 
 def test_make_capture_of_rook() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     promotion_start_square: int = 9
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -496,7 +497,7 @@ def test_make_capture_of_rook() -> None:
 
 def test_un_make_capture_of_rook() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 9
     promotion_end_square: int = 0
@@ -520,7 +521,7 @@ def test_un_make_capture_of_rook() -> None:
 
 def test_make_double_pawn_move() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     move: Move = Move(48, 32, PiecesEnum.PAWN.value, SpecialFlags.NONE.value)
     color: int = PiecesEnum.WHITE.value
     expected: Tuple[int, int, int] = (color | PiecesEnum.PAWN.value, 40, 32)
@@ -538,7 +539,7 @@ def test_make_double_pawn_move() -> None:
 
 def test_un_make_double_pawn_move() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     move: Move = Move(48, 32, PiecesEnum.PAWN.value, SpecialFlags.NONE.value)
     color: int = PiecesEnum.WHITE.value
     expected: Tuple[int, int, int] = (0, -1, -1)

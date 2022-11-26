@@ -9,12 +9,13 @@ from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 from game_window.moving.MoveMakingUtil import MoveMakingUtil
 
 
 def test_castle_king_proper_use() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int] = board.board_array()
     castling_move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
     expected_rook_pos: int = 61
@@ -36,7 +37,7 @@ def test_castle_king_proper_use() -> None:
 
 def test_castle_king_not_a_king() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     castling_move: Move = Move(60, 62, PiecesEnum.ROOK.value, -1)
 
     board.delete_piece_from_board_square(53)
@@ -51,7 +52,7 @@ def test_castle_king_not_a_king() -> None:
 
 def test_castle_king_not_castling_move() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     castling_move: Move = Move(60, 62, PiecesEnum.KING.value, -1)
 
     board.delete_piece_from_board_square(53)
@@ -66,7 +67,7 @@ def test_castle_king_not_castling_move() -> None:
 
 def test_castle_king_null_arguments() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
 
     board.delete_piece_from_board_square(53)
     board.delete_piece_from_board_square(54)

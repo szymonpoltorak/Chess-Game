@@ -16,11 +16,11 @@ from game_window.board.fen.FenMaker import FenMaker
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.Generator import Generator
-from game_window.moving.generation.MoveGenerator import MoveGenerator
-from game_window.moving.generation.data.MoveList import MoveList
 from game_window.moving.generation.data.Move import Move
 from game_window.moving.generation.data.MoveData import MoveData
+from game_window.moving.generation.data.MoveList import MoveList
+from game_window.moving.generation.Generator import Generator
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 
 
 class GameBoard(Board):
@@ -30,14 +30,14 @@ class GameBoard(Board):
     __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
                        "__engine_color", "__player_color", "__fen_factory", "__generator"], dtype=str)
 
-    def __init__(self, fen_factory: FenFactory) -> None:
+    def __init__(self, fen_factory: FenFactory, generator: Generator) -> None:
         self.__engine_color: int = PiecesEnum.BLACK.value
         self.__player_color: int = PiecesEnum.WHITE.value
         self.__fen_string: str = BoardEnum.STARTING_POSITION.value
         self.__fen_factory: FenFactory = fen_factory
         self.__color_to_move: int = PiecesEnum.WHITE.value
 
-        self.__generator: Generator = MoveGenerator()
+        self.__generator: Generator = generator
         self.__board_array: ndarray[int, dtype[int8]] = BoardInitializer.init_starting_board(self.__engine_color,
                                                                                              self.__player_color)
         self.__distances_to_borders: ndarray[int, dtype[int8]] = BoardUtil.calculate_distance_to_borders()
@@ -171,7 +171,7 @@ class GameBoard(Board):
         """
         self.__fen_factory.disable_castling_if_captured_rook(deleted_piece, color, square, self)
 
-    def switch_colors(self) -> None:
+    def switch_sides(self) -> None:
         """
         Method used to switch sides of board
         :return: None

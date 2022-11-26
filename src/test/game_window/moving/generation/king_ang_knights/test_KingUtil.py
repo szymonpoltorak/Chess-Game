@@ -7,14 +7,15 @@ from numpy import zeros
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.GameBoard import GameBoard
 from game_window.board.fen.FenData import FenData
 from game_window.board.fen.FenMaker import FenMaker
+from game_window.board.GameBoard import GameBoard
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 
 
 def test_find_friendly_king_squares_only_enemy_king() -> None:
@@ -77,7 +78,7 @@ def test_get_castling_squares_move_distance_less_than_0() -> None:
 
 def test_is_anything_on_king_side_start_square_out_of_bonds() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = -4
 
     # when
@@ -100,7 +101,7 @@ def test_is_anything_on_king_side_nulls() -> None:
 def test_is_anything_on_king_side_it_is() -> None:
     # given
     expected: bool = True
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = 60
 
     # when
@@ -113,7 +114,7 @@ def test_is_anything_on_king_side_it_is() -> None:
 def test_is_anything_on_king_side_it_is_not() -> None:
     # given
     expected: bool = False
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = 60
 
     board.delete_piece_from_board_square(start_square + 1)
@@ -129,7 +130,7 @@ def test_is_anything_on_king_side_it_is_not() -> None:
 def test_is_anything_on_queen_side_it_is() -> None:
     # given
     expected: bool = True
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = 60
 
     # when
@@ -142,7 +143,7 @@ def test_is_anything_on_queen_side_it_is() -> None:
 def test_is_anything_on_queen_side_it_is_not() -> None:
     # given
     expected: bool = False
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = 60
 
     board.delete_piece_from_board_square(start_square - 1)
@@ -158,7 +159,7 @@ def test_is_anything_on_queen_side_it_is_not() -> None:
 
 def test_is_anything_on_queen_side_start_square_out_of_bonds() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = -4
 
     # when
@@ -190,7 +191,7 @@ def test_check_castling_squares_nulls() -> None:
 
 def test_check_castling_squares_square_out_of_bonds() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
 
     # when
     with pytest.raises(IllegalArgumentException):
@@ -211,7 +212,7 @@ def test_find_friendly_king_squares_nulls() -> None:
 
 def test_find_friendly_king_squares_out_of_bonds() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
 
     # when
     with pytest.raises(IllegalArgumentException):

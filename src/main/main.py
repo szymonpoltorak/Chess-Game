@@ -4,11 +4,12 @@ from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QWidget
 
 from game_window.GameWindow import GameWindow
+from game_window.init_factory.GameWindowInit import GameWindowInit
 
 
 def main() -> None:
     app: QApplication = QApplication(sys.argv)
-    window: QWidget = GameWindow()
+    window: QWidget = GameWindow(GameWindowInit())
     window.show()
 
     sys.exit(app.exec_())

@@ -13,13 +13,11 @@ from PyQt5.QtWidgets import QWidget
 
 from game_window.board.Board import Board
 from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenFactory import FenFactory
 from game_window.board.fen.FenMaker import FenMaker
 from game_window.board.GameBoard import GameBoard
 from game_window.Canvas import Canvas
 from game_window.ColorManager import ColorManager
 from game_window.engine.Engine import Engine
-from game_window.engine.EnginePlayer import EnginePlayer
 from game_window.engine.Evaluator import Evaluator
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
@@ -27,36 +25,35 @@ from game_window.enums.Paths import Paths
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.GameWindowUi import GameWindowUi
+from game_window.init_factory.GameWindowFactory import GameWindowFactory
 from game_window.moving.EngineMover import EngineMover
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from game_window.moving.generation.MoveGenerator import MoveGenerator
+from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 from game_window.moving.MoveMakingUtil import MoveMakingUtil
-from game_window.PromotionData import PromotionData
-from Promoter import Promoter
+from game_window.Promoter import Promoter
 
 
 class GameWindow(QWidget):
     """
     Covers play game window.
     """
+
     __slots__ = array(["__ui", "__canvas", "__moving_piece", "__current_move", "__promotion_util", "__board",
                        "__engine"], dtype=str)
 
     keyPressed = QtCore.pyqtSignal(int)
 
-    def __init__(self) -> None:
+    def __init__(self, factory: GameWindowFactory) -> None:
         super(GameWindow, self).__init__()
 
-        fen_factory: FenFactory = FenMaker(FenData(PiecesEnum.WHITE.value))
-
-        self.__engine: Engine = EnginePlayer()
-        self.__board: Board = GameBoard(fen_factory)
-        self.__canvas: Canvas = Canvas()
-        self.__moving_piece: int = -1
-        self.__current_move: Move = Move(MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value,
-                                         MoveEnum.NONE.value)
-        self.__promotion_util: Promoter = PromotionData()
+        self.__engine: Engine = factory.create_engine()
+        self.__board: Board = factory.create_board()
+        self.__canvas: Canvas = factory.create_game_canvas()
+        self.__moving_piece: int = MoveEnum.NONE.value
+        self.__current_move: Move = factory.create_non_move()
+        self.__promotion_util: Promoter = factory.create_promoter()
 
         with open(Paths.GAME_WINDOW_CSS.value, "r", encoding="utf-8") as style:
             self.__ui: GameWindowUi = GameWindowUi(self)
@@ -151,6 +148,7 @@ class GameWindow(QWidget):
         :return: None
         """
         self.__board.update_fen()
+        print(self.__board.fen_string())
 
         if self.__promotion_util.is_this_pawn_promoting():
             return
@@ -161,6 +159,7 @@ class GameWindow(QWidget):
             return
         deleted_piece: int = EngineMover.update_board_with_engine_move(self.__board, computer_move)
         self.__board.update_fen()
+        print(self.__board.fen_string())
 
         self.__play_proper_sound(deleted_piece)
         self.__board.update_legal_moves(self.__board.player_color())
@@ -276,7 +275,7 @@ class GameWindow(QWidget):
         Method used to reset the game state to the standard one
         :return: None
         """
-        self.__board = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+        self.__board = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
         self.__current_move.set_start_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
         self.__current_move.set_end_square(MoveEnum.NONE.value, MoveEnum.NONE.value)
         self.update()
@@ -286,5 +285,5 @@ class GameWindow(QWidget):
         Method used to switch sides of player and engine (colors)
         :return: None
         """
-        self.__board.switch_colors()
+        self.__board.switch_sides()
         self.update()

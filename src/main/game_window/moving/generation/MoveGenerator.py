@@ -7,6 +7,10 @@ from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveData import MoveData
+from game_window.moving.generation.data.MoveList import MoveList
+from game_window.moving.generation.data.Moves import Moves
 from game_window.moving.generation.Generator import Generator
 from game_window.moving.generation.king_and_knights.KingKnightGen import KingKnightGen
 from game_window.moving.generation.king_and_knights.KingKnightGenerator import KingKnightGenerator
@@ -15,10 +19,6 @@ from game_window.moving.generation.pawns.PawnGen import PawnGen
 from game_window.moving.generation.pawns.PawnGenerator import PawnGenerator
 from game_window.moving.generation.sliding_piece.SlidingGenerator import SlidingGenerator
 from game_window.moving.generation.sliding_piece.SlidingPiecesGen import SlidingPiecesGen
-from game_window.moving.generation.data.MoveList import MoveList
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveData import MoveData
-from game_window.moving.generation.data.Moves import Moves
 from game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
 from game_window.moving.MoveMaker import MoveMaker
 

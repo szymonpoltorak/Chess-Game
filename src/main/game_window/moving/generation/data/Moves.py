@@ -9,8 +9,8 @@ from numpy import generic
 from numpy import ndarray
 
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.moving.generation.data.MoveList import MoveList
 from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveList import MoveList
 from game_window.moving.MoveSortUtil import MoveSortUtil
 
 if TYPE_CHECKING:

@@ -9,13 +9,14 @@ from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 from game_window.moving.MoveMakingUtil import MoveMakingUtil
 from game_window.moving.MoveUnMakingUtil import MoveUnMakingUtil
 
 
 def test_un_castle_king_null_arguments() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
 
     # when
     with pytest.raises(NullArgumentException):
@@ -26,7 +27,7 @@ def test_un_castle_king_null_arguments() -> None:
 
 def test_un_castle_king_not_castling_move() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     color: int = PiecesEnum.WHITE.value
     castling_move = Move(60, 62, PiecesEnum.KING.value, -1)
 
@@ -39,7 +40,7 @@ def test_un_castle_king_not_castling_move() -> None:
 
 def test_un_castle_king_not_existing_color() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     color: int = 81
     castling_move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
 
@@ -52,7 +53,7 @@ def test_un_castle_king_not_existing_color() -> None:
 
 def test_un_castle_king_proper_use() -> None:
     # given
-    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)))
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     board_array: ndarray[int] = board.board_array()
     castling_move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
     expected_rook_pos: int = 63
