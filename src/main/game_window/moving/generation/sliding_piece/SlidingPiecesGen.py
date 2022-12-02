@@ -8,6 +8,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.generation.data.Move import Move
 from game_window.moving.generation.data.MoveList import MoveList
+from game_window.moving.generation.GenUtil import GenUtil
 from game_window.moving.generation.sliding_piece.SlidingGenerator import SlidingGenerator
 from game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
 
@@ -22,9 +23,11 @@ class SlidingPiecesGen(SlidingGenerator):
 
     __slots__ = ()
 
-    def generate_sliding_piece_moves(self, piece: int, start_square: int, moves_list: MoveList, color: int, board: 'Board') -> None:
+    def generate_sliding_piece_moves(self, piece: int, start_square: int, moves_list: MoveList, color: int,
+                                     board: 'Board', captures_only: bool) -> None:
         """
         Static method used to generate moves_list for sliding pieces
+        :param captures_only: decides if method should generate every legal move or captures only
         :param piece: int value of piece_square
         :param start_square: int index of current end_square
         :param moves_list: list of moves_list
@@ -47,7 +50,8 @@ class SlidingPiecesGen(SlidingGenerator):
 
                 if ColorManager.get_piece_color(piece_on_move_target) == color:
                     break
-                moves_list.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
+                move: Move = Move(start_square, move_target, piece, SpecialFlags.NONE.value)
+                GenUtil.add_move_if_needed(moves_list, move, captures_only, board)
 
                 if ColorManager.get_piece_color(piece_on_move_target) == ColorManager.get_opposite_piece_color(color):
                     break

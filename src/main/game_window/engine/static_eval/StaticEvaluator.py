@@ -40,9 +40,10 @@ class StaticEvaluator(StaticEvaluation):
         bishops: float = LightPiecesEval.evaluate_bishops(board, favor_color)
         free_lines: float = RookEval.evaluate_free_lines_for_rooks(board, favor_color)
         chains: float = PawnEval.evaluate_pawn_chains(board, favor_color)
+        connection: float = RookEval.eval_rook_connection(board)
 
         static_eval: float = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines
-        static_eval += chains + bishops
+        static_eval += chains + bishops + connection
 
         return static_eval
 

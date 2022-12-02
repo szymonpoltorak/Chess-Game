@@ -20,9 +20,11 @@ class PawnGen(PawnGenerator):
 
     __slots__ = ()
 
-    def generate_pawn_moves(self, moves_list: MoveList, piece: int, color: int, board: 'Board', start_square: int) -> None:
+    def generate_pawn_moves(self, moves_list: MoveList, piece: int, color: int, board: 'Board', start_square: int,
+                            captures_only: bool) -> None:
         """
         Static method to generate moves_list for pawns
+        :param captures_only: decides if method should generate every legal move or captures only
         :param moves_list: list of moves_list (MoveList instance)
         :param piece: int value of a piece_square
         :param color: int value of color to move
@@ -30,8 +32,9 @@ class PawnGen(PawnGenerator):
         :param start_square: start end_square index
         :return: None
         """
-        self.__add_pawn_moves(start_square, piece, color, moves_list, board)
-        self.__add_pawn_attacks(start_square, piece, color, moves_list, board)
+        if not captures_only:
+            self.__add_pawn_moves(start_square, piece, color, moves_list, board)
+        self.__add_pawn_attacks(start_square, piece, color, moves_list, board, captures_only)
 
     def __add_pawn_moves(self, start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
         """
@@ -71,9 +74,11 @@ class PawnGen(PawnGenerator):
         if board.board_array()[move_target] == 0:
             self.__add_moves_and_promotions(start_square, move_target, piece, moves_list)
 
-    def __add_pawn_attacks(self, start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
+    def __add_pawn_attacks(self, start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board',
+                           captures_only: bool) -> None:
         """
         Static method used to add pawn attacks
+        :param captures_only: decides if method should generate every legal move or captures only
         :param start_square: int index of starting end_square
         :param piece: int value of a piece_square
         :param color: int value of color to move

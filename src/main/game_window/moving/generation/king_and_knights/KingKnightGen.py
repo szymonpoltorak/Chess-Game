@@ -9,6 +9,7 @@ from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
 from game_window.moving.generation.data.Move import Move
 from game_window.moving.generation.data.MoveList import MoveList
+from game_window.moving.generation.GenUtil import GenUtil
 from game_window.moving.generation.king_and_knights.KingKnightGenerator import KingKnightGenerator
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from game_window.moving.generation.pawns.PawnUtil import PawnUtil
@@ -25,9 +26,10 @@ class KingKnightGen(KingKnightGenerator):
     __slots__ = ()
 
     def generate_moves_for_knight_and_king(self, moves_list: MoveList, piece: int, color: int, board: 'Board',
-                                           start_square: int) -> None:
+                                           start_square: int, captures_only: bool) -> None:
         """
         Static method used to generate moves_list for knights and kings
+        :param captures_only: decides if method should generate every legal move or captures only
         :param moves_list: list of moves_list (MoveList instance)
         :param piece: int value of piece_square
         :param color: int value of color to move
@@ -54,9 +56,10 @@ class KingKnightGen(KingKnightGenerator):
 
             if ColorManager.get_piece_color(piece_on_move_target) == color:
                 continue
-            moves_list.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
+            move: Move = Move(start_square, move_target, piece, SpecialFlags.NONE.value)
+            GenUtil.add_move_if_needed(moves_list, move, captures_only, board)
 
-        if piece == PiecesEnum.KING.value:
+        if piece == PiecesEnum.KING.value and not captures_only:
             self.__generate_castling_moves(moves_list, piece, color, board, start_square)
 
     def __generate_castling_moves(self, moves_list: MoveList, piece: int, color: int, board: 'Board',

@@ -25,16 +25,17 @@ class Canvas(QPainter):
     """
     Class which manages painting board and pieces.
     """
-    __slots__ = array(["__rect_width", "__rect_height", "__freeze_piece", "__freeze_start", "__freeze_end"],
+
+    __slots__ = array(["__rect_width", "__rect_height", "__frozen_piece", "__frozen_start", "__frozen_end"],
                       dtype=str)
 
     def __init__(self) -> None:
         super(Canvas, self).__init__()
         self.__rect_width = int(CanvasEnum.CANVAS_WIDTH.value / 8)
         self.__rect_height = int(CanvasEnum.CANVAS_HEIGHT.value / 8)
-        self.__freeze_piece = -1
-        self.__freeze_start = -1
-        self.__freeze_end = -1
+        self.__frozen_piece = -1
+        self.__frozen_start = -1
+        self.__frozen_end = -1
 
     def draw_chess_board(self, move: Move, board: Board) -> None:
         """
@@ -215,16 +216,16 @@ class Canvas(QPainter):
                 current_x += self.__rect_width
             current_y += self.__rect_height
             current_x = CanvasEnum.CANVAS_X.value
-        self.__freeze_piece = -1
-        self.__freeze_start = -1
-        self.__freeze_end = -1
+        self.__frozen_piece = -1
+        self.__frozen_start = -1
+        self.__frozen_end = -1
 
     def __is_it_frozen_piece(self) -> bool:
         """
         Method used to check if piece_square was not moved at all
         :return: bool value
         """
-        return self.__freeze_start != -1 and self.__freeze_end != -1
+        return self.__frozen_start != -1 and self.__frozen_end != -1
 
     def __is_it_frozen_piece_target_square(self, legal_move: Move, current_square: int) -> bool:
         """
@@ -233,9 +234,9 @@ class Canvas(QPainter):
         :param current_square: int index of current end_square
         :return: bool value
         """
-        if legal_move.get_end_square() != current_square or legal_move.get_moving_piece() != self.__freeze_piece:
+        if legal_move.get_end_square() != current_square or legal_move.get_moving_piece() != self.__frozen_piece:
             return False
-        return legal_move.get_start_square() == self.__freeze_start
+        return legal_move.get_start_square() == self.__frozen_start
 
     def copy_current_move(self, move: Move) -> None:
         """
@@ -243,9 +244,9 @@ class Canvas(QPainter):
         :param move: current move (Move instance)
         :return: None
         """
-        self.__freeze_piece = move.get_moving_piece()
-        self.__freeze_start = move.get_start_square()
-        self.__freeze_end = move.get_end_square()
+        self.__frozen_piece = move.get_moving_piece()
+        self.__frozen_start = move.get_start_square()
+        self.__frozen_end = move.get_end_square()
 
     def get_rect_width(self) -> int:
         """
