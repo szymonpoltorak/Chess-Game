@@ -148,7 +148,6 @@ class GameWindow(QWidget):
         :return: None
         """
         self.__board.update_fen()
-        print(self.__board.fen_string())
 
         if self.__promotion_util.is_this_pawn_promoting():
             return
@@ -158,11 +157,10 @@ class GameWindow(QWidget):
             QMessageBox.about(self, "GAME IS OVER!", "CHECK MATE!")
             return
         deleted_piece: int = EngineMover.update_board_with_engine_move(self.__board, computer_move)
-        self.__board.update_fen()
-        print(self.__board.fen_string())
 
         self.__play_proper_sound(deleted_piece)
         self.__board.update_legal_moves(self.__board.player_color())
+        self.__board.update_fen()
 
         self.__current_move = computer_move
         self.update()

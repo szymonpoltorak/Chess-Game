@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 
 from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
@@ -132,7 +131,7 @@ class PawnGen(PawnGenerator):
         en_passant_target_left: int = start_square + PawnUtil.get_attack_direction(color, "LEFT", engine_color)
         en_passant_target_right: int = start_square + PawnUtil.get_attack_direction(color, "RIGHT", engine_color)
 
-        if en_passant_square == -1 or en_passant_square not in BoardEnum.MIDDLE_SQUARES.value:
+        if not PawnUtil.is_it_valid_en_passant(board, color):
             return
         if en_passant_square == en_passant_target_left:
             moves_list.append(Move(start_square, en_passant_target_left, piece, SpecialFlags.EN_PASSANT.value))

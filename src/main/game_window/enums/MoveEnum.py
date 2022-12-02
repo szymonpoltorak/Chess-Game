@@ -21,14 +21,15 @@ class MoveEnum(Enum):
 
     BISHOP_START_INDEX: int = 4
     PIECE_START_INDEX: int = 0
-    ROOK_END_INDEX: int = 4
-    PIECE_END_INDEX: int = 8
 
     SLIDING_DIRECTIONS_NUMBER: int = 8
     SLIDING_DIRECTIONS: Tuple[int, ...] = (TOP_LEFT, TOP, TOP_RIGHT, LEFT, RIGHT, BOTTOM_LEFT, BOTTOM, BOTTOM_RIGHT)
 
     KNIGHT_DIRECTIONS: Tuple[int, ...] = (-17, -15, -10, -6, 6, 10, 15, 17)
     MAX_KNIGHT_JUMP: int = 2
+
+    ROOK_DIRECTIONS: Tuple[int, ...] = (TOP, LEFT, RIGHT, BOTTOM)
+    ROOK_DIRECTIONS_INDEXES: Tuple[int, ...] = (1, 3, 4, 6)
 
     KK_DIRECTIONS_NUMBER: int = 8
 
@@ -53,6 +54,10 @@ class MoveEnum(Enum):
     PAWN_DOWN_DOUBLE_MOVE: int = 16
     PAWN_DOWN_LEFT_ATTACK: int = 7
     PAWN_DOWN_RIGHT_ATTACK: int = 9
+
+    EN_PASSANT_PIECE_SQUARES: Tuple[int, ...] = (24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39)
+    ENGINE_EN_PASSANT_SQUARES: Tuple[int, ...] = (40, 41, 42, 43, 44, 45, 46, 47)
+    PLAYER_EN_PASSANT_SQUARES: Tuple[int, ...] = (16, 17, 18, 19, 20, 21, 22, 23)
 
     NONE_EN_PASSANT_SQUARE: int = -1
     MAX_NUM_OF_MOVES: int = 80

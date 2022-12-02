@@ -1,3 +1,4 @@
+from typing import List
 from typing import TYPE_CHECKING
 
 from numpy import dtype
@@ -7,6 +8,7 @@ from numpy import ndarray
 from game_window.ColorManager import ColorManager
 from game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
 from game_window.enums.EvalEnum import EvalEnum
+from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 
 if TYPE_CHECKING:
@@ -19,6 +21,58 @@ class RookEval:
     """
 
     __slots__ = ()
+
+    @staticmethod
+    def eval_rook_connection(board: 'Board') -> float:
+        """
+        Method used to return the evaluation of rook connections
+        :param board:
+        :return: float
+        """
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        evaluation: float = 0
+        evaluated_colors: List[int] = []
+
+        for square, piece in enumerate(board_array):
+            piece_color: int = ColorManager.get_piece_color(piece)
+            piece_value: int = piece - piece_color
+
+            if len(evaluated_colors) == 2:
+                break
+
+            if piece_color in evaluated_colors:
+                continue
+
+            if piece_value == PiecesEnum.ROOK.value:
+                evaluation += RookEval.get_connection_eval(board, piece_color, square)
+                evaluated_colors.append(piece_color)
+        return evaluation
+
+    @staticmethod
+    def get_connection_eval(board: 'Board', color: int, square: int) -> float:
+        """
+        Method used to evaluate rooks connectivity of given color
+        :param square: board array index of current rook
+        :param board: Board instance
+        :param color: int value of current rook color
+        :return: float
+        """
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        directions: ndarray[int, dtype[int8]] = board.distances()
+
+        for index, direction in enumerate(MoveEnum.ROOK_DIRECTIONS_INDEXES.value):
+            for direction_step in range(directions[square][direction]):
+                move_index: int = square + (direction_step + 1) * MoveEnum.ROOK_DIRECTIONS.value[index]
+
+                piece: int = board_array[move_index]
+                piece_color: int = ColorManager.get_piece_color(piece)
+                piece_value: int = piece - piece_color
+
+                if piece != PiecesEnum.NONE.value and piece_value != PiecesEnum.ROOK.value:
+                    break
+                if piece_value == PiecesEnum.ROOK.value and piece_color == color:
+                    return StaticEvalUtil.return_proper_evaluation_signed_value(board, 10, color)
+        return StaticEvalUtil.return_proper_evaluation_signed_value(board, -10, color)
 
     @staticmethod
     def get_free_line_eval(board: 'Board', start_square: int) -> float:

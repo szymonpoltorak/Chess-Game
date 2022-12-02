@@ -22,8 +22,8 @@ class Evaluator(Evaluation):
     def __init__(self) -> None:
         self.__static_evaluator: StaticEvaluation = StaticEvaluator()
 
-    @classmethod
-    def debug_evaluate_position(cls, board: 'Board', favor_color: int) -> float:
+    @staticmethod
+    def debug_evaluate_position(board: 'Board', favor_color: int) -> float:
         """
         Debug Method
         :param board:
@@ -32,8 +32,8 @@ class Evaluator(Evaluation):
         """
         print("For BLACK:") if favor_color == 16 else print("For WHITE:")
 
-        material_eval: float = cls.__static_evaluator.evaluate_pieces_on_board(board, favor_color)
-        center_possession_eval: float = cls.__static_evaluator.evaluate_center_possession(board, favor_color)
+        material_eval: float = StaticEvaluator.evaluate_pieces_on_board(board, favor_color)
+        center_possession_eval: float = StaticEvaluator.evaluate_center_possession(board, favor_color)
 
         light_dev_eval: float = LightPiecesEval.evaluate_light_pieces_walked(board, favor_color)
         bishops: float = LightPiecesEval.evaluate_bishops(board, favor_color)
@@ -47,6 +47,7 @@ class Evaluator(Evaluation):
         print(f"\tmaterialEval = {material_eval}\n\tcenterPossessionEval = {center_possession_eval}\n\t"
               f"lightDevEval = {light_dev_eval}\n\tkingPressure = {king_pressure}")
         print(f"\tbishops = {bishops}\n\tfree lines = {free_lines}\n\tpawn chains = {chains}")
+        print(f"\tConnection : {RookEval.eval_rook_connection(board)}")
 
         total_eval: float = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines + chains + bishops
         print(f"\tTotal = {-total_eval if board.player_color() == favor_color else total_eval}\n")

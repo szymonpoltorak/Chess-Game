@@ -1,6 +1,9 @@
 from typing import TYPE_CHECKING
 
+from numpy import dtype
 from numpy import full
+from numpy import int8
+from numpy import ndarray
 
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
@@ -69,7 +72,6 @@ class MoveGenerator(Generator):
             if is_it_valid_move:
                 legal_moves.append(move_to_verify)
             MoveMaker.un_make_move(move_to_verify, deleted_data, board)
-
         return legal_moves
 
     def __generate_moves(self, color_to_move: int, board: 'Board') -> MoveList:
@@ -80,10 +82,11 @@ class MoveGenerator(Generator):
         :return: list of all legal __moves
         """
         moves_list: MoveList = Moves(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object))
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
 
         for square in range(BoardEnum.BOARD_SIZE.value):
-            piece_color: int = ColorManager.get_piece_color(board.board_array()[square])
-            piece: int = board.board_array()[square] - piece_color
+            piece_color: int = ColorManager.get_piece_color(board_array[square])
+            piece: int = board_array[square] - piece_color
 
             if color_to_move != piece_color:
                 continue

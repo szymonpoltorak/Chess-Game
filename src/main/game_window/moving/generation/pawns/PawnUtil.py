@@ -27,6 +27,27 @@ class PawnUtil:
     __slots__ = ()
 
     @staticmethod
+    def is_it_valid_en_passant(board: 'Board', color: int) -> bool:
+        """
+        Method used to validate en passant movement in generation
+        :param color: int value of current color
+        :param board: Board instance
+        :return: bool
+        """
+        en_passant_square: int = board.en_passant_square()
+        en_passant_piece: int = board.en_passant_piece_square()
+        engine_color: int = board.engine_color()
+        player_color: int = board.player_color()
+
+        if color == engine_color and en_passant_square not in MoveEnum.ENGINE_EN_PASSANT_SQUARES.value:
+            return False
+        if color == player_color and en_passant_square not in MoveEnum.PLAYER_EN_PASSANT_SQUARES.value:
+            return False
+        if en_passant_square == -1 or en_passant_piece not in MoveEnum.EN_PASSANT_PIECE_SQUARES.value:
+            return False
+        return en_passant_piece != -1
+
+    @staticmethod
     def was_it_en_passant_move(move: Move, board: 'Board') -> bool:
         """
         Methods checks if it was an en passant move
