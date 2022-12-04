@@ -25,7 +25,7 @@ def test_generate_sliding_piece_moves_not_sliding_piece() -> None:
 
     # when
     with pytest.raises(IllegalArgumentException):
-        sliding_gen.generate_sliding_piece_moves(piece, start_square, move_list, color, board)
+        sliding_gen.generate_sliding_piece_moves(piece, start_square, move_list, color, board, False)
 
     # then
 
@@ -41,7 +41,7 @@ def test_generate_sliding_piece_moves_empty_list() -> None:
     expected: bool = True
 
     # when
-    sliding_gen.generate_sliding_piece_moves(piece, start_square, move_list, color, board)
+    sliding_gen.generate_sliding_piece_moves(piece, start_square, move_list, color, board, False)
     result: bool = move_list.is_empty()
 
     # then
@@ -54,7 +54,7 @@ def test_generate_sliding_piece_moves_null_args() -> None:
 
     # when
     with pytest.raises(NullArgumentException):
-        sliding_gen.generate_sliding_piece_moves(None, None, None, None, None)
+        sliding_gen.generate_sliding_piece_moves(None, None, None, None, None, False)
 
     # then
 
@@ -70,6 +70,6 @@ def test_generate_sliding_piece_moves_illegal_arguments() -> None:
 
     # when
     with pytest.raises(IllegalArgumentException):
-        sliding_gen.generate_sliding_piece_moves(piece, start_square, move_list, color, board)
+        sliding_gen.generate_sliding_piece_moves(piece, start_square, move_list, color, board, False)
 
     # then

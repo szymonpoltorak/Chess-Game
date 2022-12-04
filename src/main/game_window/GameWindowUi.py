@@ -168,7 +168,7 @@ class GameWindowUi:
         :return: None
         """
         _translate = QtCore.QCoreApplication.translate
-        game_window.setWindowTitle(_translate("game_window", "Chess EnginePlayer"))
+        game_window.setWindowTitle(_translate("game_window", "Chess Engine"))
         self.__new_game_button.setText(_translate("game_window", "New Game"))
         self.__prev_move_button.setText(_translate("game_window", "<"))
         self.__next_move_button.setText(_translate("game_window", ">"))

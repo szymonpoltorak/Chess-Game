@@ -62,6 +62,36 @@ class EnginePlayer(Engine):
 
         return best_move
 
+    # def search_only_capture_moves(self, board: 'Board', color: int, alpha: float, beta: float) -> float:
+    #     """
+    #
+    #     :param board:
+    #     :param color:
+    #     :param alpha:
+    #     :param beta:
+    #     :return:
+    #     """
+    #     start_eval: float = self.__evaluator.evaluate_position(board, color)
+    #
+    #     if start_eval >= beta:
+    #         return beta
+    #     alpha = max(alpha, start_eval)
+    #     capture_moves: MoveList = self.__generator.generate_legal_moves(color, board, captures_only=True)
+    #     capture_moves.sort(board)
+    #
+    #     for index in range(capture_moves.size()):
+    #         move: Move = capture_moves[index]
+    #         opposite_color: int = ColorManager.get_opposite_piece_color(color)
+    #
+    #         deleted_data: MoveData = MoveMaker.make_move(move, color, board)
+    #         evaluation: float = -self.search_only_capture_moves(board, opposite_color, -beta, -alpha)
+    #         MoveMaker.un_make_move(move, deleted_data, board)
+    #
+    #         if evaluation >= beta:
+    #             return beta
+    #         alpha = max(alpha, evaluation)
+    #     return alpha
+
     def __negamax_search(self, board: 'Board', depth: int, alpha: float, beta: float, color: int) -> float:
         """
         Method used to evaluate positions and find possibly best move for engine
