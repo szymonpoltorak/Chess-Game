@@ -25,13 +25,13 @@ class KingPressure:
         """
         Method used to evaluate pressure on king.
         :param board: Board instance
-        :param favor_color: float value of color in favor of which we evaluate position
+        :param favor_color: float value of favor_color in favor of which we evaluate position
         :return: float evaluation
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
         pressure_on_enemy_king = KingPressure.evaluate_king_pressure_only_for_color(board, favor_color)
         pressure_on_my_king = KingPressure.evaluate_king_pressure_only_for_color(board, enemy_color)
-        evaluation: float = int(pressure_on_enemy_king - pressure_on_my_king)
+        evaluation: float = int(pressure_on_my_king - pressure_on_enemy_king)
 
         return evaluation
 
@@ -39,7 +39,7 @@ class KingPressure:
     def evaluate_king_pressure_only_for_color(board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate distance of pieces to the enemy king
-        :param favor_color: float value of color
+        :param favor_color: float value of favor_color
         :param board: Board instance
         :return: float value of evaluation
         """

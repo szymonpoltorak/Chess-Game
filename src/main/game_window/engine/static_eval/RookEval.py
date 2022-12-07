@@ -23,9 +23,10 @@ class RookEval:
     __slots__ = ()
 
     @staticmethod
-    def eval_rook_connection(board: 'Board') -> float:
+    def eval_rook_connection(board: 'Board', favor_color: int) -> float:
         """
         Method used to return the evaluation of rook connections
+        :param favor_color:
         :param board:
         :return: float
         """
@@ -44,17 +45,19 @@ class RookEval:
                 continue
 
             if piece_value == PiecesEnum.ROOK.value:
-                evaluation += RookEval.get_connection_eval(board, piece_color, square)
+                connection_eval: float = RookEval.get_connection_eval(board, piece_color, square)
+                evaluation += StaticEvalUtil.return_proper_evaluation_sign_value(connection_eval, favor_color,
+                                                                                 piece_color)
                 evaluated_colors.append(piece_color)
         return evaluation
 
     @staticmethod
     def get_connection_eval(board: 'Board', color: int, square: int) -> float:
         """
-        Method used to evaluate rooks connectivity of given color
+        Method used to evaluate rooks connectivity of given favor_color
         :param square: board array index of current rook
         :param board: Board instance
-        :param color: int value of current rook color
+        :param color: int value of current rook favor_color
         :return: float
         """
         board_array: ndarray[int, dtype[int8]] = board.board_array()
@@ -71,8 +74,29 @@ class RookEval:
                 if piece != PiecesEnum.NONE.value and piece_value != PiecesEnum.ROOK.value:
                     break
                 if piece_value == PiecesEnum.ROOK.value and piece_color == color:
-                    return StaticEvalUtil.return_proper_evaluation_signed_value(board, 10, color)
-        return StaticEvalUtil.return_proper_evaluation_signed_value(board, -10, color)
+                    return EvalEnum.CONNECTED_ROOKS.value
+        return EvalEnum.NOT_CONNECTED_ROOKS.value
+
+    @staticmethod
+    def evaluate_free_lines_for_rooks(board: 'Board', favor_color: int) -> float:
+        """
+        Methods used to evaluate free lines for rooks
+        :param favor_color: float value of favor_color
+        :param board: Board instance
+        :return: float value of evaluation
+        """
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        evaluation: float = 0
+
+        for square, piece in enumerate(board_array):
+            piece_color: int = ColorManager.get_piece_color(piece)
+            piece_value: int = piece - piece_color
+
+            if piece_value == PiecesEnum.ROOK.value:
+                free_line_eval: float = RookEval.get_free_line_eval(board, square)
+                evaluation += StaticEvalUtil.return_proper_evaluation_sign_value(free_line_eval, favor_color,
+                                                                                 piece_color)
+        return evaluation
 
     @staticmethod
     def get_free_line_eval(board: 'Board', start_square: int) -> float:
@@ -86,26 +110,6 @@ class RookEval:
         vertical_eval: float = RookEval.get_vertical_eval(start_square, board)
 
         return horizontal_eval + vertical_eval
-
-    @staticmethod
-    def evaluate_free_lines_for_rooks(board: 'Board', favor_color: int) -> float:
-        """
-        Methods used to evaluate free lines for rooks
-        :param favor_color: float value of color
-        :param board: Board instance
-        :return: float value of evaluation
-        """
-        board_array: ndarray[int, dtype[int8]] = board.board_array()
-        evaluation: float = 0
-
-        for square, piece in enumerate(board_array):
-            piece_color: int = ColorManager.get_piece_color(piece)
-            piece_value: int = piece - piece_color
-
-            if piece_value == PiecesEnum.ROOK.value:
-                free_line_eval: float = RookEval.get_free_line_eval(board, square)
-                evaluation += StaticEvalUtil.return_proper_evaluation_signed_value(board, free_line_eval, piece_color)
-        return evaluation
 
     @staticmethod
     def get_horizontal_eval(start_square: int, board: 'Board') -> float:
@@ -168,5 +172,5 @@ class RookEval:
                 break
 
             if board_array[index] != PiecesEnum.NONE.value:
-                return 0
+                return EvalEnum.NOT_FREE_LINE.value
         return EvalEnum.FREE_LINE.value

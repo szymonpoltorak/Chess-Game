@@ -16,7 +16,7 @@ class StaticEvaluation(ABC):
         """
         Method used to return an evaluation of starting position
         :param board: Board instance
-        :param favor_color: float value of color in favor of which we evaluate position
+        :param favor_color: float value of favor_color in favor of which we evaluate position
         :return: float evaluation
         """
         pass

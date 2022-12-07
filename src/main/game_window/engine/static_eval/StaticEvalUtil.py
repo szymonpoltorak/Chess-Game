@@ -16,21 +16,21 @@ class StaticEvalUtil:
     __slots__ = ()
 
     @staticmethod
-    def return_proper_evaluation_signed_value(board: 'Board', evaluation: float, favor_color: int) -> float:
+    def return_proper_evaluation_sign_value(evaluation: float, favor_color: int, piece_color: int) -> float:
         """
         Method used to return a proper mark of evaluation based on favor_color to move
+        :param piece_color:
         :param favor_color:
-        :param board: Board instance
         :param evaluation: int value of evaluation
         :return: int value with proper sign
         """
-        return evaluation if favor_color == board.engine_color() else -evaluation
+        return evaluation if favor_color == piece_color else -evaluation
 
     @staticmethod
     def is_queen_on_start_position(color: int, board: 'Board') -> bool:
         """
         Method used to check if queen is on starting position
-        :param color: int vale of color
+        :param color: int vale of favor_color
         :param board: Board instance
         :return: bool
         """
@@ -68,7 +68,7 @@ class StaticEvalUtil:
         :param board: Board instance
         :param square: int value of current square
         :param piece_value: int value of piece
-        :param pieces_color: int value of pieces color
+        :param pieces_color: int value of pieces favor_color
         :return: float value of eval
         """
         engine_color: int = board.engine_color()

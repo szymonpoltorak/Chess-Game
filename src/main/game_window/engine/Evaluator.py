@@ -47,18 +47,18 @@ class Evaluator(Evaluation):
         print(f"\tmaterialEval = {material_eval}\n\tcenterPossessionEval = {center_possession_eval}\n\t"
               f"lightDevEval = {light_dev_eval}\n\tkingPressure = {king_pressure}")
         print(f"\tbishops = {bishops}\n\tfree lines = {free_lines}\n\tpawn chains = {chains}")
-        print(f"\tConnection : {RookEval.eval_rook_connection(board)}")
+        print(f"\tconnection = {RookEval.eval_rook_connection(board, favor_color)}")
 
         total_eval: float = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines + chains + bishops
-        print(f"\tTotal = {-total_eval if board.player_color() == favor_color else total_eval}\n")
+        print(f"\tTotal = {total_eval}\n")
 
-        return -total_eval if board.player_color() == favor_color else total_eval
+        return total_eval
 
     def evaluate_position(self, board: 'Board', favor_color: int) -> float:
         """
         Method used to return an evaluation of starting position
         :param board: Board instance
-        :param favor_color: int value of color in favor of which we evaluate position
+        :param favor_color: int value of favor_color in favor of which we evaluate position
         :return: float evaluation
         """
         total_eval: float = self.__static_evaluator.evaluate_static_position(board, favor_color)

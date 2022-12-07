@@ -25,7 +25,7 @@ class PawnEval:
         """
         Method used to evaluate pawn chains on board
         :param board: Board instance
-        :param favor_color: int value of color
+        :param favor_color: int value of favor_color
         :return: float
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
@@ -43,7 +43,7 @@ class PawnEval:
         Method used to check if piece is a pawn or not
         :param board: Board instance
         :param square: int value of square
-        :param piece_color: int value of color
+        :param piece_color: int value of favor_color
         :return: bool
         """
         piece: int = board.board_array()[square]
@@ -60,7 +60,7 @@ class PawnEval:
         Method used to get length of left chain
         :param board: Board instance
         :param index: index of current square
-        :param color: int value of color
+        :param color: int value of favor_color
         :param step_left: int value of step of a left pawn move
         :return: int
         """
@@ -95,7 +95,7 @@ class PawnEval:
         Method used to get length of right chain
         :param board: Board instance
         :param index: index of current square
-        :param color: int value of color
+        :param color: int value of favor_color
         :param step_right: int value of step of a right pawn move
         :return: int
         """
@@ -127,9 +127,9 @@ class PawnEval:
     @staticmethod
     def get_pawn_chains_eval(board: 'Board', color: int) -> float:
         """
-        Method used to evaluate pawn chains for current color
+        Method used to evaluate pawn chains for current favor_color
         :param board: Board instance
-        :param color: int value of color
+        :param color: int value of favor_color
         :return: float
         """
         step_left = MoveEnum.TOP_LEFT.value if color == board.player_color() else MoveEnum.BOTTOM_LEFT.value

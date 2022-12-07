@@ -5,7 +5,7 @@ class EvalEnum(Enum):
     """
     Enum containing evaluation values for certain things
     """
-    QUEEN: int = 70
+    QUEEN: int = 75
     BISHOP: int = 30
     KNIGHT: int = 25
     PAWN: int = 10
@@ -16,4 +16,9 @@ class EvalEnum(Enum):
     WALKED: int = 3
 
     BISHOP_PAIR: float = 10
+
     FREE_LINE: float = 10
+    NOT_FREE_LINE: float = -2
+
+    CONNECTED_ROOKS: float = 10
+    NOT_CONNECTED_ROOKS: float = -10

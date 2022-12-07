@@ -30,7 +30,7 @@ class StaticEvaluator(StaticEvaluation):
         """
         Method used to return an evaluation of starting position
         :param board: Board instance
-        :param favor_color: float value of color in favor of which we evaluate position
+        :param favor_color: float value of favor_color in favor of which we evaluate position
         :return: float evaluation
         """
         material_eval: float = StaticEvaluator.evaluate_pieces_on_board(board, favor_color)
@@ -40,7 +40,7 @@ class StaticEvaluator(StaticEvaluation):
         bishops: float = LightPiecesEval.evaluate_bishops(board, favor_color)
         free_lines: float = RookEval.evaluate_free_lines_for_rooks(board, favor_color)
         chains: float = PawnEval.evaluate_pawn_chains(board, favor_color)
-        connection: float = RookEval.eval_rook_connection(board)
+        connection: float = RookEval.eval_rook_connection(board, favor_color)
 
         static_eval: float = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines
         static_eval += chains + bishops + connection
@@ -66,14 +66,14 @@ class StaticEvaluator(StaticEvaluation):
             points: float = StaticEvalUtil.get_piece_point_value(piece_value)
             points += StaticEvalUtil.get_pieces_square_points(piece_value, pieces_color, square, board)
 
-            evaluation += points if pieces_color == board.engine_color() else -points
+            evaluation += StaticEvalUtil.return_proper_evaluation_sign_value(points, favor_color, pieces_color)
         return evaluation
 
     @staticmethod
     def evaluate_center_possession(board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate a center possession
-        :param favor_color: float value of color
+        :param favor_color: float value of favor_color
         :param board: Board instance
         :return: float value of evaluation
         """
@@ -88,9 +88,9 @@ class StaticEvaluator(StaticEvaluation):
             piece_color: int = ColorManager.get_piece_color(piece)
 
             if center_square in BoardEnum.CENTER_SIDE_SQUARES.value:
-                evaluation += StaticEvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.SIDE_CENTER.value,
-                                                                                   piece_color)
+                evaluation += StaticEvalUtil.return_proper_evaluation_sign_value(EvalEnum.SIDE_CENTER.value,
+                                                                                 favor_color, piece_color)
             if center_square in BoardEnum.CENTER_MAIN_SQUARES.value:
-                evaluation += StaticEvalUtil.return_proper_evaluation_signed_value(board, EvalEnum.MAIN_CENTER.value,
-                                                                                   piece_color)
+                evaluation += StaticEvalUtil.return_proper_evaluation_sign_value(EvalEnum.MAIN_CENTER.value,
+                                                                                 favor_color, piece_color)
         return evaluation

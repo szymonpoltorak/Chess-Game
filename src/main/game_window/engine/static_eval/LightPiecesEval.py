@@ -26,28 +26,27 @@ class LightPiecesEval:
     def evaluate_bishops(board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate if player has a pair of bishops.
-        :param favor_color: float value of color
+        :param favor_color: float value of favor_color
         :param board: Board instance
         :return: float value of evaluation
         """
         evaluation: float = 0
         board_array: ndarray[int, dtype[int8]] = board.board_array()
-        engine_color: int = board.engine_color()
-        player_color: int = board.player_color()
-        engine_bishops: int = 0
-        player_bishops: int = 0
+        favor_bishops: int = 0
+        enemy_bishops: int = 0
+        enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
 
         for square, piece in enumerate(board_array):
             if piece == PiecesEnum.NONE.value:
                 continue
 
-            if piece == engine_color | PiecesEnum.BISHOP.value:
-                engine_bishops += 1
-            elif piece == player_color | PiecesEnum.BISHOP.value:
-                player_bishops += 1
-        if engine_bishops >= 2:
+            if piece == favor_color | PiecesEnum.BISHOP.value:
+                favor_bishops += 1
+            elif piece == enemy_color | PiecesEnum.BISHOP.value:
+                enemy_bishops += 1
+        if favor_bishops >= 2:
             evaluation += EvalEnum.BISHOP_PAIR.value
-        if player_bishops >= 2:
+        if enemy_bishops >= 2:
             evaluation -= EvalEnum.BISHOP_PAIR.value
         return evaluation
 
@@ -93,4 +92,5 @@ class LightPiecesEval:
             favor_light_walked -= 2 * EvalEnum.WALKED.value
 
         evaluation: float = favorable_accumulator - unfavorable_accumulator
+
         return evaluation
