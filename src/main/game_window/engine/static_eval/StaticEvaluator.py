@@ -42,7 +42,7 @@ class StaticEvaluator(StaticEvaluation):
         chains: float = PawnEval.evaluate_pawn_chains(board, favor_color)
         connection: float = RookEval.eval_rook_connection(board, favor_color)
 
-        static_eval: float = material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines
+        static_eval: float = 1.2 * material_eval + center_possession_eval + light_dev_eval + king_pressure + free_lines
         static_eval += chains + bishops + connection
 
         return static_eval

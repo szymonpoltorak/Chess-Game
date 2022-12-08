@@ -1,5 +1,9 @@
 from abc import ABC
 from abc import abstractmethod
+
+from numpy import dtype
+from numpy import int8
+from numpy import ndarray
 from typing import Tuple
 from typing import TYPE_CHECKING
 

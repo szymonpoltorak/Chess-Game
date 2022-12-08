@@ -69,8 +69,12 @@ class GameWindow(QWidget):
         """
         super(GameWindow, self).keyPressEvent(event)
         self.keyPressed.emit(event)
-        Evaluator.debug_evaluate_position(self.__board, 8)
-        Evaluator.debug_evaluate_position(self.__board, 16)
+
+        if event.key() == 16777249:
+            Evaluator.debug_evaluate_position(self.__board, 8)
+            Evaluator.debug_evaluate_position(self.__board, 16)
+        if event.key() == 16777220:
+            print(self.__board.fen_string())
 
     def paintEvent(self, event: QPaintEvent) -> None:
         """
@@ -285,3 +289,4 @@ class GameWindow(QWidget):
         """
         self.__board.switch_sides()
         self.update()
+        self.__update_board_data()

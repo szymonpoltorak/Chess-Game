@@ -1,11 +1,20 @@
 # Chess-Game
+![](./.github/main_page.png)
 
 Chess Engine made w GUI. Programme will cover the engine itself written in python, gui written in PyQt5. Gui will cover
 scene for party analysis, user profile, login screen, players list, settings and of course new game.
 
+Project was not finished due to the performance of the language, lack of motivation to fight for every tear of
+performance and lack of time. You can play with engine 1 v 1 as black or white pieces. If you hit `CTRL` button you will
+display `FEN` string of current position and if hit `ENTER` you will see current evaluation of position from whites and blacks
+point of view. If you use `New Game` button game will reset to standard position, but if you use `Switch Colors` button
+you will change the sides of pieces and `Engine` will make a first move so if you see stutter do not worry.
+
+***
+
 ## Table Of Contents
 1. [Technology Stack](#technology-stack)
-2. [How to install necessary dependencies](#how-to-install-necessary-dependencies)
+2. [How to install necessary dependencies and Run Code](#how-to-install-necessary-dependencies)
 3. [Credits to Authors](#credits-to-authors)
 4. [Troubleshooting](#troubleshooting)
 
@@ -24,11 +33,11 @@ scene for party analysis, user profile, login screen, players list, settings and
 
 ***
 
-## How to install necessary dependencies
+## How to install necessary dependencies and Run Code
 
 * First you need to install python for example on linux:
 ```bash
-sudo apt install -y python3.10
+sudo apt install -y python3
 ```
 * If you want to edit and compile sass files you need to install:
 ```bash
@@ -39,6 +48,12 @@ npm install -g sass
 ```bash
 pip install -r requirements.txt
 ```
+* To create this app I used [PyCharm](https://www.jetbrains.com/pycharm/),
+* To run this program run script located in:
+```bash
+Chess-Game/src/main/main.py
+```
+
 [Return To Table Of Contents](#table-of-contents)
 
 ***
