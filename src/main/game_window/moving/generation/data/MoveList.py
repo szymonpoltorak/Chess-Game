@@ -14,6 +14,8 @@ class MoveList(ABC):
     Abstract class of a MoveList representation
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def append(self, move: Move) -> None:
         """

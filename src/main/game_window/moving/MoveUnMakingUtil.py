@@ -23,6 +23,8 @@ class MoveUnMakingUtil:
     Utility class for un making __moves
     """
 
+    __slots__ = ()
+
     @staticmethod
     def un_castle_king(move: Move, color: int, board: 'Board') -> None:
         """

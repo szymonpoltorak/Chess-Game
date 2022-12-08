@@ -7,6 +7,9 @@ class BoardEnum(Enum):
     """
      Enum which covers important static values for board.
     """
+
+    __slots__ = ()
+
     PRIMARY_BOARD_COLOR: str = "#F1D9C0"
     SECONDARY_BOARD_COLOR: str = "#A97A65"
 

@@ -5,6 +5,9 @@ class SquaresEval(Enum):
     """
     Enum containing hardcoded squares values for pieces
     """
+
+    __slots__ = ()
+
     LEVEL_0: int = -10
     LEVEL_1: int = -5
     LEVEL_2: int = 2

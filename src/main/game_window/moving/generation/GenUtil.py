@@ -13,6 +13,8 @@ class GenUtil:
     Util static methods for generation
     """
 
+    __slots__ = ()
+
     @staticmethod
     def add_move_if_needed(move_list: MoveList, move: Move, captures_only: bool, board: 'Board') -> None:
         """

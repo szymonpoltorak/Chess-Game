@@ -18,6 +18,8 @@ class MoveSortUtil:
     Class containing util methods for move list class
     """
 
+    __slots__ = ()
+
     @staticmethod
     def count_moves_score(move: Move, board: 'Board') -> int:
         """

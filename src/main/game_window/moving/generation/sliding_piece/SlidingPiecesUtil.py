@@ -9,6 +9,8 @@ class SlidingPiecesUtil:
     Util class for sliding pieces generation
     """
 
+    __slots__ = ()
+
     @staticmethod
     def is_it_sliding_piece_move(piece: int, direction: int) -> bool:
         """

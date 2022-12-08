@@ -9,6 +9,8 @@ class Promoter(ABC):
     Abstract class for Promoting Pawns
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def set_promotion_data(self, color: int, x: int, y: int, square: int) -> None:
         """

@@ -13,6 +13,8 @@ class SlidingGenerator(ABC):
     Abstract class for Sliding Generation
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def generate_sliding_piece_moves(self, piece: int, start_square: int, moves_list: MoveList, color: int,
                                      board: 'Board', captures_only: bool) -> None:

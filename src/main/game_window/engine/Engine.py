@@ -13,6 +13,8 @@ class Engine(ABC):
     Abstract class containing methods for Engine
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def get_computer_move(self, board: 'Board') -> Move:
         """

@@ -5,6 +5,9 @@ class GameWindowEnum(Enum):
     """
     GameWindowEnum contains static values for GameWindow.
     """
+
+    __slots__ = ()
+
     WINDOW_WIDTH: int = 1400
     WINDOW_HEIGHT: int = 800
 

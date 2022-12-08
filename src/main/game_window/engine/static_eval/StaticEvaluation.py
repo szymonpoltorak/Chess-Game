@@ -11,6 +11,8 @@ class StaticEvaluation(ABC):
     Abstract class for static evaluator
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def evaluate_static_position(self, board: 'Board', favor_color: int) -> float:
         """

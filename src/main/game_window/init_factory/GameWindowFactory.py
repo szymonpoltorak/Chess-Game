@@ -13,6 +13,8 @@ class GameWindowFactory(ABC):
     Abstract class for initializer of GameWindow
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def create_board(self) -> Board:
         """

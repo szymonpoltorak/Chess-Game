@@ -13,6 +13,8 @@ class PawnGenerator(ABC):
     Abstract class for Pawn Generation classes
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def generate_pawn_moves(self, moves_list: MoveList, piece: int, color: int, board: 'Board', start_square: int,
                             captures_only: bool) -> None:

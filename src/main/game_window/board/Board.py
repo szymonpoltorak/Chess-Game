@@ -16,6 +16,8 @@ class Board(ABC):
     Abstract class for Board representations
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def delete_piece_from_board_square(self, square: int) -> int:
         """

@@ -5,6 +5,9 @@ class CanvasEnum(Enum):
     """
     PyGame surface settings values.
     """
+
+    __slots__ = ()
+
     CANVAS_WIDTH: int = 696
     CANVAS_HEIGHT: int = 696
 

@@ -25,6 +25,8 @@ class MoveMakingUtil:
     Utility class for making __moves
     """
 
+    __slots__ = ()
+
     @staticmethod
     def castle_king(piece: int, move: Move, board: 'Board') -> None:
         """

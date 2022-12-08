@@ -5,6 +5,9 @@ class Paths(Enum):
     """
     Enum containing paths used in game window and sidebar
     """
+
+    __slots__ = ()
+
     GAME_WINDOW_CSS: str = "../resources/styles/GameWindow.min.css"
     PIECES_PATH: str = "../resources/images/pieces/"
     MOVE_SOUND: str = "../resources/sounds/Move.mp3"

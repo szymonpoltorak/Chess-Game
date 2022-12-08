@@ -14,6 +14,9 @@ class EngineMover:
     """
     Class containing methods to update board with engine moves
     """
+
+    __slots__ = ()
+
     @staticmethod
     def update_board_with_engine_move(board: 'Board', computer_move: Move) -> int:
         """

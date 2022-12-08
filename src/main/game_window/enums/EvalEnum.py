@@ -5,6 +5,9 @@ class EvalEnum(Enum):
     """
     Enum containing evaluation values for certain things
     """
+
+    __slots__ = ()
+
     QUEEN: int = 75
     BISHOP: int = 30
     KNIGHT: int = 25

@@ -7,6 +7,9 @@ class MoveEnum(Enum):
     """
     Contains values needed for setting up movements
     """
+
+    __slots__ = ()
+
     START_SQUARE_COLOR: str = "#c9a35e"
     END_SQUARE_COLOR: str = "#a29655"
 

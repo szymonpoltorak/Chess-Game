@@ -20,7 +20,6 @@ from game_window.moving.generation.data.Move import Move
 from game_window.moving.generation.data.MoveData import MoveData
 from game_window.moving.generation.data.MoveList import MoveList
 from game_window.moving.generation.Generator import Generator
-from game_window.moving.generation.MoveGenerator import MoveGenerator
 
 
 class GameBoard(Board):

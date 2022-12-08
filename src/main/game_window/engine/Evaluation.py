@@ -11,6 +11,8 @@ class Evaluation(ABC):
     Abstract class for evaluator object classes
     """
 
+    __slots__ = ()
+
     @abstractmethod
     def evaluate_position(self, board: 'Board', favor_color: int) -> float:
         """

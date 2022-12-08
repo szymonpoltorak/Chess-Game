@@ -7,6 +7,9 @@ class PiecesEnum(Enum):
     """
     Enum consists of values important for pieces on chess board.
     """
+
+    __slots__ = ()
+
     NONE: int = 0
     KING: int = 1
     PAWN: int = 2
