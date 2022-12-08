@@ -1,15 +1,18 @@
-from numpy import array, int8, dtype
-from numpy import ndarray
 from typing import TYPE_CHECKING
+
+from numpy import array
+from numpy import dtype
+from numpy import int8
+from numpy import ndarray
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.ColorManager import ColorManager
 from game_window.board.BoardUtil import BoardUtil
+from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.Move import Move
+from game_window.moving.generation.data.Move import Move
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -17,7 +20,7 @@ if TYPE_CHECKING:
 
 class KingUtil:
     """
-    Class containing util methods for king and knight moves creation
+    Class containing util methods for king and knight __moves creation
     """
 
     __slots__ = ()
@@ -76,7 +79,7 @@ class KingUtil:
 
             if index > 63 or index < 0:
                 break
-            if board.get_board_array()[start_square + step * i] != 0:
+            if board.board_array()[start_square + step * i] != 0:
                 return True
         return False
 

@@ -1,12 +1,12 @@
 import pytest
 
-from game_window.board.fen.FenData import FenData
-from game_window.enums.PiecesEnum import PiecesEnum
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
+from game_window.board.fen.FenData import FenData
+from game_window.enums.PiecesEnum import PiecesEnum
 
 
-def test_set_castling_queen_side_to_true():
+def test_set_castling_queen_side_to_true() -> None:
     # given
     expected: bool = True
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
@@ -20,7 +20,7 @@ def test_set_castling_queen_side_to_true():
     assert expected == result
 
 
-def test_set_castling_king_side_to_true():
+def test_set_castling_king_side_to_true() -> None:
     # given
     expected = True
     fen_data = FenData(PiecesEnum.WHITE.value)
@@ -34,7 +34,7 @@ def test_set_castling_king_side_to_true():
     assert expected == result
 
 
-def test_set_castling_king_side_to_false():
+def test_set_castling_king_side_to_false() -> None:
     # given
     expected: bool = False
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
@@ -48,7 +48,7 @@ def test_set_castling_king_side_to_false():
     assert expected == result
 
 
-def test_set_castling_queen_side_to_false():
+def test_set_castling_queen_side_to_false() -> None:
     # given
     expected: bool = False
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
@@ -62,7 +62,7 @@ def test_set_castling_queen_side_to_false():
     assert expected == result
 
 
-def test_can_king_castle_king_side_and_you_can():
+def test_can_king_castle_king_side_and_you_can() -> None:
     # given
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
     expected: bool = True
@@ -75,7 +75,7 @@ def test_can_king_castle_king_side_and_you_can():
     assert expected == result
 
 
-def test_can_king_castle_king_side_and_you_can_not():
+def test_can_king_castle_king_side_and_you_can_not() -> None:
     # given
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
     expected: bool = False
@@ -89,7 +89,7 @@ def test_can_king_castle_king_side_and_you_can_not():
     assert expected == result
 
 
-def test_can_king_castle_queen_side_and_you_can():
+def test_can_king_castle_queen_side_and_you_can() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
     expected: bool = True
@@ -102,7 +102,7 @@ def test_can_king_castle_queen_side_and_you_can():
     assert expected == result
 
 
-def test_can_king_castle_queen_side_and_you_can_not():
+def test_can_king_castle_queen_side_and_you_can_not() -> None:
     # given
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
     expected: bool = False
@@ -116,7 +116,7 @@ def test_can_king_castle_queen_side_and_you_can_not():
     assert expected == result
 
 
-def test_update_no_sack_and_pawn_count_increment():
+def test_update_no_sack_and_pawn_count_increment() -> None:
     # given
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
     expected: int = 1
@@ -129,7 +129,7 @@ def test_update_no_sack_and_pawn_count_increment():
     assert expected == result
 
 
-def test_update_no_sack_and_pawn_count_zero_counter():
+def test_update_no_sack_and_pawn_count_zero_counter() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
     expected: int = 0
@@ -142,7 +142,7 @@ def test_update_no_sack_and_pawn_count_zero_counter():
     assert expected == result
 
 
-def test_can_castle_king_side_color_is_null():
+def test_can_castle_king_side_color_is_null() -> None:
     # given
     color: int = None
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
@@ -154,7 +154,7 @@ def test_can_castle_king_side_color_is_null():
     # then
 
 
-def test_can_castle_king_side_color_is_unknown():
+def test_can_castle_king_side_color_is_unknown() -> None:
     # given
     color: int = 61
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
@@ -166,7 +166,7 @@ def test_can_castle_king_side_color_is_unknown():
     # then
 
 
-def test_can_castle_queen_side_color_is_null():
+def test_can_castle_queen_side_color_is_null() -> None:
     # given
     color: int = None
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
@@ -178,7 +178,7 @@ def test_can_castle_queen_side_color_is_null():
     # then
 
 
-def test_can_castle_queen_side_color_is_unknown():
+def test_can_castle_queen_side_color_is_unknown() -> None:
     # given
     color: int = 61
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
@@ -190,7 +190,7 @@ def test_can_castle_queen_side_color_is_unknown():
     # then
 
 
-def test_set_castling_king_side_nulls():
+def test_set_castling_king_side_nulls() -> None:
     # given
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
 
@@ -201,7 +201,7 @@ def test_set_castling_king_side_nulls():
     # then
 
 
-def test_set_castling_king_side_color_not_exists():
+def test_set_castling_king_side_color_not_exists() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
     color: int = 71
@@ -213,7 +213,7 @@ def test_set_castling_king_side_color_not_exists():
     # then
 
 
-def test_set_castling_queen_side_nulls():
+def test_set_castling_queen_side_nulls() -> None:
     # given
     fen_data: FenData = FenData(PiecesEnum.WHITE.value)
 
@@ -224,7 +224,7 @@ def test_set_castling_queen_side_nulls():
     # then
 
 
-def test_set_castling_queen_side_color_not_exists():
+def test_set_castling_queen_side_color_not_exists() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
     color: int = 71
@@ -236,7 +236,7 @@ def test_set_castling_queen_side_color_not_exists():
     # then
 
 
-def test_update_no_sack_and_pawn_count_null_argument():
+def test_update_no_sack_and_pawn_count_null_argument() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
 
@@ -247,7 +247,7 @@ def test_update_no_sack_and_pawn_count_null_argument():
     # then
 
 
-def test_set_en_passant_square_nulls():
+def test_set_en_passant_square_nulls() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
 
@@ -258,7 +258,7 @@ def test_set_en_passant_square_nulls():
     # then
 
 
-def test_set_en_passant_square_is_not_within_bonds():
+def test_set_en_passant_square_is_not_within_bonds() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
     square = -2
@@ -270,7 +270,7 @@ def test_set_en_passant_square_is_not_within_bonds():
     # then
 
 
-def test_update_fen_data_null_argument():
+def test_update_fen_data_null_argument() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
 
@@ -281,7 +281,7 @@ def test_update_fen_data_null_argument():
     # then
 
 
-def test_set_en_passant_square_null_square():
+def test_set_en_passant_square_null_square() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
     square: int = None
@@ -293,7 +293,7 @@ def test_set_en_passant_square_null_square():
     # then
 
 
-def test_set_en_passant_square_square_out_of_bonds():
+def test_set_en_passant_square_square_out_of_bonds() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
     square: int = 71
@@ -305,7 +305,7 @@ def test_set_en_passant_square_square_out_of_bonds():
     # then
 
 
-def test_set_en_passant_square_not_valid_square():
+def test_set_en_passant_square_not_valid_square() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
     square: int = 1
@@ -317,7 +317,7 @@ def test_set_en_passant_square_not_valid_square():
     # then
 
 
-def test_set_en_passant_piece_square_not_valid_square():
+def test_set_en_passant_piece_square_not_valid_square() -> None:
     # given
     fen_data = FenData(PiecesEnum.WHITE.value)
     square: int = 1

@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass(slots=True, order=True, unsafe_hash=True)
 class MoveData:
     """
-    Class containing data for making and unmaking moves
+    Class containing data for making and unmaking __moves
     """
     deleted_piece: int
     white_castle_king: bool

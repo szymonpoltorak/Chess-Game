@@ -49,7 +49,7 @@ class Move:
         else:
             self.__end_square = BoardEnum.BOARD_LENGTH.value * row + col
 
-    def get_special_flag_value(self) -> int:
+    def get_special_flag(self) -> int:
         """
         Returns the value of special move flag which stands for special move value
         :return: int value of special flag

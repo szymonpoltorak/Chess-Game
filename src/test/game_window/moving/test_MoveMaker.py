@@ -4,19 +4,21 @@ from numpy import dtype
 from numpy import int8
 from numpy import ndarray
 
-from game_window.board.Board import Board
+from game_window.board.GameBoard import GameBoard
 from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenMaker import FenMaker
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.Move import Move
-from game_window.moving.MoveData import MoveData
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveData import MoveData
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 from game_window.moving.MoveMaker import MoveMaker
 
 
-def test_make_move():
+def test_make_move() -> None:
     # given
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     expected: int = PiecesEnum.BLACK.value | PiecesEnum.ROOK.value
     color: int = PiecesEnum.WHITE.value
     start_square: int = 63
@@ -30,9 +32,9 @@ def test_make_move():
     assert expected == result.deleted_piece
 
 
-def test_un_make_move():
+def test_un_make_move() -> None:
     # given
-    board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     expected: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
     deleted_piece: int = PiecesEnum.WHITE.value | PiecesEnum.ROOK.value
     deleted_data: MoveData = MoveData(deleted_piece, MoveEnum.NONE.value, MoveEnum.NONE.value, MoveEnum.NONE.value,
@@ -44,16 +46,16 @@ def test_un_make_move():
 
     # when
     MoveMaker.un_make_move(move, deleted_data, board)
-    result: int = board.get_board_array()[end_square]
+    result: int = board.board_array()[end_square]
 
     # then
     assert expected == result
 
 
-def test_make_castling_move_king_side():
+def test_make_castling_move_king_side() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     color: int = PiecesEnum.WHITE.value
     move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
     rook_pos: int = 61
@@ -71,10 +73,10 @@ def test_make_castling_move_king_side():
     assert result == expected
 
 
-def test_un_make_castling_move_king_side():
+def test_un_make_castling_move_king_side() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     color: int = PiecesEnum.WHITE.value
     move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
     rook_pos: int = 61
@@ -93,9 +95,9 @@ def test_un_make_castling_move_king_side():
     assert result == expected
 
 
-def test_does_making_move_return_proper_move_data():
+def test_does_making_move_return_proper_move_data() -> None:
     # given
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
     expected: MoveData = MoveData(PiecesEnum.WHITE.value | PiecesEnum.KING.value, True, True, True, True,
                                   MoveEnum.NONE.value, MoveEnum.NONE.value, 0, 0)
@@ -110,10 +112,10 @@ def test_does_making_move_return_proper_move_data():
     assert result == expected
 
 
-def test_make_castling_move_queen_side():
+def test_make_castling_move_queen_side() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     color: int = PiecesEnum.WHITE.value
     rook_pos: int = 59
     king_pos: int = 58
@@ -132,10 +134,10 @@ def test_make_castling_move_queen_side():
     assert result == expected
 
 
-def test_un_make_castling_move_queen_side():
+def test_un_make_castling_move_queen_side() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     color: int = PiecesEnum.WHITE.value
     rook_pos: int = 59
     king_pos: int = 58
@@ -155,11 +157,10 @@ def test_un_make_castling_move_queen_side():
     assert result == expected
 
 
-def test_make_left_en_passant_move():
+def test_make_left_en_passant_move() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
-    fen_data: FenData = board.get_fen_data()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     expected: Tuple[int, int, int] = (PiecesEnum.NONE.value, PiecesEnum.WHITE.value | PiecesEnum.PAWN.value,
                                       PiecesEnum.NONE.value)
     captured_pawn_pos: int = 27
@@ -175,8 +176,8 @@ def test_make_left_en_passant_move():
     board.add_piece_to_the_board(PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, captured_pawn_pos)
     board.add_piece_to_the_board(PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, capturing_pawn_pos)
 
-    fen_data.set_en_passant_square(en_passant_pos)
-    fen_data.set_en_passant_piece_square(captured_pawn_pos)
+    board.set_en_passant_square(en_passant_pos)
+    board.set_en_passant_piece_square(captured_pawn_pos)
     board.update_fen()
 
     # when
@@ -186,15 +187,14 @@ def test_make_left_en_passant_move():
 
     # then
     assert result == expected
-    assert fen_data.get_en_passant_square() == -1
-    assert fen_data.get_en_passant_piece_square() == -1
+    assert board.en_passant_square() == -1
+    assert board.en_passant_piece_square() == -1
 
 
-def test_un_make_left_en_passant_move():
+def test_un_make_left_en_passant_move() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
-    fen_data: FenData = board.get_fen_data()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     expected: Tuple[int, int, int] = (PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, PiecesEnum.NONE.value,
                                       PiecesEnum.WHITE.value | PiecesEnum.PAWN.value)
     captured_pawn_pos: int = 27
@@ -210,8 +210,8 @@ def test_un_make_left_en_passant_move():
     board.add_piece_to_the_board(PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, captured_pawn_pos)
     board.add_piece_to_the_board(PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, capturing_pawn_pos)
 
-    fen_data.set_en_passant_square(en_passant_pos)
-    fen_data.set_en_passant_piece_square(captured_pawn_pos)
+    board.set_en_passant_square(en_passant_pos)
+    board.set_en_passant_piece_square(captured_pawn_pos)
     board.update_fen()
 
     # when
@@ -222,15 +222,14 @@ def test_un_make_left_en_passant_move():
 
     # then
     assert result == expected
-    assert fen_data.get_en_passant_square() == en_passant_pos
-    assert fen_data.get_en_passant_piece_square() == captured_pawn_pos
+    assert board.en_passant_square() == en_passant_pos
+    assert board.en_passant_piece_square() == captured_pawn_pos
 
 
-def test_make_right_en_passant_move():
+def test_make_right_en_passant_move() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
-    fen_data: FenData = board.get_fen_data()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     expected: Tuple[int, int, int] = (PiecesEnum.NONE.value, PiecesEnum.WHITE.value | PiecesEnum.PAWN.value,
                                       PiecesEnum.NONE.value)
     captured_pawn_pos: int = 29
@@ -246,8 +245,8 @@ def test_make_right_en_passant_move():
     board.add_piece_to_the_board(PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, captured_pawn_pos)
     board.add_piece_to_the_board(PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, capturing_pawn_pos)
 
-    fen_data.set_en_passant_square(en_passant_pos)
-    fen_data.set_en_passant_piece_square(captured_pawn_pos)
+    board.set_en_passant_square(en_passant_pos)
+    board.set_en_passant_piece_square(captured_pawn_pos)
     board.update_fen()
 
     # when
@@ -257,15 +256,14 @@ def test_make_right_en_passant_move():
 
     # then
     assert result == expected
-    assert fen_data.get_en_passant_square() == -1
-    assert fen_data.get_en_passant_piece_square() == -1
+    assert board.en_passant_square() == -1
+    assert board.en_passant_piece_square() == -1
 
 
-def test_un_make_right_en_passant_move():
+def test_un_make_right_en_passant_move() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
-    fen_data: FenData = board.get_fen_data()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     expected: Tuple[int, int, int] = (PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, PiecesEnum.NONE.value,
                                       PiecesEnum.WHITE.value | PiecesEnum.PAWN.value)
     captured_pawn_pos: int = 29
@@ -281,8 +279,8 @@ def test_un_make_right_en_passant_move():
     board.add_piece_to_the_board(PiecesEnum.BLACK.value | PiecesEnum.PAWN.value, captured_pawn_pos)
     board.add_piece_to_the_board(PiecesEnum.WHITE.value | PiecesEnum.PAWN.value, capturing_pawn_pos)
 
-    fen_data.set_en_passant_square(en_passant_pos)
-    fen_data.set_en_passant_piece_square(captured_pawn_pos)
+    board.set_en_passant_square(en_passant_pos)
+    board.set_en_passant_piece_square(captured_pawn_pos)
     board.update_fen()
 
     # when
@@ -293,14 +291,14 @@ def test_un_make_right_en_passant_move():
 
     # then
     assert result == expected
-    assert fen_data.get_en_passant_square() == en_passant_pos
-    assert fen_data.get_en_passant_piece_square() == captured_pawn_pos
+    assert board.en_passant_square() == en_passant_pos
+    assert board.en_passant_piece_square() == captured_pawn_pos
 
 
-def test_make_promotion_to_queen():
+def test_make_promotion_to_queen() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -319,10 +317,10 @@ def test_make_promotion_to_queen():
     assert result == expected
 
 
-def test_un_make_promotion_to_queen():
+def test_un_make_promotion_to_queen() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -342,10 +340,10 @@ def test_un_make_promotion_to_queen():
     assert result == expected
 
 
-def test_make_promotion_to_rook():
+def test_make_promotion_to_rook() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -364,10 +362,10 @@ def test_make_promotion_to_rook():
     assert result == expected
 
 
-def test_un_make_promotion_to_rook():
+def test_un_make_promotion_to_rook() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -387,10 +385,10 @@ def test_un_make_promotion_to_rook():
     assert result == expected
 
 
-def test_make_promotion_to_bishop():
+def test_make_promotion_to_bishop() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -409,10 +407,10 @@ def test_make_promotion_to_bishop():
     assert result == expected
 
 
-def test_un_make_promotion_to_bishop():
+def test_un_make_promotion_to_bishop() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -432,10 +430,10 @@ def test_un_make_promotion_to_bishop():
     assert result == expected
 
 
-def test_make_promotion_to_knight():
+def test_make_promotion_to_knight() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -454,10 +452,10 @@ def test_make_promotion_to_knight():
     assert result == expected
 
 
-def test_un_make_promotion_to_knight():
+def test_un_make_promotion_to_knight() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 8
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -477,9 +475,9 @@ def test_un_make_promotion_to_knight():
     assert result == expected
 
 
-def test_make_capture_of_rook():
+def test_make_capture_of_rook() -> None:
     # given
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     promotion_start_square: int = 9
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -491,16 +489,16 @@ def test_make_capture_of_rook():
 
     # when
     MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
-    result: bool = board.get_fen_data().can_king_castle_queen_side(PiecesEnum.BLACK.value)
+    result: bool = board.can_king_castle_queen_side(PiecesEnum.BLACK.value)
 
     # then
     assert result == expected
 
 
-def test_un_make_capture_of_rook():
+def test_un_make_capture_of_rook() -> None:
     # given
-    board: Board = Board()
-    board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
+    board_array: ndarray[int, dtype[int8]] = board.board_array()
     promotion_start_square: int = 9
     promotion_end_square: int = 0
     move: Move = Move(promotion_start_square, promotion_end_square, PiecesEnum.PAWN.value,
@@ -514,16 +512,16 @@ def test_un_make_capture_of_rook():
     # when
     deleted_data: MoveData = MoveMaker.make_move(move, PiecesEnum.WHITE.value, board)
     MoveMaker.un_make_move(move, deleted_data, board)
-    can_castle: bool = board.get_fen_data().can_king_castle_queen_side(PiecesEnum.BLACK.value)
+    can_castle: bool = board.can_king_castle_queen_side(PiecesEnum.BLACK.value)
     result: Tuple[int, int, bool] = (board_array[promotion_start_square], board_array[promotion_end_square], can_castle)
 
     # then
     assert result == expected
 
 
-def test_make_double_pawn_move():
+def test_make_double_pawn_move() -> None:
     # given
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     move: Move = Move(48, 32, PiecesEnum.PAWN.value, SpecialFlags.NONE.value)
     color: int = PiecesEnum.WHITE.value
     expected: Tuple[int, int, int] = (color | PiecesEnum.PAWN.value, 40, 32)
@@ -531,30 +529,30 @@ def test_make_double_pawn_move():
     # when
     MoveMaker.make_move(move, color, board)
 
-    en_square: int = board.get_fen_data().get_en_passant_square()
-    en_piece_square: int = board.get_fen_data().get_en_passant_piece_square()
-    result: Tuple[int, int, int] = (board.get_board_array()[32], en_square, en_piece_square)
+    en_square: int = board.en_passant_square()
+    en_piece_square: int = board.en_passant_piece_square()
+    result: Tuple[int, int, int] = (board.board_array()[32], en_square, en_piece_square)
 
     # then
     assert result == expected
 
 
-def test_un_make_double_pawn_move():
+def test_un_make_double_pawn_move() -> None:
     # given
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     move: Move = Move(48, 32, PiecesEnum.PAWN.value, SpecialFlags.NONE.value)
     color: int = PiecesEnum.WHITE.value
     expected: Tuple[int, int, int] = (0, -1, -1)
-    start_string = board.get_fen_string()
+    start_string = board.fen_string()
 
     # when
     deleted_data: MoveData = MoveMaker.make_move(move, color, board)
     MoveMaker.un_make_move(move, deleted_data, board)
 
-    en_square: int = board.get_fen_data().get_en_passant_square()
-    en_piece_square: int = board.get_fen_data().get_en_passant_piece_square()
-    result: Tuple[int, int, int] = (board.get_board_array()[32], en_square, en_piece_square)
+    en_square: int = board.en_passant_square()
+    en_piece_square: int = board.en_passant_piece_square()
+    result: Tuple[int, int, int] = (board.board_array()[32], en_square, en_piece_square)
 
     # then
     assert result == expected
-    assert start_string == board.get_fen_string()
+    assert start_string == board.fen_string()

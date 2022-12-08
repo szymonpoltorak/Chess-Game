@@ -5,6 +5,9 @@ class SidebarEnum(Enum):
     """
     Enum consists every SideBar needed offset value.
     """
+
+    __slots__ = ()
+
     SIDEBAR_X: int = 0
     SIDEBAR_Y: int = 0
     SIDEBAR_WIDTH: int = 80

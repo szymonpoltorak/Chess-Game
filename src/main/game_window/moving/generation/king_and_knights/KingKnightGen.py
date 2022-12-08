@@ -1,14 +1,16 @@
-from typing import TYPE_CHECKING, Tuple
+from typing import Tuple
+from typing import TYPE_CHECKING
 
-from game_window.ColorManager import ColorManager
 from game_window.board.BoardUtil import BoardUtil
-from game_window.board.fen.FenData import FenData
+from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.Move import Move
-from game_window.moving.MoveList import MoveList
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveList import MoveList
+from game_window.moving.generation.GenUtil import GenUtil
+from game_window.moving.generation.king_and_knights.KingKnightGenerator import KingKnightGenerator
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from game_window.moving.generation.pawns.PawnUtil import PawnUtil
 
@@ -16,18 +18,18 @@ if TYPE_CHECKING:
     from game_window.board.Board import Board
 
 
-class KingKnightGen:
+class KingKnightGen(KingKnightGenerator):
     """
-    Class containing methods to generate moves for Knights and Kings
+    Class containing methods to generate __moves for Knights and Kings
     """
 
     __slots__ = ()
 
-    @staticmethod
-    def generate_moves_for_knight_and_king(moves_list: MoveList, piece: int, color: int, board: 'Board',
-                                           start_square: int) -> None:
+    def generate_moves_for_knight_and_king(self, moves_list: MoveList, piece: int, color: int, board: 'Board',
+                                           start_square: int, captures_only: bool) -> None:
         """
         Static method used to generate moves_list for knights and kings
+        :param captures_only: decides if method should generate every legal move or captures only
         :param moves_list: list of moves_list (MoveList instance)
         :param piece: int value of piece_square
         :param color: int value of color to move
@@ -50,18 +52,18 @@ class KingKnightGen:
 
             if not PawnUtil.is_attack_target_in_border_bounds(start_square, move_target, piece_range):
                 continue
-            piece_on_move_target: int = board.get_board_array()[move_target]
+            piece_on_move_target: int = board.board_array()[move_target]
 
             if ColorManager.get_piece_color(piece_on_move_target) == color:
                 continue
-            moves_list.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
+            move: Move = Move(start_square, move_target, piece, SpecialFlags.NONE.value)
+            GenUtil.add_move_if_needed(moves_list, move, captures_only, board)
 
-        if piece == PiecesEnum.KING.value:
-            KingKnightGen.generate_castling_moves(moves_list, piece, color, board, start_square)
+        if piece == PiecesEnum.KING.value and not captures_only:
+            self.__generate_castling_moves(moves_list, piece, color, board, start_square)
 
-    @staticmethod
-    def generate_castling_moves(moves_list: MoveList, piece: int, color: int, board: 'Board',
-                                start_square: int) -> None:
+    def __generate_castling_moves(self, moves_list: MoveList, piece: int, color: int, board: 'Board',
+                                  start_square: int) -> None:
         """
         Static method to generate castling moves_list
         :param moves_list: list of moves_list (MoveList instance)
@@ -71,18 +73,14 @@ class KingKnightGen:
         :param start_square: start end_square index
         :return: None
         """
-        fen_data: FenData = board.get_fen_data()
-
-        if not KingUtil.is_anything_on_king_side(board, start_square) and fen_data.can_king_castle_king_side(
-                color):
+        if not KingUtil.is_anything_on_king_side(board, start_square) and board.can_king_castle_king_side(color):
             if not BoardUtil.is_board_inverted(board):
                 move_target: int = start_square + MoveEnum.CASTLE_MOVE.value
             else:
                 move_target = start_square - MoveEnum.CASTLE_MOVE.value
             moves_list.append(Move(start_square, move_target, piece, SpecialFlags.CASTLING.value))
 
-        if not KingUtil.is_anything_on_queen_side(board, start_square) and fen_data.can_king_castle_queen_side(
-                color):
+        if not KingUtil.is_anything_on_queen_side(board, start_square) and board.can_king_castle_queen_side(color):
             if not BoardUtil.is_board_inverted(board):
                 move_target = start_square - MoveEnum.CASTLE_MOVE.value
             else:

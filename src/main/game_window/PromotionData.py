@@ -5,20 +5,21 @@ from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.board.Board import Board
 from game_window.enums.PiecesEnum import PiecesEnum
+from game_window.Promoter import Promoter
 
 
-class PromotionData:
+class PromotionData(Promoter):
     """
     CLass containing methods for pawn promotion
     """
     __slots__ = array(["__piece_color", "__position_x", "__position_y", "__is_promoting", "__square"], dtype=str)
 
     def __init__(self) -> None:
-        self.__piece_color = -1
-        self.__position_x = -1
-        self.__position_y = -1
-        self.__is_promoting = False
-        self.__square = -1
+        self.__piece_color: int = -1
+        self.__position_x: int = -1
+        self.__position_y: int = -1
+        self.__is_promoting: bool = False
+        self.__square: int = -1
 
     def set_promotion_data(self, color: int, x: int, y: int, square: int) -> None:
         """
@@ -54,11 +55,11 @@ class PromotionData:
             return
         pieces = array([PiecesEnum.QUEEN.value, PiecesEnum.BISHOP.value, PiecesEnum.KNIGHT.value,
                         PiecesEnum.ROOK.value], dtype=int8)
-        board.get_board_array()[self.__square] = self.__piece_color | pieces[self.get_rect_index(y, rect_size)]
+        board.board_array()[self.__square] = self.__piece_color | pieces[self.__get_rect_index(y, rect_size)]
         board.update_fen()
         self.__is_promoting = False
 
-    def get_rect_index(self, y: int, rect_size: int) -> int:
+    def __get_rect_index(self, y: int, rect_size: int) -> int:
         """
         Method used to return index of current rect position
         :param y: y coordinate int
@@ -77,20 +78,6 @@ class PromotionData:
             low_bond += rect_size
             high_bond += rect_size
         return -1
-
-    def get_position_x(self) -> int:
-        """
-        Gives access to x position of promotion window
-        :return: int
-        """
-        return self.__position_x
-
-    def get_position_y(self) -> int:
-        """
-        Gives access to y position of promotion window
-        :return: int
-        """
-        return self.__position_y
 
     def get_piece_color(self) -> int:
         """

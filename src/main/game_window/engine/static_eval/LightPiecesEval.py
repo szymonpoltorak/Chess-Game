@@ -1,7 +1,10 @@
-from numpy import array, dtype
+from typing import Dict
+from typing import TYPE_CHECKING
+
+from numpy import array
+from numpy import dtype
 from numpy import int8
 from numpy import ndarray
-from typing import TYPE_CHECKING, Dict
 
 from game_window.ColorManager import ColorManager
 from game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
@@ -23,28 +26,27 @@ class LightPiecesEval:
     def evaluate_bishops(board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate if player has a pair of bishops.
-        :param favor_color: float value of color
+        :param favor_color: float value of favor_color
         :param board: Board instance
         :return: float value of evaluation
         """
         evaluation: float = 0
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
-        engine_color: int = board.get_engine_color()
-        player_color: int = board.get_player_color()
-        engine_bishops: int = 0
-        player_bishops: int = 0
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        favor_bishops: int = 0
+        enemy_bishops: int = 0
+        enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
 
         for square, piece in enumerate(board_array):
             if piece == PiecesEnum.NONE.value:
                 continue
 
-            if piece == engine_color | PiecesEnum.BISHOP.value:
-                engine_bishops += 1
-            elif piece == player_color | PiecesEnum.BISHOP.value:
-                player_bishops += 1
-        if engine_bishops >= 2:
+            if piece == favor_color | PiecesEnum.BISHOP.value:
+                favor_bishops += 1
+            elif piece == enemy_color | PiecesEnum.BISHOP.value:
+                enemy_bishops += 1
+        if favor_bishops >= 2:
             evaluation += EvalEnum.BISHOP_PAIR.value
-        if player_bishops >= 2:
+        if enemy_bishops >= 2:
             evaluation -= EvalEnum.BISHOP_PAIR.value
         return evaluation
 
@@ -57,7 +59,7 @@ class LightPiecesEval:
         :return: float value of evaluation
         """
         pieces = array([PiecesEnum.KNIGHT.value, PiecesEnum.BISHOP.value, PiecesEnum.BISHOP.value, PiecesEnum.KNIGHT.value])
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
         favorable_accumulator: float = 0
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
         unfavorable_accumulator: float = 0
@@ -65,8 +67,8 @@ class LightPiecesEval:
         un_favor_light_walked: int = 0
 
         light_pieces_positions: Dict[int, ndarray[int, dtype[int8]]] = {
-            board.get_engine_color(): array([1, 2, 5, 6], dtype=int8),
-            board.get_player_color(): array([57, 58, 61, 62], dtype=int8),
+            board.engine_color(): array([1, 2, 5, 6], dtype=int8),
+            board.player_color(): array([57, 58, 61, 62], dtype=int8),
         }
 
         for i in range(0, 4):
@@ -90,4 +92,5 @@ class LightPiecesEval:
             favor_light_walked -= 2 * EvalEnum.WALKED.value
 
         evaluation: float = favorable_accumulator - unfavorable_accumulator
+
         return evaluation

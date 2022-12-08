@@ -4,12 +4,10 @@ from numpy import dtype
 from numpy import int8
 from numpy import ndarray
 
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenUtil import FenUtil
 from game_window.ColorManager import ColorManager
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.Move import Move
-from game_window.moving.MoveData import MoveData
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveData import MoveData
 from game_window.moving.MoveMakingUtil import MoveMakingUtil
 from game_window.moving.MoveUnMakingUtil import MoveUnMakingUtil
 
@@ -19,7 +17,7 @@ if TYPE_CHECKING:
 
 class MoveMaker:
     """
-    Class containing methods to make and unmake moves
+    Class containing methods to make and unmake __moves
     """
 
     __slots__ = ()
@@ -33,15 +31,14 @@ class MoveMaker:
         :param color: color of a piece
         :return: MoveData instance containing fen_data before the move and the deleted piece by move
         """
-        fen_data: FenData = board.get_fen_data()
         end_square: int = move.get_end_square()
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
         move_data: MoveData = MoveMakingUtil.copy_fen_data_to_move_data(board)
         enemy_color: int = ColorManager.get_opposite_piece_color(color)
 
         if board_array[end_square] == enemy_color | PiecesEnum.ROOK.value:
-            FenUtil.disable_castling_on_side(enemy_color, end_square, board)
-        FenUtil.update_fen_data_with_double_pawn_movement(move, fen_data)
+            board.disable_castling_on_side(enemy_color, end_square)
+        board.update_fen_data_with_double_pawn_movement(move)
 
         if MoveMakingUtil.check_and_handle_rook_movement(move, board, color, move_data):
             return move_data

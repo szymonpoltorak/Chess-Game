@@ -1,18 +1,24 @@
 import pytest
-from numpy import array, int8, dtype, ndarray
+from numpy import array
+from numpy import dtype
+from numpy import int8
+from numpy import ndarray
 from numpy import zeros
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.Board import Board
+from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenMaker import FenMaker
+from game_window.board.GameBoard import GameBoard
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.moving.generation.data.Move import Move
 from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-from game_window.moving.Move import Move
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 
 
-def test_find_friendly_king_squares_only_enemy_king():
+def test_find_friendly_king_squares_only_enemy_king() -> None:
     # given
     color_to_move: int = PiecesEnum.WHITE.value
     board_array: ndarray[int, dtype[int8]] = zeros(BoardEnum.BOARD_SIZE.value)
@@ -25,7 +31,7 @@ def test_find_friendly_king_squares_only_enemy_king():
     # then
 
 
-def test_find_friendly_king_squares_a_friendly_king():
+def test_find_friendly_king_squares_a_friendly_king() -> None:
     # given
     color_to_move: int = PiecesEnum.BLACK.value
     board_array: ndarray[int, dtype[int8]] = zeros(BoardEnum.BOARD_SIZE.value)
@@ -40,7 +46,7 @@ def test_find_friendly_king_squares_a_friendly_king():
     assert expected == result
 
 
-def test_get_castling_squares_move_distance_greater_than_0():
+def test_get_castling_squares_move_distance_greater_than_0() -> None:
     # given
     start_square: int = 4
     end_square: int = 6
@@ -55,7 +61,7 @@ def test_get_castling_squares_move_distance_greater_than_0():
     assert expected.all() == result.all()
 
 
-def test_get_castling_squares_move_distance_less_than_0():
+def test_get_castling_squares_move_distance_less_than_0() -> None:
     # given
     start_square: int = 6
     end_square: int = 4
@@ -70,9 +76,9 @@ def test_get_castling_squares_move_distance_less_than_0():
     assert expected.all() == result.all()
 
 
-def test_is_anything_on_king_side_start_square_out_of_bonds():
+def test_is_anything_on_king_side_start_square_out_of_bonds() -> None:
     # given
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = -4
 
     # when
@@ -82,7 +88,7 @@ def test_is_anything_on_king_side_start_square_out_of_bonds():
     # then
 
 
-def test_is_anything_on_king_side_nulls():
+def test_is_anything_on_king_side_nulls() -> None:
     # given
 
     # when
@@ -92,10 +98,10 @@ def test_is_anything_on_king_side_nulls():
     # then
 
 
-def test_is_anything_on_king_side_it_is():
+def test_is_anything_on_king_side_it_is() -> None:
     # given
     expected: bool = True
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = 60
 
     # when
@@ -105,10 +111,10 @@ def test_is_anything_on_king_side_it_is():
     assert result == expected
 
 
-def test_is_anything_on_king_side_it_is_not():
+def test_is_anything_on_king_side_it_is_not() -> None:
     # given
     expected: bool = False
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = 60
 
     board.delete_piece_from_board_square(start_square + 1)
@@ -121,10 +127,10 @@ def test_is_anything_on_king_side_it_is_not():
     assert result == expected
 
 
-def test_is_anything_on_queen_side_it_is():
+def test_is_anything_on_queen_side_it_is() -> None:
     # given
     expected: bool = True
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = 60
 
     # when
@@ -134,10 +140,10 @@ def test_is_anything_on_queen_side_it_is():
     assert result == expected
 
 
-def test_is_anything_on_queen_side_it_is_not():
+def test_is_anything_on_queen_side_it_is_not() -> None:
     # given
     expected: bool = False
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = 60
 
     board.delete_piece_from_board_square(start_square - 1)
@@ -151,9 +157,9 @@ def test_is_anything_on_queen_side_it_is_not():
     assert result == expected
 
 
-def test_is_anything_on_queen_side_start_square_out_of_bonds():
+def test_is_anything_on_queen_side_start_square_out_of_bonds() -> None:
     # given
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     start_square: int = -4
 
     # when
@@ -163,7 +169,7 @@ def test_is_anything_on_queen_side_start_square_out_of_bonds():
     # then
 
 
-def test_is_anything_on_queen_side_nulls():
+def test_is_anything_on_queen_side_nulls() -> None:
     # given
 
     # when
@@ -173,7 +179,7 @@ def test_is_anything_on_queen_side_nulls():
     # then
 
 
-def test_check_castling_squares_nulls():
+def test_check_castling_squares_nulls() -> None:
     # given
 
     # when
@@ -183,17 +189,18 @@ def test_check_castling_squares_nulls():
     # then
 
 
-def test_check_castling_squares_square_out_of_bonds():
+def test_check_castling_squares_square_out_of_bonds() -> None:
     # given
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
 
     # when
     with pytest.raises(IllegalArgumentException):
-        result: bool = KingUtil.check_castling_squares(1, 8, -1, Board())
+        result: bool = KingUtil.check_castling_squares(1, 8, -1, board)
 
     # then
 
 
-def test_find_friendly_king_squares_nulls():
+def test_find_friendly_king_squares_nulls() -> None:
     # given
 
     # when
@@ -203,18 +210,18 @@ def test_find_friendly_king_squares_nulls():
     # then
 
 
-def test_find_friendly_king_squares_out_of_bonds():
+def test_find_friendly_king_squares_out_of_bonds() -> None:
     # given
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
 
     # when
     with pytest.raises(IllegalArgumentException):
-        result: int = KingUtil.find_friendly_king_squares(board.get_board_array(), -3)
+        result: int = KingUtil.find_friendly_king_squares(board.board_array(), -3)
 
     # then
 
 
-def test_get_castling_squares_nulls():
+def test_get_castling_squares_nulls() -> None:
     # given
 
     # when
@@ -224,7 +231,7 @@ def test_get_castling_squares_nulls():
     # then
 
 
-def test_is_it_castling_null_move():
+def test_is_it_castling_null_move() -> None:
     # given
 
     # when
@@ -234,7 +241,7 @@ def test_is_it_castling_null_move():
     # then
 
 
-def test_is_it_castling_castling_move():
+def test_is_it_castling_castling_move() -> None:
     # given
     expected: bool = True
     move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
@@ -246,7 +253,7 @@ def test_is_it_castling_castling_move():
     assert result == expected
 
 
-def test_is_it_castling_not_castling_move():
+def test_is_it_castling_not_castling_move() -> None:
     # given
     expected: bool = False
     move: Move = Move(60, 61, PiecesEnum.KING.value, -1)
@@ -258,7 +265,7 @@ def test_is_it_castling_not_castling_move():
     assert result == expected
 
 
-def test_is_it_castling_not_a_king():
+def test_is_it_castling_not_a_king() -> None:
     # given
     expected: bool = False
     move: Move = Move(60, 61, PiecesEnum.PAWN.value, -1)
@@ -270,7 +277,7 @@ def test_is_it_castling_not_a_king():
     assert result == expected
 
 
-def test_get_rook_position_null_args():
+def test_get_rook_position_null_args() -> None:
     # given
 
     # when
@@ -280,7 +287,7 @@ def test_get_rook_position_null_args():
     # then
 
 
-def test_get_rook_position_invalid_colors():
+def test_get_rook_position_invalid_colors() -> None:
     # given
     color: int = 15
     engine_color: int = 9
@@ -294,7 +301,7 @@ def test_get_rook_position_invalid_colors():
     # then
 
 
-def test_get_rook_position_queen_side():
+def test_get_rook_position_queen_side() -> None:
     # given
     color: int = PiecesEnum.BLACK.value
     engine_color: int = PiecesEnum.BLACK.value
@@ -309,7 +316,7 @@ def test_get_rook_position_queen_side():
     assert result == expected
 
 
-def test_get_rook_position_king_side():
+def test_get_rook_position_king_side() -> None:
     # given
     color: int = PiecesEnum.BLACK.value
     engine_color: int = PiecesEnum.BLACK.value

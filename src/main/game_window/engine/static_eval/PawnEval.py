@@ -1,5 +1,8 @@
-from numpy import ndarray, int8, dtype
 from typing import TYPE_CHECKING
+
+from numpy import dtype
+from numpy import int8
+from numpy import ndarray
 
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
@@ -22,7 +25,7 @@ class PawnEval:
         """
         Method used to evaluate pawn chains on board
         :param board: Board instance
-        :param favor_color: int value of color
+        :param favor_color: int value of favor_color
         :return: float
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
@@ -40,10 +43,10 @@ class PawnEval:
         Method used to check if piece is a pawn or not
         :param board: Board instance
         :param square: int value of square
-        :param piece_color: int value of color
+        :param piece_color: int value of favor_color
         :return: bool
         """
-        piece: int = board.get_board_array()[square]
+        piece: int = board.board_array()[square]
         current_piece_color: int = ColorManager.get_piece_color(piece)
         piece_value: int = piece - current_piece_color
 
@@ -57,7 +60,7 @@ class PawnEval:
         Method used to get length of left chain
         :param board: Board instance
         :param index: index of current square
-        :param color: int value of color
+        :param color: int value of favor_color
         :param step_left: int value of step of a left pawn move
         :return: int
         """
@@ -65,7 +68,7 @@ class PawnEval:
             raise ValueError("IT SHOULD NOT HAPPEN!")
         chain_left_side = []
         working_index: int = index
-        distances: ndarray[int, dtype[int8]] = board.get_distances()
+        distances: ndarray[int, dtype[int8]] = board.distances()
 
         while distances[working_index][3] != 0:
             working_index += step_left
@@ -92,7 +95,7 @@ class PawnEval:
         Method used to get length of right chain
         :param board: Board instance
         :param index: index of current square
-        :param color: int value of color
+        :param color: int value of favor_color
         :param step_right: int value of step of a right pawn move
         :return: int
         """
@@ -100,7 +103,7 @@ class PawnEval:
             raise ValueError("IT SHOULD NOT HAPPEN!")
         chain_right_side = []
         working_index: int = index
-        distances: ndarray[int, dtype[int8]] = board.get_distances()
+        distances: ndarray[int, dtype[int8]] = board.distances()
 
         while distances[working_index][4] != 0:
             working_index += step_right
@@ -124,13 +127,13 @@ class PawnEval:
     @staticmethod
     def get_pawn_chains_eval(board: 'Board', color: int) -> float:
         """
-        Method used to evaluate pawn chains for current color
+        Method used to evaluate pawn chains for current favor_color
         :param board: Board instance
-        :param color: int value of color
+        :param color: int value of favor_color
         :return: float
         """
-        step_left = MoveEnum.TOP_LEFT.value if color == board.get_player_color() else MoveEnum.BOTTOM_LEFT.value
-        step_right = MoveEnum.TOP_RIGHT.value if color == board.get_player_color() else MoveEnum.BOTTOM_RIGHT.value
+        step_left = MoveEnum.TOP_LEFT.value if color == board.player_color() else MoveEnum.BOTTOM_LEFT.value
+        step_right = MoveEnum.TOP_RIGHT.value if color == board.player_color() else MoveEnum.BOTTOM_RIGHT.value
         chain_eval: int = 0
 
         for index in range(BoardEnum.BOARD_SIZE.value):

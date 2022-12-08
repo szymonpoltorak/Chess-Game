@@ -1,17 +1,19 @@
-from numpy import array, dtype
+from typing import Optional
+from typing import TYPE_CHECKING
+
+from numpy import array
+from numpy import dtype
 from numpy import int8
 from numpy import ndarray
-from typing import TYPE_CHECKING, Optional
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
 from exceptions.NullArgumentException import NullArgumentException
 from game_window.ColorManager import ColorManager
-from game_window.board.fen.FenData import FenData
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.Move import Move
+from game_window.moving.generation.data.Move import Move
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -25,6 +27,27 @@ class PawnUtil:
     __slots__ = ()
 
     @staticmethod
+    def is_it_valid_en_passant(board: 'Board', color: int) -> bool:
+        """
+        Method used to validate en passant movement in generation
+        :param color: int value of current color
+        :param board: Board instance
+        :return: bool
+        """
+        en_passant_square: int = board.en_passant_square()
+        en_passant_piece: int = board.en_passant_piece_square()
+        engine_color: int = board.engine_color()
+        player_color: int = board.player_color()
+
+        if color == engine_color and en_passant_square not in MoveEnum.ENGINE_EN_PASSANT_SQUARES.value:
+            return False
+        if color == player_color and en_passant_square not in MoveEnum.PLAYER_EN_PASSANT_SQUARES.value:
+            return False
+        if en_passant_square == -1 or en_passant_piece not in MoveEnum.EN_PASSANT_PIECE_SQUARES.value:
+            return False
+        return en_passant_piece != -1
+
+    @staticmethod
     def was_it_en_passant_move(move: Move, board: 'Board') -> bool:
         """
         Methods checks if it was an en passant move
@@ -34,14 +57,13 @@ class PawnUtil:
         """
         if None in (move, board):
             raise NullArgumentException("CANNOT WORK WITH NULLS!")
-        fen_data: FenData = board.get_fen_data()
 
-        if move.get_moving_piece() != PiecesEnum.PAWN.value or fen_data.get_en_passant_square() == -1:
+        if move.get_moving_piece() != PiecesEnum.PAWN.value or board.en_passant_square() == -1:
             return False
-        if fen_data.get_en_passant_piece_square() == -1:
+        if board.en_passant_piece_square() == -1:
             return False
 
-        return move.get_end_square() == fen_data.get_en_passant_square()
+        return move.get_end_square() == board.en_passant_square()
 
     @staticmethod
     def get_attack_direction(color: int, direction: str, engine_color: int) -> int:
@@ -109,8 +131,8 @@ class PawnUtil:
             raise NullArgumentException("CANNOT WORK ON NULLS!")
         if double_move_target < 0 or double_move_target > 63 or start_square < 0 or start_square > 63:
             raise IllegalArgumentException("SQUARES OUT OF BOARD BOUNDS!")
-        piece_single_up: int = board.get_board_array()[start_square + step]
-        piece_double_up: int = board.get_board_array()[double_move_target]
+        piece_single_up: int = board.board_array()[start_square + step]
+        piece_double_up: int = board.board_array()[double_move_target]
 
         return piece_double_up == 0 and piece_single_up == 0
 

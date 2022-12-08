@@ -1,3 +1,7 @@
+from numpy import array
+from numpy import dtype
+from numpy import generic
+from numpy import ndarray
 from PyQt5.QtCore import QRect
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
@@ -5,33 +9,33 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QStaticText
-from numpy import array, dtype, ndarray, generic
 
-from game_window.ColorManager import ColorManager
-from game_window.PromotionData import PromotionData
 from game_window.board.Board import Board
+from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
 from game_window.enums.CanvasEnum import CanvasEnum
 from game_window.enums.MoveEnum import MoveEnum
 from game_window.enums.Paths import Paths
 from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.Move import Move
+from game_window.moving.generation.data.Move import Move
+from game_window.Promoter import Promoter
 
 
 class Canvas(QPainter):
     """
     Class which manages painting board and pieces.
     """
-    __slots__ = array(["__rect_width", "__rect_height", "__freeze_piece", "__freeze_start", "__freeze_end"],
+
+    __slots__ = array(["__rect_width", "__rect_height", "__frozen_piece", "__frozen_start", "__frozen_end"],
                       dtype=str)
 
     def __init__(self) -> None:
         super(Canvas, self).__init__()
         self.__rect_width = int(CanvasEnum.CANVAS_WIDTH.value / 8)
         self.__rect_height = int(CanvasEnum.CANVAS_HEIGHT.value / 8)
-        self.__freeze_piece = -1
-        self.__freeze_start = -1
-        self.__freeze_end = -1
+        self.__frozen_piece = -1
+        self.__frozen_start = -1
+        self.__frozen_end = -1
 
     def draw_chess_board(self, move: Move, board: Board) -> None:
         """
@@ -63,22 +67,22 @@ class Canvas(QPainter):
                 current_x += self.__rect_width
 
                 if col == CanvasEnum.FIRST_COLUMN.value:
-                    self.draw_character_on_board(current_number, index_x + BoardEnum.NUMBER_SCALE_X.value,
-                                                 index_y + BoardEnum.NUMBER_SCALE_Y.value,
-                                                 ColorManager.get_opposite_square_color(color))
+                    self.__draw_character_on_board(current_number, index_x + BoardEnum.NUMBER_SCALE_X.value,
+                                                   index_y + BoardEnum.NUMBER_SCALE_Y.value,
+                                                   ColorManager.get_opposite_square_color(color))
                     current_number -= 1
                 if row == CanvasEnum.LAST_ROW.value:
-                    self.draw_character_on_board(letters[col], index_x + BoardEnum.LETTER_SCALE_X.value,
-                                                 index_y + BoardEnum.LETTER_SCALE_Y.value,
-                                                 ColorManager.get_opposite_square_color(color))
+                    self.__draw_character_on_board(letters[col], index_x + BoardEnum.LETTER_SCALE_X.value,
+                                                   index_y + BoardEnum.LETTER_SCALE_Y.value,
+                                                   ColorManager.get_opposite_square_color(color))
                     index_x = current_x
             current_y += self.__rect_height
             current_x = CanvasEnum.CANVAS_X.value
             index_y = current_y
-        self.paint_possible_moves_for_frozen_piece(board)
+        self.__paint_possible_moves_for_frozen_piece(board)
         self.__draw_position_from_fen(board)
 
-    def draw_character_on_board(self, character: int | str, position_x: int, position_y: int, color: str) -> None:
+    def __draw_character_on_board(self, character: int | str, position_x: int, position_y: int, color: str) -> None:
         """
         Draw characters : number and letters on board edges.
         :param character: characters string which we want to paint on canvas
@@ -94,7 +98,7 @@ class Canvas(QPainter):
         self.setFont(QFont(font))
         self.drawStaticText(position_x, position_y, QStaticText(str(character)))
 
-    def paint_promotion_window(self, data: PromotionData, current_square: int) -> None:
+    def paint_promotion_window(self, data: Promoter, current_square: int) -> None:
         """
         Method used to paint promotion window for pawn
         :param data: PromotionData instance containing needed data
@@ -119,10 +123,10 @@ class Canvas(QPainter):
                 self.fillRect(rectangle, QColor("#4c5052"))
             else:
                 self.fillRect(rectangle, QColor("#8b969e"))
-            self.load_proper_image(square_x, square_y, self.get_promotion_piece_letter(i, data.get_piece_color()))
+            self.__load_proper_image(square_x, square_y, self.__get_promotion_piece_letter(i, data.get_piece_color()))
             square_y += self.__rect_height
 
-    def get_promotion_piece_letter(self, index: int, color: int) -> str:
+    def __get_promotion_piece_letter(self, index: int, color: int) -> str:
         """
         Method used to get letter of a piece with proper case
         :param index: int index of letter
@@ -143,7 +147,7 @@ class Canvas(QPainter):
         Method draws pieces on chess board from fen string representation.
         :return: None
         """
-        fen = board.get_fen_string().replace('/', ' ').split()
+        fen = board.fen_string().replace('/', ' ').split()
         current_x = CanvasEnum.CANVAS_X.value
         current_y = CanvasEnum.CANVAS_Y.value
 
@@ -151,11 +155,11 @@ class Canvas(QPainter):
             row_pieces = [*fen[row]]
 
             for col in range(len(row_pieces)):
-                current_x = self.load_proper_image(current_x, current_y, row_pieces[col])
+                current_x = self.__load_proper_image(current_x, current_y, row_pieces[col])
             current_x = CanvasEnum.CANVAS_X.value
             current_y += self.__rect_height
 
-    def load_proper_image(self, current_x: int, current_y: int, piece_letter: str) -> int:
+    def __load_proper_image(self, current_x: int, current_y: int, piece_letter: str) -> int:
         """
         Loads pixmap from resources based on current letter loaded from fen string.
         :param current_x: current x coordinate from which we start drawing.
@@ -187,7 +191,7 @@ class Canvas(QPainter):
 
             return current_x
 
-    def paint_possible_moves_for_frozen_piece(self, board: Board) -> None:
+    def __paint_possible_moves_for_frozen_piece(self, board: Board) -> None:
         """
         Method to paint possible moves_list for not moven piece_square on board
         :return: None
@@ -196,43 +200,43 @@ class Canvas(QPainter):
         current_y = CanvasEnum.CANVAS_Y.value
 
         for row in range(BoardEnum.BOARD_LENGTH.value):
-            if not self.is_it_frozen_piece():
+            if not self.__is_it_frozen_piece():
                 break
             for col in range(BoardEnum.BOARD_LENGTH.value):
                 current_square = BoardEnum.BOARD_LENGTH.value * row + col
-                legal_moves = board.get_legal_moves()
+                legal_moves = board.legal_moves()
 
                 for legal_move in legal_moves:
                     if legal_move is None:
                         break
-                    if self.is_it_frozen_piece_target_square(legal_move, current_square):
+                    if self.__is_it_frozen_piece_target_square(legal_move, current_square):
                         rectangle = QRect(current_x, current_y, self.__rect_width, self.__rect_height)
                         self.fillRect(rectangle, QColor(ColorManager.get_legal_move_color(row, col)))
                         break
                 current_x += self.__rect_width
             current_y += self.__rect_height
             current_x = CanvasEnum.CANVAS_X.value
-        self.__freeze_piece = -1
-        self.__freeze_start = -1
-        self.__freeze_end = -1
+        self.__frozen_piece = -1
+        self.__frozen_start = -1
+        self.__frozen_end = -1
 
-    def is_it_frozen_piece(self) -> bool:
+    def __is_it_frozen_piece(self) -> bool:
         """
         Method used to check if piece_square was not moved at all
         :return: bool value
         """
-        return self.__freeze_start != -1 and self.__freeze_end != -1
+        return self.__frozen_start != -1 and self.__frozen_end != -1
 
-    def is_it_frozen_piece_target_square(self, legal_move: Move, current_square: int) -> bool:
+    def __is_it_frozen_piece_target_square(self, legal_move: Move, current_square: int) -> bool:
         """
         Methods checks if current end_square is a valid move for a frozen piece_square
         :param legal_move: current legal move instance
         :param current_square: int index of current end_square
         :return: bool value
         """
-        if legal_move.get_end_square() != current_square or legal_move.get_moving_piece() != self.__freeze_piece:
+        if legal_move.get_end_square() != current_square or legal_move.get_moving_piece() != self.__frozen_piece:
             return False
-        return legal_move.get_start_square() == self.__freeze_start
+        return legal_move.get_start_square() == self.__frozen_start
 
     def copy_current_move(self, move: Move) -> None:
         """
@@ -240,9 +244,9 @@ class Canvas(QPainter):
         :param move: current move (Move instance)
         :return: None
         """
-        self.__freeze_piece = move.get_moving_piece()
-        self.__freeze_start = move.get_start_square()
-        self.__freeze_end = move.get_end_square()
+        self.__frozen_piece = move.get_moving_piece()
+        self.__frozen_start = move.get_start_square()
+        self.__frozen_end = move.get_end_square()
 
     def get_rect_width(self) -> int:
         """

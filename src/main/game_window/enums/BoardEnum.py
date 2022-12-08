@@ -7,6 +7,9 @@ class BoardEnum(Enum):
     """
      Enum which covers important static values for board.
     """
+
+    __slots__ = ()
+
     PRIMARY_BOARD_COLOR: str = "#F1D9C0"
     SECONDARY_BOARD_COLOR: str = "#A97A65"
 
@@ -25,8 +28,6 @@ class BoardEnum(Enum):
     CENTER_SIDE_SQUARES: Tuple[int, ...] = (26, 29, 34, 37)
     CENTER_MAIN_SQUARES: Tuple[int, ...] = (27, 28, 35, 36)
     CENTER_SQUARES: Tuple[int, ...] = (26, 27, 28, 29, 34, 35, 36, 37)
-
-    MIDDLE_SQUARES: Tuple[int, ...] = (24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39)
 
     MOVE_SQUARE_LIGHT: str = "#df3d4a"
     MOVE_SQUARE_DARK: str = "#a3242a"

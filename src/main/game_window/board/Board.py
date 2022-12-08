@@ -1,165 +1,33 @@
-from numpy import array, int8, dtype
+from abc import ABC
+from abc import abstractmethod
+from typing import Tuple
+
+from numpy import dtype
+from numpy import int8
 from numpy import ndarray
-from numpy import sign
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.ColorManager import ColorManager
-from game_window.board.BoardInitializer import BoardInitializer
-from game_window.board.BoardUtil import BoardUtil
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenFactory import FenFactory
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.Move import Move
-from game_window.moving.MoveList import MoveList
-from game_window.moving.generation.MoveGenerator import MoveGenerator
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from game_window.moving.generation.data.Move import Move
+from game_window.moving.generation.data.MoveData import MoveData
+from game_window.moving.generation.data.MoveList import MoveList
 
 
-class Board:
+class Board(ABC):
     """
-    Class to hold and manage board representation.
+    Abstract class for Board representations
     """
-    __slots__ = array(["__board_array", "__fen_string", "__color_to_move", "__legal_moves", "__distances_to_borders",
-                       "__fen_data", "__engine_color", "__player_color"], dtype=str)
 
-    def __init__(self) -> None:
-        self.__engine_color: int = PiecesEnum.BLACK.value
-        self.__player_color: int = PiecesEnum.WHITE.value
-        self.__board_array: ndarray[int, dtype[int8]] = BoardInitializer.init_starting_board(self.__engine_color,
-                                                                                             self.__player_color)
-        self.__fen_string: str = BoardEnum.STARTING_POSITION.value
-        self.__fen_data: FenData = FenData(self.__player_color)
-        self.__color_to_move: int = PiecesEnum.WHITE.value
-        self.__distances_to_borders: ndarray[int, dtype[int8]] = BoardUtil.calculate_distance_to_borders()
-        self.__legal_moves: MoveList = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
+    __slots__ = ()
 
-    def castle_king(self, piece: int, move: Move) -> None:
-        """
-        Method used to castle king it means prepare board for castling
-        :param piece: int value of piece_square
-        :param move: Move instance
-        :return: None
-        """
-        if piece is None or move is None:
-            raise NullArgumentException("METHODS ARGUMENTS CANNOT BE NULLS!")
-        color: int = ColorManager.get_piece_color(piece)
-        piece_value = piece - color
-
-        if piece_value != PiecesEnum.KING.value:
-            raise IllegalArgumentException("YOU CANNOT CASTLE PIECE WHICH IS NOT KING!")
-        if move.get_special_flag_value() != SpecialFlags.CASTLING.value:
-            raise IllegalArgumentException("THIS IS NOT CASTLING MOVE!")
-
-        start_square: int = move.get_start_square()
-        end_square: int = move.get_end_square()
-        distance: int = start_square - end_square
-        is_queen_side: bool = distance > 0
-        rook_position: int = KingUtil.get_rook_position(color, is_queen_side, self.__engine_color, self.__player_color)
-
-        self.__board_array[start_square] = PiecesEnum.NONE.value
-        self.__board_array[end_square] = piece
-        self.__board_array[rook_position] = PiecesEnum.NONE.value
-        self.__board_array[end_square + sign(distance)] = color | PiecesEnum.ROOK.value
-
-        self.__fen_data.set_castling_king_side(False, color)
-        self.__fen_data.set_castling_queen_side(False, color)
-
-    def un_castle_king(self, move: Move, color: int) -> None:
-        """
-        Method used to un castle king of given color
-        :param move: Move which king made
-        :param color: color value of a king
-        :return: None
-        """
-        if move is None or color is None:
-            raise NullArgumentException("MOVE AND COLOR CANNOT BE NULLS!")
-        if move.get_special_flag_value() != SpecialFlags.CASTLING.value:
-            raise IllegalArgumentException("IT IS NOT CASTLING MOVE!")
-        if color not in (PiecesEnum.WHITE.value, PiecesEnum.BLACK.value):
-            raise IllegalArgumentException("SUCH COLOR NOT EXISTS!")
-
-        start_square: int = move.get_start_square()
-        end_square: int = move.get_end_square()
-        distance: int = start_square - end_square
-        is_queen_side: bool = distance > 0
-        rook_position: int = KingUtil.get_rook_position(color, is_queen_side, self.__engine_color, self.__player_color)
-
-        self.__board_array[rook_position] = color | PiecesEnum.ROOK.value
-        self.__board_array[move.get_end_square()] = PiecesEnum.NONE.value
-        self.__board_array[end_square + sign(distance)] = PiecesEnum.NONE.value
-        self.__board_array[move.get_start_square()] = color | PiecesEnum.KING.value
-
-    def set_legal_moves(self, legal_moves: MoveList) -> None:
-        """
-        Method used to set legal moves_list list
-        :param legal_moves: list of legal moves_list
-        :return: None
-        """
-        self.__legal_moves = legal_moves
-
-    def set_opposite_move_color(self) -> None:
-        """
-        Method used to change the color of players pieces which is turn.
-        :return: None
-        """
-        self.__color_to_move = PiecesEnum.WHITE.value if self.__color_to_move == PiecesEnum.BLACK.value else PiecesEnum.BLACK.value
-
-    def get_legal_moves(self) -> MoveList:
-        """
-        Gives access to legal moves_list list.
-        :return: list of moves_list
-        """
-        return self.__legal_moves
-
-    def get_distances(self) -> ndarray[int, dtype[int8]]:
-        """
-        Gives access to distances to borders array
-        :return: ndarray of distances
-        """
-        return self.__distances_to_borders
-
-    def get_board_array(self) -> ndarray[int, dtype[int8]]:
-        """
-        Gives access to board int array.
-        :return: board int array
-        """
-        return self.__board_array
-
-    def get_fen_string(self) -> str:
-        """
-        Gives access to the fen string.
-        :return: fen string
-        """
-        return self.__fen_string
-
-    def get_color_to_move(self) -> int:
-        """
-        Gives access to color which is turn to move
-        :return: int value of color
-        """
-        return self.__color_to_move
-
+    @abstractmethod
     def delete_piece_from_board_square(self, square: int) -> int:
         """
         Deletes piece_square from board and updates fen string.
         :param square:
         :return: deleted piece_square value
         """
-        if square is None:
-            raise NullArgumentException("SQUARE CANNOT BE NULL!")
-        if square < 0 or square > 63:
-            raise IllegalArgumentException("SQUARE CANNOT BE OVER THE BOUNDS OF BOARD!")
+        pass
 
-        piece: int = self.__board_array[square]
-        self.__board_array[square] = 0
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
-
-        return piece
-
+    @abstractmethod
     def add_piece_to_the_board(self, piece: int, square: int) -> None:
         """
         Adds piece_square to board array and updates fen string.
@@ -167,18 +35,9 @@ class Board:
         :param square: int index of where to add a piece_square
         :return: None
         """
-        if piece is None or square is None:
-            raise NullArgumentException("ARGUMENTS CANNOT BE NULL ON ADDING!")
-        if square < 0 or square > 63:
-            raise IllegalArgumentException("SQUARE IS NOT WITHING THE BOARD BONDS!")
-        piece_value: int = piece - ColorManager.get_piece_color(piece)
+        pass
 
-        if piece_value not in PiecesEnum.PIECES_TUPLE.value:
-            raise IllegalArgumentException("SUCH PIECE DOES NOT EXIST")
-
-        self.__board_array[square] = piece
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
-
+    @abstractmethod
     def should_this_piece_move(self, row: int, col: int) -> bool:
         """
         Checks if piece_square on boards row and col indexes should move.
@@ -186,103 +45,239 @@ class Board:
         :param col: int value of col index
         :return: bool value if piece_square should move or not
         """
-        if row is None or col is None:
-            raise NullArgumentException("ROWS ANC COLS CANNOT BE NULLS!")
+        pass
 
-        if row < 0 or col < 0 or row > 7 or col > 7:
-            raise IllegalArgumentException("ROWS ANC COLS CANNOT BE LESS THAN 0!")
-        board_index: int = BoardEnum.BOARD_LENGTH.value * row + col
+    @abstractmethod
+    def update_legal_moves(self, color: int) -> None:
+        """
+        Method used to set legal moves_list list
+        :param color: int value of color
+        :return: None
+        """
+        pass
 
-        return ColorManager.get_piece_color(self.__board_array[board_index]) == self.__color_to_move
+    @abstractmethod
+    def set_opposite_move_color(self) -> None:
+        """
+        Method used to change the color of players pieces which is turn.
+        :return: None
+        """
+        pass
 
+    @abstractmethod
+    def legal_moves(self) -> MoveList:
+        """
+        Gives access to legal moves_list list.
+        :return: list of moves_list
+        """
+        pass
+
+    @abstractmethod
+    def distances(self) -> ndarray[int, dtype[int8]]:
+        """
+        Gives access to distances to borders array
+        :return: ndarray of distances
+        """
+        pass
+
+    @abstractmethod
+    def board_array(self) -> ndarray[int, dtype[int8]]:
+        """
+        Gives access to board int array.
+        :return: board int array
+        """
+        pass
+
+    @abstractmethod
+    def fen_string(self) -> str:
+        """
+        Gives access to the fen string.
+        :return: fen string
+        """
+        pass
+
+    @abstractmethod
+    def color_to_move(self) -> int:
+        """
+        Gives access to color which is turn to move
+        :return: int value of color
+        """
+        pass
+
+    @abstractmethod
     def is_it_legal_move(self, move: Move) -> bool:
         """
         Checks if move given can be played
         :param move: current move player wants to play
         :return: bool value whether move is legal or not
         """
-        return move in self.__legal_moves
+        pass
 
+    @abstractmethod
     def update_fen(self) -> None:
         """
         Method used to update fen string with current board state
         :return: None
         """
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
+        pass
 
-    def make_en_passant_capture(self, piece: int) -> None:
+    @abstractmethod
+    def disable_castling_if_captured_rook(self, deleted_piece: int, color: int, square: int) -> None:
         """
-        Method used to make an en passant capture on board array
-        :param piece: int value of piece
+        Method used to disable castling if rook was captured
+        :param deleted_piece: int value of deleted piece
+        :param color: int value of friendly color
+        :param square: int index of rook square
         :return: None
         """
-        piece_value: int = piece - ColorManager.get_piece_color(piece)
+        pass
 
-        if piece_value != PiecesEnum.PAWN.value:
-            raise IllegalArgumentException("THIS PIECE CANNOT MAKE AN EN PASSANT CAPTURE!")
-        if piece is None:
-            raise NullArgumentException("PIECE CANNOT BE NULL!")
-
-        self.__board_array[self.__fen_data.get_en_passant_square()] = piece
-        self.__board_array[self.__fen_data.get_en_passant_piece_square()] = 0
-
-        self.__fen_data.set_en_passant_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-        self.__fen_data.set_en_passant_piece_square(MoveEnum.NONE_EN_PASSANT_SQUARE.value)
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
-
-    def switch_colors(self) -> None:
+    @abstractmethod
+    def switch_sides(self) -> None:
         """
         Method used to switch sides of board
         :return: None
         """
-        self.set_opposite_color_sides()
-        self.__board_array = BoardInitializer.init_starting_board(self.__engine_color, self.__player_color)
-        self.__fen_data = FenData(self.__player_color)
-        self.__color_to_move = PiecesEnum.WHITE.value
-        self.__fen_string = FenFactory.convert_board_array_to_fen(self)
-        self.__legal_moves = MoveGenerator.generate_legal_moves(self.__color_to_move, self)
+        pass
 
-    def get_fen_data(self) -> FenData:
-        """
-        Gives access to the fen data field.
-        :return: FenData instance
-        """
-        return self.__fen_data
-
-    def set_opposite_color_sides(self) -> None:
-        """
-        Method used in board inversion to set opposite colors
-        :return: None
-        """
-        self.__engine_color = ColorManager.get_opposite_piece_color(self.__engine_color)
-        self.__player_color = ColorManager.get_opposite_piece_color(self.__player_color)
-
-    def get_engine_color(self) -> int:
+    @abstractmethod
+    def engine_color(self) -> int:
         """
         Method used to get access to engine color
         :return: int value of engine color
         """
-        return self.__engine_color
+        pass
 
-    def get_player_color(self) -> int:
+    @abstractmethod
+    def player_color(self) -> int:
         """
         Method used to get access to player color
         :return: int value of player color
         """
-        return self.__player_color
+        pass
 
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Board):
-            return False
-        if self.__board_array != other.get_board_array() or self.__player_color != other.get_player_color():
-            return False
-        if self.__engine_color != other.get_engine_color() or self.__fen_string != other.get_fen_string():
-            return False
-        if self.__fen_data != other.get_fen_data() or self.__legal_moves != other.get_legal_moves():
-            return False
-        return self.__distances_to_borders == other.get_distances() and self.__color_to_move == other.get_color_to_move()
+    @abstractmethod
+    def update_fen_data_with_double_pawn_movement(self, move: Move) -> None:
+        """
+        Method used to validate double pawn movement in terms of fen data
+        :param move: Move instance
+        :return None
+        """
+        pass
 
-    def __hash__(self) -> int:
-        return hash(
-            (self.__color_to_move, self.__player_color, self.__engine_color, self.__distances_to_borders.tobytes(),
-             self.__board_array.tobytes(), self.__fen_string, self.__fen_data))
+    @abstractmethod
+    def set_castling_king_side(self, can_castle: bool, color: int) -> None:
+        """
+        Sets castling capabilities on king side
+        :param can_castle: bool value
+        :param color: int value of color
+        :return: None
+        """
+        pass
+
+    @abstractmethod
+    def set_castling_queen_side(self, can_castle: bool, color: int) -> None:
+        """
+        Sets castling capabilities on queen side
+        :param can_castle: bool value
+        :param color: int value of color
+        :return: None
+        """
+        pass
+
+    @abstractmethod
+    def en_passant_square(self) -> int:
+        """
+        Gives access to an en passant piece end_square value
+        :return: int value of an en passant target square
+        """
+        pass
+
+    @abstractmethod
+    def en_passant_piece_square(self) -> int:
+        """
+        Gives access to an en passant end_square value
+        :return: int value of en passant square
+        """
+        pass
+
+    @abstractmethod
+    def set_en_passant_piece_square(self, piece_square: int) -> None:
+        """
+        Gives access to an en passant piece end_square value
+        :return: int value of an en passant target square
+        """
+        pass
+
+    @abstractmethod
+    def set_en_passant_square(self, square: int) -> None:
+        """
+        Method used to set en passant end_square
+        :param square: int value of end_square
+        :return: None
+        """
+        pass
+
+    @abstractmethod
+    def update_move_counter(self) -> None:
+        """
+        Increments move counter by 1
+        :return: None
+        """
+        pass
+
+    @abstractmethod
+    def can_king_castle_king_side(self, color: int) -> bool:
+        """
+        Returns if king can castle on king side
+        :param color: int value of color
+        :return: bool
+        """
+        pass
+
+    @abstractmethod
+    def can_king_castle_queen_side(self, color: int) -> bool:
+        """
+        Returns if king can castle on queen side
+        :param color: int value of color
+        :return: bool
+        """
+        pass
+
+    @abstractmethod
+    def get_special_move_data(self) -> Tuple[bool, bool, bool, bool, int, int, int, int]:
+        """
+        Method used to return a tuple of special fen data for making and unmaking moves_list
+        :return: tuple
+        """
+        pass
+
+    @abstractmethod
+    def update_fen_data(self, prev_fen_data: MoveData) -> None:
+        """
+        Updates fen_data with move_data values
+        :param prev_fen_data: MoveData instance
+        :return: None
+        """
+        pass
+
+    @abstractmethod
+    def update_no_sack_and_pawn_counter(self, deleted_piece: int, moving_piece: int) -> None:
+        """
+        Method used to update no sack and pawn move counter
+        :param deleted_piece: int value of a piece
+        :param moving_piece: int value of a moving piece
+        :return: None
+        """
+        pass
+
+    @abstractmethod
+    def disable_castling_on_side(self, color: int, target_square: int) -> None:
+        """
+        Disable castling for king on given side
+        :param target_square:
+        :param color: int value of color
+        :return: None
+        """
+        pass
+

@@ -1,29 +1,33 @@
 import pytest
 
 from exceptions.IllegalArgumentException import IllegalArgumentException
-from game_window.board.Board import Board
-from game_window.board.BoardUtil import BoardUtil
 from exceptions.NullArgumentException import NullArgumentException
+from game_window.board.BoardUtil import BoardUtil
+from game_window.board.fen.FenData import FenData
+from game_window.board.fen.FenMaker import FenMaker
+from game_window.board.GameBoard import GameBoard
 from game_window.enums.PiecesEnum import PiecesEnum
 from game_window.enums.SpecialFlags import SpecialFlags
+from game_window.moving.generation.MoveGenerator import MoveGenerator
 
 
-def test_is_board_inverted_board_is_inverted():
+def test_is_board_inverted_board_is_inverted() -> None:
     # given
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     expected: bool = True
 
     # when
-    board.set_opposite_color_sides()
+    #board.set_opposite_color_sides()
+    board.switch_sides()
     result: bool = BoardUtil.is_board_inverted(board)
 
     # then
     assert expected == result
 
 
-def test_is_board_inverted_board_is_not_inverted():
+def test_is_board_inverted_board_is_not_inverted() -> None:
     # given
-    board: Board = Board()
+    board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
     expected: bool = False
 
     # when
@@ -33,9 +37,9 @@ def test_is_board_inverted_board_is_not_inverted():
     assert expected == result
 
 
-def test_is_board_inverted_board_is_null():
+def test_is_board_inverted_board_is_null() -> None:
     # given
-    board: Board = None
+    board: GameBoard = None
 
     # when
     with pytest.raises(NullArgumentException):
@@ -44,7 +48,7 @@ def test_is_board_inverted_board_is_null():
     # then
 
 
-def test_get_promotion_piece_nulls():
+def test_get_promotion_piece_nulls() -> None:
     # given
 
     # when
@@ -54,7 +58,7 @@ def test_get_promotion_piece_nulls():
     # then
 
 
-def test_get_promotion_piece_illegal_color():
+def test_get_promotion_piece_illegal_color() -> None:
     # given
     color: int = -1
     flag: int = SpecialFlags.PROMOTE_TO_KNIGHT.value
@@ -66,7 +70,7 @@ def test_get_promotion_piece_illegal_color():
     # then
 
 
-def test_get_promotion_piece_illegal_flag():
+def test_get_promotion_piece_illegal_flag() -> None:
     # given
     color: int = PiecesEnum.WHITE.value
     flag: int = SpecialFlags.EN_PASSANT.value
@@ -78,7 +82,7 @@ def test_get_promotion_piece_illegal_flag():
     # then
 
 
-def test_get_promotion_piece_get_white_queen_value():
+def test_get_promotion_piece_get_white_queen_value() -> None:
     # given
     color: int = PiecesEnum.WHITE.value
     flag: int = SpecialFlags.PROMOTE_TO_QUEEN.value

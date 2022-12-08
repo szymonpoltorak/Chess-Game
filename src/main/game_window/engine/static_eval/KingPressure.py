@@ -1,7 +1,9 @@
 import math
-
-from numpy import ndarray, int8, dtype
 from typing import TYPE_CHECKING
+
+from numpy import dtype
+from numpy import int8
+from numpy import ndarray
 
 from game_window.ColorManager import ColorManager
 from game_window.enums.BoardEnum import BoardEnum
@@ -23,13 +25,13 @@ class KingPressure:
         """
         Method used to evaluate pressure on king.
         :param board: Board instance
-        :param favor_color: float value of color in favor of which we evaluate position
+        :param favor_color: float value of favor_color in favor of which we evaluate position
         :return: float evaluation
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
         pressure_on_enemy_king = KingPressure.evaluate_king_pressure_only_for_color(board, favor_color)
         pressure_on_my_king = KingPressure.evaluate_king_pressure_only_for_color(board, enemy_color)
-        evaluation: float = int(pressure_on_enemy_king - pressure_on_my_king)
+        evaluation: float = int(pressure_on_my_king - pressure_on_enemy_king)
 
         return evaluation
 
@@ -37,12 +39,12 @@ class KingPressure:
     def evaluate_king_pressure_only_for_color(board: 'Board', favor_color: int) -> float:
         """
         Method used to evaluate distance of pieces to the enemy king
-        :param favor_color: float value of color
+        :param favor_color: float value of favor_color
         :param board: Board instance
         :return: float value of evaluation
         """
         enemy_color: int = ColorManager.get_opposite_piece_color(favor_color)
-        board_array: ndarray[int, dtype[int8]] = board.get_board_array()
+        board_array: ndarray[int, dtype[int8]] = board.board_array()
 
         enemy_king_pos: int = KingUtil.find_friendly_king_squares(board_array, enemy_color)
         enemy_king_x: int = math.floor(enemy_king_pos / 8)
