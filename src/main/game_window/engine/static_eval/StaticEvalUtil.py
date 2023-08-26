@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
-from game_window.enums.EvalEnum import EvalEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SquaresEval import SquaresEval
+from src.main.game_window.enums.EvalEnum import EvalEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SquaresEval import SquaresEval
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class StaticEvalUtil:

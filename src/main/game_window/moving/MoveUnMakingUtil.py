@@ -1,18 +1,17 @@
 from typing import TYPE_CHECKING
 
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveData import MoveData
+from src.main.game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from numpy import dtype
 from numpy import int8
 from numpy import ndarray
 from numpy import sign
-
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.ColorManager import ColorManager
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveData import MoveData
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 
 if TYPE_CHECKING:
     from game_window.board.Board import Board
@@ -46,7 +45,8 @@ class MoveUnMakingUtil:
         end_square: int = move.get_end_square()
         distance: int = start_square - end_square
         is_queen_side: bool = distance > 0
-        rook_position: int = KingUtil.get_rook_position(color, is_queen_side, board.engine_color(), board.player_color())
+        rook_position: int = KingUtil.get_rook_position(color, is_queen_side, board.engine_color(),
+                                                        board.player_color())
 
         board_array[rook_position] = color | PiecesEnum.ROOK.value
         board_array[move.get_end_square()] = PiecesEnum.NONE.value

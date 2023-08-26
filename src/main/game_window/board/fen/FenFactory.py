@@ -1,17 +1,13 @@
 from abc import ABC
 from abc import abstractmethod
-
-from numpy import dtype
-from numpy import int8
-from numpy import ndarray
-from typing import Tuple
 from typing import TYPE_CHECKING
+from typing import Tuple
 
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveData import MoveData
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveData import MoveData
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class FenFactory(ABC):

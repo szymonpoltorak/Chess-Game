@@ -1,26 +1,20 @@
-from numpy import zeros
-from typing import List
-
-from numpy import dtype
-from numpy import int8
-from numpy import ndarray
-from typing import Tuple
 from typing import TYPE_CHECKING
+from typing import Tuple
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenFactory import FenFactory
-from game_window.board.fen.FenUtil import FenUtil
-from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveData import MoveData
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.board.fen.FenFactory import FenFactory
+from src.main.game_window.board.fen.FenUtil import FenUtil
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveData import MoveData
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class FenMaker(FenFactory):

@@ -1,6 +1,6 @@
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.PiecesEnum import PiecesEnum
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
 
 
 class ColorManager:
@@ -17,6 +17,7 @@ class ColorManager:
         :param piece: int value of piece_square with color
         :return: int value of color
         """
+
         if piece == PiecesEnum.NONE.value:
             return PiecesEnum.NONE.value
         return PiecesEnum.WHITE.value if piece - PiecesEnum.BLACK.value < 0 else PiecesEnum.BLACK.value
@@ -71,6 +72,6 @@ class ColorManager:
         :param row: int value of col
         :return: str
         """
-        is_light_color = (row + col) % 2 == 0
+        is_light_color: bool = (row + col) % 2 == 0
 
         return BoardEnum.MOVE_SQUARE_LIGHT.value if is_light_color else BoardEnum.MOVE_SQUARE_DARK.value

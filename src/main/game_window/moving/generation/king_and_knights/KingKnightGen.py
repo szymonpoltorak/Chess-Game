@@ -1,21 +1,21 @@
-from typing import Tuple
 from typing import TYPE_CHECKING
+from typing import Tuple
 
-from game_window.board.BoardUtil import BoardUtil
-from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveList import MoveList
-from game_window.moving.generation.GenUtil import GenUtil
-from game_window.moving.generation.king_and_knights.KingKnightGenerator import KingKnightGenerator
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-from game_window.moving.generation.pawns.PawnUtil import PawnUtil
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.board.BoardUtil import BoardUtil
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.moving.generation.GenUtil import GenUtil
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveList import MoveList
+from src.main.game_window.moving.generation.king_and_knights.KingKnightGenerator import KingKnightGenerator
+from src.main.game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from src.main.game_window.moving.generation.pawns.PawnUtil import PawnUtil
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class KingKnightGen(KingKnightGenerator):

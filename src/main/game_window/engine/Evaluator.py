@@ -1,15 +1,13 @@
-from typing import TYPE_CHECKING
+from typing import Type
 
-from game_window.engine.Evaluation import Evaluation
-from game_window.engine.static_eval.KingPressure import KingPressure
-from game_window.engine.static_eval.LightPiecesEval import LightPiecesEval
-from game_window.engine.static_eval.PawnEval import PawnEval
-from game_window.engine.static_eval.RookEval import RookEval
-from game_window.engine.static_eval.StaticEvaluation import StaticEvaluation
-from game_window.engine.static_eval.StaticEvaluator import StaticEvaluator
-
-if TYPE_CHECKING:
-    from game_window.board.Board import Board
+from src.main.game_window.board.Board import Board
+from src.main.game_window.engine.Evaluation import Evaluation
+from src.main.game_window.engine.static_eval.KingPressure import KingPressure
+from src.main.game_window.engine.static_eval.LightPiecesEval import LightPiecesEval
+from src.main.game_window.engine.static_eval.PawnEval import PawnEval
+from src.main.game_window.engine.static_eval.RookEval import RookEval
+from src.main.game_window.engine.static_eval.StaticEvaluation import StaticEvaluation
+from src.main.game_window.engine.static_eval.StaticEvaluator import StaticEvaluator
 
 
 class Evaluator(Evaluation):
@@ -23,7 +21,7 @@ class Evaluator(Evaluation):
         self.__static_evaluator: StaticEvaluation = StaticEvaluator()
 
     @staticmethod
-    def debug_evaluate_position(board: 'Board', favor_color: int) -> float:
+    def debug_evaluate_position(board: Board, favor_color: int) -> float:
         """
         Debug Method
         :param board:
@@ -54,7 +52,7 @@ class Evaluator(Evaluation):
 
         return total_eval
 
-    def evaluate_position(self, board: 'Board', favor_color: int) -> float:
+    def evaluate_position(self, board: Type[Board], favor_color: int) -> float:
         """
         Method used to return an evaluation of starting position
         :param board: Board instance

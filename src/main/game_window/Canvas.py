@@ -1,7 +1,6 @@
-from numpy import array
-from numpy import dtype
-from numpy import generic
-from numpy import ndarray
+from typing import Tuple
+
+import numpy
 from PyQt5.QtCore import QRect
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor
@@ -9,16 +8,20 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtGui import QPainter
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QStaticText
+from numpy import array
+from numpy import dtype
+from numpy import generic
+from numpy._typing import NDArray
 
-from game_window.board.Board import Board
-from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.CanvasEnum import CanvasEnum
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.Paths import Paths
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.data.Move import Move
-from game_window.Promoter import Promoter
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.Promoter import Promoter
+from src.main.game_window.board.Board import Board
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.CanvasEnum import CanvasEnum
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.Paths import Paths
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.generation.data.Move import Move
 
 
 class Canvas(QPainter):
@@ -42,13 +45,13 @@ class Canvas(QPainter):
         Method draws a whole chess board on canvas.
         :return: None
         """
-        current_x = CanvasEnum.CANVAS_X.value
-        current_y = CanvasEnum.CANVAS_Y.value
-        index_x = CanvasEnum.CANVAS_X.value
-        index_y = CanvasEnum.CANVAS_Y.value
+        current_x: int = CanvasEnum.CANVAS_X.value
+        current_y: int = CanvasEnum.CANVAS_Y.value
+        index_x: int = CanvasEnum.CANVAS_X.value
+        index_y: int = CanvasEnum.CANVAS_Y.value
 
-        current_number = 8
-        letters = ("a", "b", "c", "d", "e", "f", "g", "h")
+        current_number: int = 8
+        letters: Tuple[str, ...] = ("a", "b", "c", "d", "e", "f", "g", "h")
 
         for row in range(BoardEnum.BOARD_LENGTH.value):
             for col in range(BoardEnum.BOARD_LENGTH.value):
@@ -91,7 +94,7 @@ class Canvas(QPainter):
         :param color: color string which we want a character to have
         :return: None
         """
-        font = QFont("Monospace")
+        font: QFont = QFont("Monospace")
         font.setBold(True)
 
         self.setPen(QColor(color))
@@ -105,10 +108,10 @@ class Canvas(QPainter):
         :param current_square: int value of end_square
         :return: None
         """
-        col = current_square % 8
-        row = int((current_square - col) / 8)
-        square_y = row * self.__rect_height + CanvasEnum.CANVAS_Y.value
-        square_x = col * self.__rect_width + CanvasEnum.CANVAS_X.value
+        col: int = current_square % 8
+        row: int = int((current_square - col) / 8)
+        square_y: int = row * self.__rect_height + CanvasEnum.CANVAS_Y.value
+        square_x: int = col * self.__rect_width + CanvasEnum.CANVAS_X.value
 
         if row == 0:
             square_y = row * self.__rect_height + CanvasEnum.CANVAS_Y.value
@@ -117,7 +120,7 @@ class Canvas(QPainter):
         data.set_promotion_data(data.get_piece_color(), square_x, square_y, data.get_pawn_square())
 
         for i in range(4):
-            rectangle = QRect(square_x, square_y, self.__rect_width, self.__rect_height)
+            rectangle: QRect = QRect(square_x, square_y, self.__rect_width, self.__rect_height)
 
             if i % 2 == 0:
                 self.fillRect(rectangle, QColor("#4c5052"))
@@ -126,19 +129,19 @@ class Canvas(QPainter):
             self.__load_proper_image(square_x, square_y, self.__get_promotion_piece_letter(i, data.get_piece_color()))
             square_y += self.__rect_height
 
-    def __get_promotion_piece_letter(self, index: int, color: int) -> str:
+    def __get_promotion_piece_letter(self, index: int, color: int) -> numpy.string_:
         """
         Method used to get letter of a piece with proper case
         :param index: int index of letter
         :param color: int value of color
         :return: str
         """
-        letters: ndarray[str, dtype[generic]] = array(["q", "b", "n", "r"], dtype=str)
+        letters: NDArray[numpy.string_] = array(["q", "b", "n", "r"], dtype=numpy.string_)
 
         if color == PiecesEnum.WHITE.value:
-            big_letter: str = letters[index].upper()
+            big_letter: numpy.string_ = letters[index].upper()
             return big_letter
-        small_letter: str = letters[index]
+        small_letter: numpy.string_ = letters[index]
 
         return small_letter
 
@@ -159,7 +162,7 @@ class Canvas(QPainter):
             current_x = CanvasEnum.CANVAS_X.value
             current_y += self.__rect_height
 
-    def __load_proper_image(self, current_x: int, current_y: int, piece_letter: str) -> int:
+    def __load_proper_image(self, current_x: int, current_y: int, piece_letter: numpy.string_) -> int:
         """
         Loads pixmap from resources based on current letter loaded from fen string.
         :param current_x: current x coordinate from which we start drawing.

@@ -1,11 +1,10 @@
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.Promoter import Promoter
+from src.main.game_window.board.Board import Board
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
 from numpy import array
 from numpy import int8
-
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.Board import Board
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.Promoter import Promoter
 
 
 class PromotionData(Promoter):

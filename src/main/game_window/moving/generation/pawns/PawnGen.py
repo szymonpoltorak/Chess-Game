@@ -1,16 +1,16 @@
 from typing import TYPE_CHECKING
 
-from game_window.ColorManager import ColorManager
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveList import MoveList
-from game_window.moving.generation.pawns.PawnGenerator import PawnGenerator
-from game_window.moving.generation.pawns.PawnUtil import PawnUtil
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveList import MoveList
+from src.main.game_window.moving.generation.pawns.PawnGenerator import PawnGenerator
+from src.main.game_window.moving.generation.pawns.PawnUtil import PawnUtil
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class PawnGen(PawnGenerator):
@@ -121,7 +121,8 @@ class PawnGen(PawnGenerator):
         else:
             moves_list.append(Move(start_square, move_target, piece, SpecialFlags.NONE.value))
 
-    def __add_en_passant_moves(self, start_square: int, piece: int, color: int, moves_list: MoveList, board: 'Board') -> None:
+    def __add_en_passant_moves(self, start_square: int, piece: int, color: int, moves_list: MoveList,
+                               board: 'Board') -> None:
         """
         Checks if there is an en passant movement and add it to list
         :param start_square:

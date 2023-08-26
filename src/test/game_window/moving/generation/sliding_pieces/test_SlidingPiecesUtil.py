@@ -1,10 +1,10 @@
 import pytest
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
 
 
 def test_is_sliding_piece_it_is() -> None:
@@ -22,7 +22,7 @@ def test_is_sliding_piece_it_is() -> None:
 def test_is_sliding_piece_it_is_not() -> None:
     # given
     piece: int = PiecesEnum.KING.value
-    expected : bool= False
+    expected: bool = False
 
     # when
     result: bool = SlidingPiecesUtil.is_it_sliding_piece(piece)

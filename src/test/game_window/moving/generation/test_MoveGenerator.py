@@ -1,15 +1,14 @@
+from src.main.game_window.board.Board import Board
+from src.main.game_window.board.GameBoard import GameBoard
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.board.fen.FenMaker import FenMaker
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.generation.MoveGenerator import MoveGenerator
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveList import MoveList
 from numpy import dtype
 from numpy import int8
 from numpy import ndarray
-
-from game_window.board.Board import Board
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenMaker import FenMaker
-from game_window.board.GameBoard import GameBoard
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveList import MoveList
-from game_window.moving.generation.MoveGenerator import MoveGenerator
 
 
 def test_generate_captures_only_no_capture_move() -> None:

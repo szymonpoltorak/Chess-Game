@@ -1,7 +1,5 @@
 from typing import Tuple
 
-from numpy import array
-from playsound import playsound
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
@@ -10,29 +8,29 @@ from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtGui import QPaintEvent
 from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtWidgets import QWidget
-
-from game_window.board.Board import Board
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenMaker import FenMaker
-from game_window.board.GameBoard import GameBoard
-from game_window.Canvas import Canvas
-from game_window.ColorManager import ColorManager
-from game_window.engine.Engine import Engine
-from game_window.engine.Evaluator import Evaluator
-from game_window.enums.CanvasEnum import CanvasEnum
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.Paths import Paths
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.GameWindowUi import GameWindowUi
-from game_window.init_factory.GameWindowFactory import GameWindowFactory
-from game_window.moving.EngineMover import EngineMover
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-from game_window.moving.generation.MoveGenerator import MoveGenerator
-from game_window.moving.generation.pawns.PawnUtil import PawnUtil
-from game_window.moving.MoveMakingUtil import MoveMakingUtil
-from game_window.Promoter import Promoter
+from src.main.game_window.Canvas import Canvas
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.GameWindowUi import GameWindowUi
+from src.main.game_window.Promoter import Promoter
+from src.main.game_window.board.Board import Board
+from src.main.game_window.board.GameBoard import GameBoard
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.board.fen.FenMaker import FenMaker
+from src.main.game_window.engine.Engine import Engine
+from src.main.game_window.engine.Evaluator import Evaluator
+from src.main.game_window.enums.CanvasEnum import CanvasEnum
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.Paths import Paths
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.init_factory.GameWindowFactory import GameWindowFactory
+from src.main.game_window.moving.EngineMover import EngineMover
+from src.main.game_window.moving.MoveMakingUtil import MoveMakingUtil
+from src.main.game_window.moving.generation.MoveGenerator import MoveGenerator
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from src.main.game_window.moving.generation.pawns.PawnUtil import PawnUtil
+from numpy import array
 
 
 class GameWindow(QWidget):
@@ -270,7 +268,7 @@ class GameWindow(QWidget):
         :param deleted_piece: int value of piece_square
         :return: None
         """
-        playsound(Paths.MOVE_SOUND.value) if deleted_piece == 0 else playsound(Paths.CAPTURE_SOUND.value)
+        # playsound(Paths.MOVE_SOUND.value) if deleted_piece == 0 else playsound(Paths.CAPTURE_SOUND.value)
 
     def __reset_game(self) -> None:
         """

@@ -1,32 +1,32 @@
 from typing import TYPE_CHECKING
 
+from numpy._typing import NDArray
+
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.moving.MoveMaker import MoveMaker
+from src.main.game_window.moving.generation.Generator import Generator
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveData import MoveData
+from src.main.game_window.moving.generation.data.MoveList import MoveList
+from src.main.game_window.moving.generation.data.Moves import Moves
+from src.main.game_window.moving.generation.king_and_knights.KingKnightGen import KingKnightGen
+from src.main.game_window.moving.generation.king_and_knights.KingKnightGenerator import KingKnightGenerator
+from src.main.game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from src.main.game_window.moving.generation.pawns.PawnGen import PawnGen
+from src.main.game_window.moving.generation.pawns.PawnGenerator import PawnGenerator
+from src.main.game_window.moving.generation.sliding_piece.SlidingGenerator import SlidingGenerator
+from src.main.game_window.moving.generation.sliding_piece.SlidingPiecesGen import SlidingPiecesGen
+from src.main.game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
 from numpy import dtype
 from numpy import full
 from numpy import int8
-from numpy import ndarray
-
-from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveData import MoveData
-from game_window.moving.generation.data.MoveList import MoveList
-from game_window.moving.generation.data.Moves import Moves
-from game_window.moving.generation.Generator import Generator
-from game_window.moving.generation.king_and_knights.KingKnightGen import KingKnightGen
-from game_window.moving.generation.king_and_knights.KingKnightGenerator import KingKnightGenerator
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-from game_window.moving.generation.pawns.PawnGen import PawnGen
-from game_window.moving.generation.pawns.PawnGenerator import PawnGenerator
-from game_window.moving.generation.sliding_piece.SlidingGenerator import SlidingGenerator
-from game_window.moving.generation.sliding_piece.SlidingPiecesGen import SlidingPiecesGen
-from game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
-from game_window.moving.MoveMaker import MoveMaker
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class MoveGenerator(Generator):
@@ -65,7 +65,8 @@ class MoveGenerator(Generator):
                 special_flag: int = move_to_verify.get_special_flag()
                 end_square: int = move.get_end_square()
 
-                if special_flag == SpecialFlags.CASTLING.value and end_square in KingUtil.get_castling_squares(move_to_verify):
+                if special_flag == SpecialFlags.CASTLING.value and end_square in KingUtil.get_castling_squares(
+                        move_to_verify):
                     is_it_valid_move = False
                     break
                 if end_square == kings_square:
@@ -85,7 +86,7 @@ class MoveGenerator(Generator):
         :return: list of all legal __moves
         """
         moves_list: MoveList = Moves(full(MoveEnum.MAX_NUM_OF_MOVES.value, None, dtype=object))
-        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        board_array: NDArray[int] = board.board_array()
 
         for square in range(BoardEnum.BOARD_SIZE.value):
             piece_color: int = ColorManager.get_piece_color(board_array[square])

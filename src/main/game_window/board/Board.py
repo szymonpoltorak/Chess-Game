@@ -6,9 +6,9 @@ from numpy import dtype
 from numpy import int8
 from numpy import ndarray
 
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveData import MoveData
-from game_window.moving.generation.data.MoveList import MoveList
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveData import MoveData
+from src.main.game_window.moving.generation.data.MoveList import MoveList
 
 
 class Board(ABC):
@@ -17,6 +17,10 @@ class Board(ABC):
     """
 
     __slots__ = ()
+
+    @abstractmethod
+    def __copy__(self):
+        pass
 
     @abstractmethod
     def delete_piece_from_board_square(self, square: int) -> int:
@@ -280,4 +284,3 @@ class Board(ABC):
         :return: None
         """
         pass
-

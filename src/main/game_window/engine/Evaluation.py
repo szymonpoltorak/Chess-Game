@@ -1,9 +1,8 @@
 from abc import ABC
 from abc import abstractmethod
-from typing import TYPE_CHECKING
+from typing import Type
 
-if TYPE_CHECKING:
-    from game_window.board.Board import Board
+from src.main.game_window.board.Board import Board
 
 
 class Evaluation(ABC):
@@ -14,7 +13,7 @@ class Evaluation(ABC):
     __slots__ = ()
 
     @abstractmethod
-    def evaluate_position(self, board: 'Board', favor_color: int) -> float:
+    def evaluate_position(self, board: Type[Board], favor_color: int) -> float:
         """
         Method used to return an evaluation of starting position
         :param board: Board instance

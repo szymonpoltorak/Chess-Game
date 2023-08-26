@@ -3,8 +3,8 @@ import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWidgets import QWidget
 
-from game_window.GameWindow import GameWindow
-from game_window.init_factory.GameWindowInit import GameWindowInit
+from src.main.game_window.GameWindow import GameWindow
+from src.main.game_window.init_factory.GameWindowInit import GameWindowInit
 
 
 def main() -> None:

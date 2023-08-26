@@ -1,7 +1,7 @@
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
 
 
 class SlidingPiecesUtil:

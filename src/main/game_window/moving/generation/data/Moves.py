@@ -3,18 +3,16 @@ from dataclasses import field
 from typing import Any
 from typing import TYPE_CHECKING
 
-from numpy import asarray
-from numpy import dtype
-from numpy import generic
-from numpy import ndarray
+from numpy import array, argsort
+from numpy.typing import NDArray
 
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveList import MoveList
-from game_window.moving.MoveSortUtil import MoveSortUtil
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.moving.MoveSortUtil import MoveSortUtil
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveList import MoveList
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 @dataclass(slots=True, order=True, unsafe_hash=True)
@@ -22,7 +20,7 @@ class Moves(MoveList):
     """
     Class containing the list of item
     """
-    __moves: ndarray[Move, dtype[generic]]
+    __moves: NDArray[Move]
     __size: int = field(default=0)
 
     def append(self, move: Move) -> None:
@@ -51,12 +49,15 @@ class Moves(MoveList):
 
     def sort(self, board: 'Board') -> None:
         """
-        Method used to sort list of item based on
+        Method used to sort list of item based on move score
+        :param board: Board instance
         :return: None
         """
-        sorted_moves: list[Move] = sorted(self.__moves, key=lambda item: MoveSortUtil.count_moves_score(item, board),
-                                          reverse=True)
-        self.__moves = asarray(sorted_moves)
+        move_scores: NDArray[float] = array([MoveSortUtil.count_moves_score(item, board)
+                                             for item in self.__moves])
+        sorted_indices: NDArray[int] = argsort(move_scores)[::-1]
+
+        self.__moves = self.__moves[sorted_indices]
 
     def __iter__(self) -> Any:
         return self.__moves.__iter__()
@@ -66,3 +67,6 @@ class Moves(MoveList):
 
     def __contains__(self, move: Move) -> bool:
         return move in self.__moves
+
+    def __copy__(self) -> Any:
+        return Moves(self.__moves.copy(), self.__size)

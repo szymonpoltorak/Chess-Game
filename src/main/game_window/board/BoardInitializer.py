@@ -1,11 +1,10 @@
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
 from numpy import array
 from numpy import dtype
 from numpy import int8
 from numpy import ndarray
 from numpy import zeros
-
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.PiecesEnum import PiecesEnum
 
 
 class BoardInitializer:

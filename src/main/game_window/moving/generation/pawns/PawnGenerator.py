@@ -2,10 +2,10 @@ from abc import ABC
 from abc import abstractmethod
 from typing import TYPE_CHECKING
 
-from game_window.moving.generation.data.MoveList import MoveList
+from src.main.game_window.moving.generation.data.MoveList import MoveList
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class PawnGenerator(ABC):

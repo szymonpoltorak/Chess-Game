@@ -1,11 +1,11 @@
 from typing import TYPE_CHECKING
 
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveList import MoveList
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveList import MoveList
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class GenUtil:

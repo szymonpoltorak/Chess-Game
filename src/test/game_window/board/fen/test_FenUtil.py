@@ -1,14 +1,13 @@
 import pytest
-
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenMaker import FenMaker
-from game_window.board.fen.FenUtil import FenUtil
-from game_window.board.GameBoard import GameBoard
-from game_window.ColorManager import ColorManager
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.MoveGenerator import MoveGenerator
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.board.GameBoard import GameBoard
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.board.fen.FenMaker import FenMaker
+from src.main.game_window.board.fen.FenUtil import FenUtil
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.generation.MoveGenerator import MoveGenerator
 
 
 def test_convert_square_into_board_double_index_square_equals_negative_one() -> None:

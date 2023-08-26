@@ -3,7 +3,7 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class StaticEvaluation(ABC):

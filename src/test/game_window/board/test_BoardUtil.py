@@ -1,14 +1,13 @@
 import pytest
-
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.BoardUtil import BoardUtil
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenMaker import FenMaker
-from game_window.board.GameBoard import GameBoard
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.MoveGenerator import MoveGenerator
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.board.BoardUtil import BoardUtil
+from src.main.game_window.board.GameBoard import GameBoard
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.board.fen.FenMaker import FenMaker
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.moving.generation.MoveGenerator import MoveGenerator
 
 
 def test_is_board_inverted_board_is_inverted() -> None:
@@ -17,7 +16,7 @@ def test_is_board_inverted_board_is_inverted() -> None:
     expected: bool = True
 
     # when
-    #board.set_opposite_color_sides()
+    # board.set_opposite_color_sides()
     board.switch_sides()
     result: bool = BoardUtil.is_board_inverted(board)
 

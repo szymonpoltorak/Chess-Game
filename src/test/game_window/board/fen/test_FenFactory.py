@@ -1,9 +1,9 @@
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenFactory import FenFactory
-from game_window.board.fen.FenMaker import FenMaker
-from game_window.board.GameBoard import GameBoard
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.MoveGenerator import MoveGenerator
+from src.main.game_window.board.GameBoard import GameBoard
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.board.fen.FenFactory import FenFactory
+from src.main.game_window.board.fen.FenMaker import FenMaker
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.generation.MoveGenerator import MoveGenerator
 
 
 def test_convert_board_array_to_fen() -> None:

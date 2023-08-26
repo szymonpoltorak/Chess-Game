@@ -1,14 +1,14 @@
 from numpy import array
 from numpy import dtype
 from numpy import int8
-from numpy import ndarray
+from numpy._typing import NDArray
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.fen.FenData import FenData
-from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.PiecesEnum import PiecesEnum
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
 
 
 class FenUtil:
@@ -89,7 +89,7 @@ class FenUtil:
         return castle_string
 
     @staticmethod
-    def get_proper_piece_for_fen(board: ndarray[int, dtype[int8]], index: int, color_value: int) -> str:
+    def get_proper_piece_for_fen(board: NDArray[int], index: int, color_value: int) -> str:
         """
         Gets proper fen letter for board int array.
         :param board: int array of board

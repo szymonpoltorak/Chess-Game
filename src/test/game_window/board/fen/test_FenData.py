@@ -1,9 +1,9 @@
 import pytest
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.fen.FenData import FenData
-from game_window.enums.PiecesEnum import PiecesEnum
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
 
 
 def test_set_castling_queen_side_to_true() -> None:

@@ -1,17 +1,16 @@
 import pytest
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.board.GameBoard import GameBoard
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.board.fen.FenMaker import FenMaker
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.generation.MoveGenerator import MoveGenerator
+from src.main.game_window.moving.generation.data.Moves import Moves
+from src.main.game_window.moving.generation.sliding_piece.SlidingGenerator import SlidingGenerator
+from src.main.game_window.moving.generation.sliding_piece.SlidingPiecesGen import SlidingPiecesGen
 from numpy import full
-
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenMaker import FenMaker
-from game_window.board.GameBoard import GameBoard
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.data.Moves import Moves
-from game_window.moving.generation.MoveGenerator import MoveGenerator
-from game_window.moving.generation.sliding_piece.SlidingGenerator import SlidingGenerator
-from game_window.moving.generation.sliding_piece.SlidingPiecesGen import SlidingPiecesGen
 
 
 def test_generate_sliding_piece_moves_not_sliding_piece() -> None:

@@ -1,13 +1,12 @@
-from numpy import array
 from PyQt5 import QtCore
 from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import QFrame
 from PyQt5.QtWidgets import QWidget
-
-from game_window.enums.Paths import Paths
-from game_window.enums.SidebarEnum import SidebarEnum
+from src.main.game_window.enums.Paths import Paths
+from src.main.game_window.enums.SidebarEnum import SidebarEnum
+from numpy import array
 
 
 class Sidebar:

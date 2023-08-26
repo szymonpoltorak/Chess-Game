@@ -1,19 +1,19 @@
 from typing import TYPE_CHECKING
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.ColorManager import ColorManager
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveList import MoveList
-from game_window.moving.generation.GenUtil import GenUtil
-from game_window.moving.generation.sliding_piece.SlidingGenerator import SlidingGenerator
-from game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.moving.generation.GenUtil import GenUtil
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveList import MoveList
+from src.main.game_window.moving.generation.sliding_piece.SlidingGenerator import SlidingGenerator
+from src.main.game_window.moving.generation.sliding_piece.SlidingPiecesUtil import SlidingPiecesUtil
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class SlidingPiecesGen(SlidingGenerator):

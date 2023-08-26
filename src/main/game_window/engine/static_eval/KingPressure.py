@@ -1,16 +1,12 @@
 import math
-from typing import TYPE_CHECKING
 
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.board.Board import Board
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from numpy import dtype
 from numpy import int8
 from numpy import ndarray
-
-from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-
-if TYPE_CHECKING:
-    from game_window.board.Board import Board
 
 
 class KingPressure:
@@ -21,7 +17,7 @@ class KingPressure:
     __slots__ = ()
 
     @staticmethod
-    def evaluate_king_pressure(board: 'Board', favor_color: int) -> float:
+    def evaluate_king_pressure(board: Board, favor_color: int) -> float:
         """
         Method used to evaluate pressure on king.
         :param board: Board instance
@@ -36,7 +32,7 @@ class KingPressure:
         return evaluation
 
     @staticmethod
-    def evaluate_king_pressure_only_for_color(board: 'Board', favor_color: int) -> float:
+    def evaluate_king_pressure_only_for_color(board: Board, favor_color: int) -> float:
         """
         Method used to evaluate distance of pieces to the enemy king
         :param favor_color: float value of favor_color

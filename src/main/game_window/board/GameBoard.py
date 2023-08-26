@@ -5,21 +5,21 @@ from numpy import dtype
 from numpy import int8
 from numpy import ndarray
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.Board import Board
-from game_window.board.BoardInitializer import BoardInitializer
-from game_window.board.BoardUtil import BoardUtil
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenFactory import FenFactory
-from game_window.board.fen.FenMaker import FenMaker
-from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveData import MoveData
-from game_window.moving.generation.data.MoveList import MoveList
-from game_window.moving.generation.Generator import Generator
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.board.Board import Board
+from src.main.game_window.board.BoardInitializer import BoardInitializer
+from src.main.game_window.board.BoardUtil import BoardUtil
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.board.fen.FenFactory import FenFactory
+from src.main.game_window.board.fen.FenMaker import FenMaker
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.generation.Generator import Generator
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveData import MoveData
+from src.main.game_window.moving.generation.data.MoveList import MoveList
 
 
 class GameBoard(Board):
@@ -107,7 +107,7 @@ class GameBoard(Board):
         Method used to change the color of players pieces which is turn.
         :return: None
         """
-        self.__color_to_move = PiecesEnum.WHITE.value if self.__color_to_move == PiecesEnum.BLACK.value else\
+        self.__color_to_move = PiecesEnum.WHITE.value if self.__color_to_move == PiecesEnum.BLACK.value else \
             PiecesEnum.BLACK.value
 
     def legal_moves(self) -> MoveList:
@@ -307,3 +307,15 @@ class GameBoard(Board):
         :return: None
         """
         self.__fen_factory.disable_castling_on_side(color, target_square, self)
+
+    def __copy__(self):
+        new_board = GameBoard(self.__fen_factory, self.__generator)
+        new_board.__engine_color = self.__engine_color
+        new_board.__player_color = self.__player_color
+        new_board.__fen_string = self.__fen_string
+        new_board.__color_to_move = self.__color_to_move
+        new_board.__board_array = self.__board_array.copy()
+        new_board.__distances_to_borders = self.__distances_to_borders.copy()
+        new_board.__legal_moves = self.__legal_moves.__copy__()
+
+        return new_board

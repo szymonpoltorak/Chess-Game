@@ -4,3 +4,4 @@ venv/
 src/resources/ui/test.ui
 .fleet/
 .pytest_cache
+.dmypy.json

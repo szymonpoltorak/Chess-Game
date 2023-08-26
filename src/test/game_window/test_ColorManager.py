@@ -1,9 +1,9 @@
 import pytest
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.PiecesEnum import PiecesEnum
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
 
 
 def test_get_piece_color_piece_none_value() -> None:

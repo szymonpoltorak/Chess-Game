@@ -1,10 +1,10 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
-from game_window.moving.generation.data.MoveList import MoveList
+from src.main.game_window.moving.generation.data.MoveList import MoveList
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class Generator(ABC):
@@ -14,6 +14,7 @@ class Generator(ABC):
 
     __slots__ = ()
 
+    @abstractmethod
     def generate_legal_moves(self, color_to_move: int, board: 'Board', captures_only: bool = False) -> MoveList:
         """
         Method used to generate legal __moves for current position for given player

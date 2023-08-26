@@ -1,23 +1,23 @@
 from typing import TYPE_CHECKING
 
+from numpy._typing import NDArray
+
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.board.BoardUtil import BoardUtil
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveData import MoveData
+from src.main.game_window.moving.generation.king_and_knights.KingUtil import KingUtil
 from numpy import dtype
 from numpy import int8
-from numpy import ndarray
 from numpy import sign
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.BoardUtil import BoardUtil
-from game_window.ColorManager import ColorManager
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveData import MoveData
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class MoveMakingUtil:
@@ -47,11 +47,12 @@ class MoveMakingUtil:
             raise IllegalArgumentException("THIS IS NOT CASTLING MOVE!")
 
         start_square: int = move.get_start_square()
-        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        board_array: NDArray[int] = board.board_array()
         end_square: int = move.get_end_square()
         distance: int = start_square - end_square
         is_queen_side: bool = distance > 0
-        rook_position: int = KingUtil.get_rook_position(color, is_queen_side, board.engine_color(), board.player_color())
+        rook_position: int = KingUtil.get_rook_position(color, is_queen_side, board.engine_color(),
+                                                        board.player_color())
 
         board_array[start_square] = PiecesEnum.NONE.value
         board_array[end_square] = piece
@@ -70,7 +71,7 @@ class MoveMakingUtil:
         :return: None
         """
         piece_value: int = piece - ColorManager.get_piece_color(piece)
-        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        board_array: NDArray[int] = board.board_array()
 
         if piece_value != PiecesEnum.PAWN.value:
             raise IllegalArgumentException("THIS PIECE CANNOT MAKE AN EN PASSANT CAPTURE!")
@@ -114,7 +115,7 @@ class MoveMakingUtil:
         :return: bool
         """
         special_flag: int = move.get_special_flag()
-        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        board_array: NDArray[int] = board.board_array()
         end_square: int = move.get_end_square()
 
         if special_flag in SpecialFlags.PROMOTIONS.value:
@@ -190,7 +191,7 @@ class MoveMakingUtil:
         :param color: int value of color
         :return: int value of deleted piece by move
         """
-        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        board_array: NDArray[int] = board.board_array()
         end_square: int = move.get_end_square()
 
         deleted_piece: int = board_array[end_square]

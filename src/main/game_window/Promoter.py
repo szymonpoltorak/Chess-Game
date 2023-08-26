@@ -1,7 +1,7 @@
 from abc import ABC
 from abc import abstractmethod
 
-from game_window.board.Board import Board
+from src.main.game_window.board.Board import Board
 
 
 class Promoter(ABC):

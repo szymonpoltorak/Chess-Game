@@ -1,5 +1,5 @@
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.moving.generation.data.Move import Move
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.moving.generation.data.Move import Move
 
 
 def test_set_start_square_none_values() -> None:

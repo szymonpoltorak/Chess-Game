@@ -1,21 +1,21 @@
 from typing import TYPE_CHECKING
 
+from numpy._typing import NDArray
+
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.board.BoardUtil import BoardUtil
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.generation.data.Move import Move
 from numpy import array
 from numpy import dtype
 from numpy import int8
-from numpy import ndarray
-
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.BoardUtil import BoardUtil
-from game_window.ColorManager import ColorManager
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.data.Move import Move
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class KingUtil:
@@ -24,7 +24,7 @@ class KingUtil:
     """
 
     __slots__ = ()
-    
+
     @staticmethod
     def is_anything_on_king_side(board: 'Board', start_square: int) -> bool:
         """
@@ -125,11 +125,11 @@ class KingUtil:
         return move_dict[is_queen_side, color]
 
     @staticmethod
-    def get_castling_squares(move: Move) -> ndarray[int, dtype[int8]]:
+    def get_castling_squares(move: Move) -> NDArray[int]:
         """
         Method used to get castling squares depending on given move
         :param move: Move instance
-        :return: ndarray of ints 1D
+        :return: NDArray of ints 1D
         """
         if move is None:
             raise NullArgumentException("MOVE CANNOT BE NULL!")
@@ -143,7 +143,7 @@ class KingUtil:
         return array([start_square, start_square - 1, start_square - 2])
 
     @staticmethod
-    def find_friendly_king_squares(board_array: ndarray[int, dtype[int8]], color_to_move: int) -> int:
+    def find_friendly_king_squares(board_array: NDArray[int], color_to_move: int) -> int:
         """
         Finds a friendly king on given board array
         :param board_array: ndarray of board 1D

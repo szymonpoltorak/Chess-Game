@@ -1,18 +1,17 @@
 from typing import List
 from typing import TYPE_CHECKING
 
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
+from src.main.game_window.enums.EvalEnum import EvalEnum
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
 from numpy import dtype
 from numpy import int8
 from numpy import ndarray
 
-from game_window.ColorManager import ColorManager
-from game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
-from game_window.enums.EvalEnum import EvalEnum
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class RookEval:

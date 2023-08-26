@@ -1,11 +1,11 @@
 from abc import ABC
 from abc import abstractmethod
 
-from game_window.board.Board import Board
-from game_window.Canvas import Canvas
-from game_window.engine.Engine import Engine
-from game_window.moving.generation.data.Move import Move
-from game_window.Promoter import Promoter
+from src.main.game_window.Canvas import Canvas
+from src.main.game_window.Promoter import Promoter
+from src.main.game_window.board.Board import Board
+from src.main.game_window.engine.Engine import Engine
+from src.main.game_window.moving.generation.data.Move import Move
 
 
 class GameWindowFactory(ABC):

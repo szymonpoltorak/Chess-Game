@@ -1,12 +1,10 @@
 from abc import ABC
 from abc import abstractmethod
-from typing import Any
-from typing import TYPE_CHECKING
-
-from game_window.moving.generation.data.Move import Move
+from typing import Any, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
+from src.main.game_window.moving.generation.data.Move import Move
 
 
 class MoveList(ABC):
@@ -58,4 +56,8 @@ class MoveList(ABC):
 
     @abstractmethod
     def __contains__(self, move: Move) -> bool:
+        pass
+
+    @abstractmethod
+    def __copy__(self) -> Any:
         pass

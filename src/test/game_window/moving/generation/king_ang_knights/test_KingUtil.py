@@ -1,27 +1,25 @@
 import pytest
-from numpy import array
-from numpy import dtype
-from numpy import int8
-from numpy import ndarray
-from numpy import zeros
+from numpy._typing import NDArray
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenMaker import FenMaker
-from game_window.board.GameBoard import GameBoard
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.king_and_knights.KingUtil import KingUtil
-from game_window.moving.generation.MoveGenerator import MoveGenerator
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.board.GameBoard import GameBoard
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.board.fen.FenMaker import FenMaker
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.moving.generation.MoveGenerator import MoveGenerator
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.king_and_knights.KingUtil import KingUtil
+from numpy import array
+from numpy import zeros
 
 
 def test_find_friendly_king_squares_only_enemy_king() -> None:
     # given
     color_to_move: int = PiecesEnum.WHITE.value
-    board_array: ndarray[int, dtype[int8]] = zeros(BoardEnum.BOARD_SIZE.value)
+    board_array: NDArray[int] = zeros(BoardEnum.BOARD_SIZE.value)
     board_array[30] = PiecesEnum.BLACK.value | PiecesEnum.KING.value
 
     # when
@@ -34,7 +32,7 @@ def test_find_friendly_king_squares_only_enemy_king() -> None:
 def test_find_friendly_king_squares_a_friendly_king() -> None:
     # given
     color_to_move: int = PiecesEnum.BLACK.value
-    board_array: ndarray[int, dtype[int8]] = zeros(BoardEnum.BOARD_SIZE.value)
+    board_array: NDArray[int] = zeros(BoardEnum.BOARD_SIZE.value)
     index: int = 30
     board_array[index] = PiecesEnum.BLACK.value | PiecesEnum.KING.value
     expected: int = index
@@ -52,10 +50,10 @@ def test_get_castling_squares_move_distance_greater_than_0() -> None:
     end_square: int = 6
     piece: int = PiecesEnum.KING.value
     move: Move = Move(start_square, end_square, piece, SpecialFlags.CASTLING.value)
-    expected: ndarray[int, dtype[int8]] = array([start_square, start_square + 1, start_square + 2])
+    expected: NDArray[int] = array([start_square, start_square + 1, start_square + 2])
 
     # when
-    result: ndarray[int, dtype[int8]] = KingUtil.get_castling_squares(move)
+    result: NDArray[int] = KingUtil.get_castling_squares(move)
 
     # then
     assert expected.all() == result.all()
@@ -67,10 +65,10 @@ def test_get_castling_squares_move_distance_less_than_0() -> None:
     end_square: int = 4
     piece: int = PiecesEnum.KING.value
     move: Move = Move(start_square, end_square, piece, SpecialFlags.CASTLING.value)
-    expected: ndarray[int, dtype[int8]] = array([start_square, start_square - 1, start_square - 2])
+    expected: NDArray[int] = array([start_square, start_square - 1, start_square - 2])
 
     # when
-    result: ndarray[int, dtype[int8]] = KingUtil.get_castling_squares(move)
+    result: NDArray[int] = KingUtil.get_castling_squares(move)
 
     # then
     assert expected.all() == result.all()
@@ -226,7 +224,7 @@ def test_get_castling_squares_nulls() -> None:
 
     # when
     with pytest.raises(NullArgumentException):
-        result: ndarray[int, dtype[int8]] = KingUtil.get_castling_squares(None)
+        result: NDArray[int] = KingUtil.get_castling_squares(None)
 
     # then
 

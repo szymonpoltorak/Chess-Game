@@ -1,18 +1,17 @@
 from typing import TYPE_CHECKING
 
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.moving.MoveMakingUtil import MoveMakingUtil
+from src.main.game_window.moving.MoveUnMakingUtil import MoveUnMakingUtil
+from src.main.game_window.moving.generation.data.Move import Move
+from src.main.game_window.moving.generation.data.MoveData import MoveData
 from numpy import dtype
 from numpy import int8
 from numpy import ndarray
 
-from game_window.ColorManager import ColorManager
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.data.MoveData import MoveData
-from game_window.moving.MoveMakingUtil import MoveMakingUtil
-from game_window.moving.MoveUnMakingUtil import MoveUnMakingUtil
-
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class MoveMaker:

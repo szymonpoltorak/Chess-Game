@@ -1,11 +1,10 @@
 from typing import Tuple
 
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.moving.generation.data.MoveData import MoveData
 from numpy import array
-
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.ColorManager import ColorManager
-from game_window.moving.generation.data.MoveData import MoveData
 
 
 class FenData:

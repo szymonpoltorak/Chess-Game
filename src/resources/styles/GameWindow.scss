@@ -7,96 +7,96 @@ $menu-icon-hover-color: rgb(22 163 74);
 
 /* sidebar styling */
 
-@mixin menu-icon-theme{
+@mixin menu-icon-theme {
   padding: $menu-padding;
   background-color: $utility-color;
   border-radius: 25%;
 }
 
-#__side_bar{
+#__side_bar {
   background-color: $side-bar-color;
 }
 
-#__play_menu{
+#__play_menu {
   @include menu-icon-theme;
 }
 
-#__analysis_menu{
+#__analysis_menu {
   @include menu-icon-theme;
 }
 
-#__players_menu{
+#__players_menu {
   @include menu-icon-theme;
 }
 
-#__profile_menu{
+#__profile_menu {
   @include menu-icon-theme;
 }
 
-#__settings_menu{
+#__settings_menu {
   @include menu-icon-theme;
 }
 
-@mixin menu-icon-hover{
+@mixin menu-icon-hover {
   border-radius: 10%;
   background-color: $menu-icon-hover-color;
 }
 
-#__play_menu:hover{
+#__play_menu:hover {
   @include menu-icon-hover;
 }
 
-#__play_menu:hover{
+#__play_menu:hover {
   @include menu-icon-hover;
 }
 
-#__analysis_menu:hover{
+#__analysis_menu:hover {
   @include menu-icon-hover;
 }
 
-#__players_menu:hover{
+#__players_menu:hover {
   @include menu-icon-hover;
 }
 
-#__profile_menu:hover{
+#__profile_menu:hover {
   @include menu-icon-hover;
 }
 
-#__settings_menu:hover{
+#__settings_menu:hover {
   @include menu-icon-hover;
 }
 
 /* player labels styling */
 
-@mixin player-frame-theme{
+@mixin player-frame-theme {
   background-color: $utility-color;
   border-radius: 20%;
 }
 
-#__user_frame{
+#__user_frame {
   @include player-frame-theme;
 }
 
-#__engine_frame{
+#__engine_frame {
   @include player-frame-theme;
 }
 
-@mixin name-labels{
+@mixin name-labels {
   color: $font-color;
   font-weight: 900;
 }
 
-#__user_name{
+#__user_name {
   @include name-labels;
 }
 
-#__engine_name{
+#__engine_name {
   @include name-labels;
 }
 
 /* buttons styling */
 
-@mixin button-theme{
+@mixin button-theme {
   border-radius: 20%;
   background-color: $utility-color;
   color: $font-color;
@@ -111,7 +111,7 @@ $menu-icon-hover-color: rgb(22 163 74);
   @include button-theme;
 }
 
-#__next_move_button{
+#__next_move_button {
   @include button-theme;
 }
 
@@ -119,7 +119,7 @@ $menu-icon-hover-color: rgb(22 163 74);
   @include button-theme;
 }
 
-@mixin button-hover-theme{
+@mixin button-hover-theme {
   border-radius: 10%;
   background-color: $menu-icon-hover-color;
 }
@@ -132,7 +132,7 @@ $menu-icon-hover-color: rgb(22 163 74);
   @include button-hover-theme;
 }
 
-#__next_move_button:hover{
+#__next_move_button:hover {
   @include button-hover-theme;
 }
 
@@ -142,10 +142,10 @@ $menu-icon-hover-color: rgb(22 163 74);
 
 /* windows styling */
 
-#game_window{
+#game_window {
   background-color: $game-window-color;
 }
 
-#__pgn_table{
+#__pgn_table {
   background-color: $utility-color;
 }

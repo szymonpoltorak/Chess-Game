@@ -1,9 +1,8 @@
 import pytest
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.moving.generation.data.Moves import Moves
 from numpy import full
-
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.enums.MoveEnum import MoveEnum
-from game_window.moving.generation.data.Moves import Moves
 
 
 def test_append_null_move() -> None:

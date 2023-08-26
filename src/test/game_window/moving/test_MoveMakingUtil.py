@@ -1,22 +1,22 @@
 import pytest
-from numpy import ndarray
+from numpy._typing import NDArray
 
-from exceptions.IllegalArgumentException import IllegalArgumentException
-from exceptions.NullArgumentException import NullArgumentException
-from game_window.board.GameBoard import GameBoard
-from game_window.board.fen.FenData import FenData
-from game_window.board.fen.FenMaker import FenMaker
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.data.Move import Move
-from game_window.moving.generation.MoveGenerator import MoveGenerator
-from game_window.moving.MoveMakingUtil import MoveMakingUtil
+from src.main.exceptions.IllegalArgumentException import IllegalArgumentException
+from src.main.exceptions.NullArgumentException import NullArgumentException
+from src.main.game_window.board.GameBoard import GameBoard
+from src.main.game_window.board.fen.FenData import FenData
+from src.main.game_window.board.fen.FenMaker import FenMaker
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.moving.MoveMakingUtil import MoveMakingUtil
+from src.main.game_window.moving.generation.MoveGenerator import MoveGenerator
+from src.main.game_window.moving.generation.data.Move import Move
 
 
 def test_castle_king_proper_use() -> None:
     # given
     board: GameBoard = GameBoard(FenMaker(FenData(PiecesEnum.WHITE.value)), MoveGenerator())
-    board_array: ndarray[int] = board.board_array()
+    board_array: NDArray[int] = board.board_array()
     castling_move: Move = Move(60, 62, PiecesEnum.KING.value, SpecialFlags.CASTLING.value)
     expected_rook_pos: int = 61
     expected_king_pos: int = 62

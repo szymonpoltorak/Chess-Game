@@ -1,7 +1,5 @@
-from numpy import array
-
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.MoveEnum import MoveEnum
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.MoveEnum import MoveEnum
 
 
 class Move:
@@ -9,7 +7,7 @@ class Move:
     Class representation of a Move
     """
 
-    __slots__ = array(["__start_square", "__end_square", "__piece", "__special_flag"], dtype=str)
+    __slots__ = ("__start_square", "__end_square", "__piece", "__special_flag")
 
     def __init__(self, start_square: int, end_square: int, piece: int, special_flag: int) -> None:
         self.__start_square: int = start_square
@@ -105,3 +103,6 @@ class Move:
         """
         return f"\tStartSquare : {self.__start_square}\n\tEndSquare : {self.__end_square}\n\tPiece : {self.__piece}\n" \
                f"\tSpecialFlag : {self.__special_flag}\n"
+
+    def __copy__(self):
+        return Move(self.__start_square, self.__end_square, self.__piece, self.__special_flag)

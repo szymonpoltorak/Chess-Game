@@ -2,21 +2,21 @@ from typing import TYPE_CHECKING
 
 from numpy import dtype
 from numpy import int8
-from numpy import ndarray
+from numpy.typing import NDArray
 
-from game_window.ColorManager import ColorManager
-from game_window.engine.static_eval.KingPressure import KingPressure
-from game_window.engine.static_eval.LightPiecesEval import LightPiecesEval
-from game_window.engine.static_eval.PawnEval import PawnEval
-from game_window.engine.static_eval.RookEval import RookEval
-from game_window.engine.static_eval.StaticEvaluation import StaticEvaluation
-from game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.EvalEnum import EvalEnum
-from game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.engine.static_eval.KingPressure import KingPressure
+from src.main.game_window.engine.static_eval.LightPiecesEval import LightPiecesEval
+from src.main.game_window.engine.static_eval.PawnEval import PawnEval
+from src.main.game_window.engine.static_eval.RookEval import RookEval
+from src.main.game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
+from src.main.game_window.engine.static_eval.StaticEvaluation import StaticEvaluation
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.EvalEnum import EvalEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class StaticEvaluator(StaticEvaluation):
@@ -56,7 +56,7 @@ class StaticEvaluator(StaticEvaluation):
         :return: float value of evaluation
         """
         evaluation: float = 0
-        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        board_array: NDArray[int] = board.board_array()
 
         for square, piece in enumerate(board_array):
             if piece == 0:
@@ -78,7 +78,7 @@ class StaticEvaluator(StaticEvaluation):
         :return: float value of evaluation
         """
         evaluation: float = 0
-        board_array: ndarray[int, dtype[int8]] = board.board_array()
+        board_array: NDArray[int] = board.board_array()
 
         for center_square in BoardEnum.CENTER_SQUARES.value:
             piece: int = board_array[center_square]

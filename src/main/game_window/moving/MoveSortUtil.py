@@ -1,16 +1,16 @@
 from typing import TYPE_CHECKING
 
-from game_window.board.BoardUtil import BoardUtil
-from game_window.ColorManager import ColorManager
-from game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
-from game_window.enums.BoardEnum import BoardEnum
-from game_window.enums.EvalEnum import EvalEnum
-from game_window.enums.PiecesEnum import PiecesEnum
-from game_window.enums.SpecialFlags import SpecialFlags
-from game_window.moving.generation.data.Move import Move
+from src.main.game_window.ColorManager import ColorManager
+from src.main.game_window.board.BoardUtil import BoardUtil
+from src.main.game_window.engine.static_eval.StaticEvalUtil import StaticEvalUtil
+from src.main.game_window.enums.BoardEnum import BoardEnum
+from src.main.game_window.enums.EvalEnum import EvalEnum
+from src.main.game_window.enums.PiecesEnum import PiecesEnum
+from src.main.game_window.enums.SpecialFlags import SpecialFlags
+from src.main.game_window.moving.generation.data.Move import Move
 
 if TYPE_CHECKING:
-    from game_window.board.Board import Board
+    from src.main.game_window.board.Board import Board
 
 
 class MoveSortUtil:
